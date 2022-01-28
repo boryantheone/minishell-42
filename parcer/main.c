@@ -3,11 +3,11 @@
 #include <readline/history.h>
 #include <stdlib.h>
 
-int main(void)
+int	main(void)
 {
-    while (1)
-    {
-        char * str = readline("Myshell $ ");
+	while (1)
+	{
+		char * str = readline("Myshell $ ");
         free(str);
-    }
+	}
 }
