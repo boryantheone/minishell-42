@@ -4,7 +4,9 @@ HEADER	=  minishell.h
 
 LIBFT	=	./libft/libft.a
 
-CFLAGS	=	-Wall -Werror -Wextra
+CFLAGS	=	 -I ${HEADER}
+
+# -Wall -Werror -Wextra
 
 SRCS	=	run_commands/handler_pipe.c
 
@@ -15,7 +17,7 @@ CC		=	cc
 %.o	:	%.c
 		${CC} ${CFLAGS} $< -c -o $@
 
-${NAME}	:	${OBJS} ${HEADER} ${LIBFT} 
+${NAME}	:	${OBJS} ${LIBFT} 
 			${CC} ${CFLAGS} ${OBJS} -lreadline \
  			-L${HOME}/.brew/Cellar/readline/8.1.2/lib/ \
  			-I${HOME}/.brew/Cellar/readline/8.1.2/include/ \

@@ -29,7 +29,7 @@ char	*ft_parsing_path(char *cmd, char **envp)
 	return (0);
 }
 
-void	ft_exec_cmd(char **cmd, char **env)
+void	ft_exec_cmd(t_var *var, char **env)
 {
 	int	i;
 	pid_t	pid;
@@ -37,10 +37,12 @@ void	ft_exec_cmd(char **cmd, char **env)
 
 	i = 0;
 	cmd = ft_split(var->cmd[0], ' ');
+
 	pid = fork();
+	//write(1, "abaldet", 7);
 	if ((pid = fork()) == 0)
 	{
-		if ((execve(ft_parsing_path(cmd[0], env), cmd, env)) == -1)
+		if ((execve(ft_parsing_path(var->cmd[0], env), cmd, env)) == -1)
 		{
 			perror("Error: ");
 			exit(0);
@@ -57,11 +59,14 @@ int	main(int argc, char **argv, char **env)
 {
 	t_var	*var;
 
-
-	if (argc == 0)
-		printf("error");
-	if (!(var = (t_var *)malloc(sizeof(t_var))))
-		return(0); //malloc error
+	//write(1, "1111", 4);
+	if (argc == 1)
+		printf("1 arg");
+	// if (!(var = (t_var *)malloc(sizeof(t_var))))
+	// 	return(0); //malloc error
+	var = (t_var *)malloc(sizeof(t_var));
+	var->cmd = malloc(sizeof(char**));
 	var->cmd[0] = argv[1];
-	ft_exec_cmd(var->cmd, env);
+	printf("%s", var->cmd[0]);
+	ft_exec_cmd(var, env);
 }

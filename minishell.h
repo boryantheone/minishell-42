@@ -15,5 +15,14 @@ typedef struct s_var
 	int		*fdr;	//fd for redirect
 } t_var;
 
+typedef struct s_elem
+{
+	char			*cmd;
+	char			*path;
+	char			*cmds;
+	int				have_pipe;
+	int				fd;
+	struct s_list	*next;
+}	t_elem;
 
 #endif 

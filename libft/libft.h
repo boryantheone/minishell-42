@@ -10,17 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef LIBFT_H
 # define LIBFT_H
 # include <stdlib.h>
 # include <unistd.h>
 
 typedef struct s_list
 {
-	char			*cmd;
-	char			*path;
-	char			*cmds;
-	int				have_pipe;
-	int				fd;
+	void			*content;
 	struct s_list	*next;
 }	t_list;
 
