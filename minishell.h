@@ -5,10 +5,15 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+#include "libft/libft.h"
 
-typedef struct s_list
+//struct for variables
+typedef struct s_var
 {
+	char	**cmd;  //commands
+	int		**fdp;	//fd for pipe
+	int		*fdr;	//fd for redirect
+} t_var;
 
-} t_
 
 #endif 
