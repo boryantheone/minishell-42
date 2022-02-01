@@ -1,5 +1,4 @@
 #include "../minishell.h"
-
 char	*ft_parsing_path(char *cmd, char **envp)
 {
 	char	**paths;
