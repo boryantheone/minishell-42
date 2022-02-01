@@ -112,15 +112,17 @@ int	main(int argc, char **argv, char **env)
 	ft_lstadd_back(&var->elem, ft_lstnew());
 	elem2 = var->elem->next;
 	elem2->cmd = "pwd";
-	elem2->cmds = "wc";
+	elem2->cmds = "pwd";
 	elem2->path = "/bin/pwd";
-	ft_printlist(var->elem);
+	//ft_printlist(var->elem);
+	var->envp = env;
+	//printf("%s\n", var->envp[5]);
 	while (1)
 	{
 		str = readline("Myshell $ ");
 		ft_preparser(str);
 		ft_parser(str, env);
-		ft_load_cmds(var);
+		ft_exec_pipes(var);
 		free(str);
 	}
 	return (0);
