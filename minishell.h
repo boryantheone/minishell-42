@@ -10,19 +10,11 @@
 //struct for variables
 typedef struct s_var
 {
-	char	**cmd;  //commands
-	int		**fdp;	//fd for pipe
-	int		*fdr;	//fd for redirect
+	char 	**envp;
+	t_list	*elem;
 } t_var;
 
-typedef struct s_elem
-{
-	char			*cmd;
-	char			*path;
-	char			*cmds;
-	int				have_pipe;
-	int				fd;
-	struct s_list	*next;
-}	t_elem;
+void ft_load_cmds(t_var *elem);
+
 
 #endif 
