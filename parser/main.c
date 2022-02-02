@@ -98,22 +98,27 @@ int	main(int argc, char **argv, char **env)
 {
 	char	*str;
 	t_var	*var;
+	t_list	*elem;
 	t_list	*elem2;
+	t_list	*elem3;
 	
 	(void)argc;
 	(void)argv;
 	
 	var = (t_var *)malloc(sizeof(t_var));
-	var->elem = NULL;
-	ft_lstadd_back(&var->elem, ft_lstnew());
-	var->elem->cmd = "ls";
-	var->elem->cmds = "ls -l";
-	var->elem->path = "/bin/ls";
-	ft_lstadd_back(&var->elem, ft_lstnew());
-	elem2 = var->elem->next;
-	elem2->cmd = "pwd";
-	elem2->cmds = "pwd";
-	elem2->path = "/bin/pwd";
+	elem = ft_lstnew();
+	elem = NULL;
+	ft_lstadd_back(&elem, ft_lstnew());
+	elem->cmd = "ls";
+	elem->cmds = "ls -l";   
+	elem->path = "/bin/ls";
+	elem->fd_open = open("1.txt", O_RDWR);
+	elem->fd_close = -1;
+	ft_lstadd_back(&elem, ft_lstnew());
+	elem3 = elem->next;
+	elem3->cmd = "pwd";
+	elem3->cmds = "pwd";
+	elem3->path = "/bin/pwd";
 	//ft_printlist(var->elem);
 	var->envp = env;
 	//printf("%s\n", var->envp[5]);
@@ -122,7 +127,7 @@ int	main(int argc, char **argv, char **env)
 		str = readline("Myshell $ ");
 		ft_preparser(str);
 		ft_parser(str, env);
-		ft_exec_pipes(var);
+		ft_exec_pipes(var, &elem);
 		free(str);
 	}
 	return (0);
