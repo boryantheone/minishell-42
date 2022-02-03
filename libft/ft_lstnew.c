@@ -22,8 +22,8 @@ t_list	*ft_lstnew(void)
 	node -> cmd = NULL;
 	node -> path = NULL;
 	node -> cmds = NULL;
-	node -> fd_open = 0;
-	node -> fd_close = 0;
+	node -> fd_in = -1;
+	node -> fd_out = -1;
 	node -> next = NULL;
 	return (node);
 }

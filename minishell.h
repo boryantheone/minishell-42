@@ -17,7 +17,12 @@ typedef struct s_var
 	int		size_of_list;
 } t_var;
 
-int ft_exec_pipes(t_var *var, t_list **elem);
+int ft_exec_pipes(t_var *var, t_list *elem);
+
+//main/main
+void ft_error(void);
+//main/preparser
+int ft_preparser(char *line);
 
 //build_in
 int	ft_echo(void);
