@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 13:44:15 by dronel            #+#    #+#             */
-/*   Updated: 2022/01/29 19:36:18 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/02/03 12:07:54 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,9 +19,10 @@ typedef struct s_list
 {
 	char			*cmd;
 	char			*path;
-	char			*cmds;
-	int				fd_close;
-	int				fd_open;
+	char			**cmds;
+	int				fd_in;
+	int				fd_out;
+	int				*fd_pipe;
 	struct s_list	*next;
 }	t_list;
 

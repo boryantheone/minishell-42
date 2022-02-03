@@ -95,14 +95,14 @@ void	ft_launch_child_proc_for_pipe(t_var *var, t_list *elem, int	fd_close)
 	}
 }
 
-int ft_exec_pipes(t_var *var, t_list **elem)
+int ft_exec_pipes(t_var *var, t_list *elem)
 {
 	int	i;
 	t_list	*tmp;
 	int		fd_close;
 
 	i = 0;
-	tmp = *elem;
+	tmp = elem;
 	write(1, "1111", 4);
 	if (tmp->fd_open != -1)
 		dup2(tmp->fd_open, STDIN_FILENO);

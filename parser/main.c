@@ -1,6 +1,8 @@
 
 #include "../minishell.h"
 
+int	g_status = 0;
+
 void ft_error(void)
 {
 	printf("error\n");
@@ -127,7 +129,7 @@ int	main(int argc, char **argv, char **env)
 		str = readline("Myshell $ ");
 		ft_preparser(str);
 		ft_parser(str, env);
-		ft_exec_pipes(var, &elem);
+		ft_exec_pipes(var, elem);
 		free(str);
 	}
 	return (0);
