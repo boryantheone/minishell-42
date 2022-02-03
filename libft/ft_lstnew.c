@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_lstnew.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:  <>                                        +#+  +:+       +#+        */
+/*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/14 13:52:16 by                   #+#    #+#             */
-/*   Updated: 2021/10/14 14:37:10 by                  ###   ########.fr       */
+/*   Updated: 2022/02/03 14:50:34 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@ t_list	*ft_lstnew(void)
 	node -> cmd = NULL;
 	node -> path = NULL;
 	node -> cmds = NULL;
-	node -> fd_open = 0;
-	node -> fd_close = 0;
+	node -> fd_in = -1;
+	node -> fd_out = -1;
+	node -> have_pipe = -1;
+	//node -> fd_pipe = 0;
 	node -> next = NULL;
 	return (node);
 }

@@ -27,6 +27,10 @@ int	ft_exec_cmd(t_list *elem, t_var *var)
 	char	**cmd;
 
 	i = 0;
+	if (elem->fd_in != -1)
+		dup2(elem->fd_in, STDIN_FILENO);
+	if (elem->fd_out != -1)
+		dup2(elem->fd_out, STDOUT_FILENO);
 	cmd = ft_split(elem->cmds, ' ');
 	if ((result = ft_exec_buildin(elem, var)) >= 0)
 		return (result);
@@ -50,22 +54,19 @@ void	execve_for_pipe(t_list *elem,t_var *var)
 {
 	char **cmds;
 
-	write(1, "execve_for_pipe\n", 17);
 	cmds = ft_split(elem->cmds, ' ');
 	if ((ft_exec_buildin(elem, var)) >= 0)
 		exit(1);
 	else
 		execve(elem->path, cmds, var->envp);
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd(elem->cmd, 2);
-	ft_putstr_fd(": command not found\n", 2);
 	exit(1);
 }
 
-void	ft_launch_child_proc_for_pipe(t_var *var, t_list *elem, int	fd_close)
+void	ft_launch_proc(t_var *var, t_list *elem)
 {
 	int		fd[2];
 	pid_t	pid;
+	int		status;
 
 	if (pipe(fd) < 0)
 	{
@@ -73,26 +74,17 @@ void	ft_launch_child_proc_for_pipe(t_var *var, t_list *elem, int	fd_close)
 		exit(1);
 		///free all
 	}
-	write(1, "launch\n", 8);
-	if ((pid = fork()) == 0)
+	pid = fork();
+	if (pid == 0)
 	{
-		dup2(fd[1], STDOUT_FILENO);
-		write(1, "anoba\n", 7);
-		if (fd_close != -1)
-			dup2(fd_close, STDOUT_FILENO);
-		close(fd[1]);
 		close(fd[0]);
+		dup2(fd[1], STDOUT_FILENO);
 		execve_for_pipe(elem, var);
 	}
-	else
-	{
-		dup2(fd[0], STDIN_FILENO);
-		write(1, &elem->next->cmd, 4);
-		if (elem->next->fd_in != -1)
-			dup2(elem->next->fd_out, STDIN_FILENO);
-		close(fd[1]);
-		close(fd[0]);
-	}
+	waitpid(-1, &status, 0);
+	dup2(fd[0], STDIN_FILENO);
+	close(fd[1]);
+	close(fd[0]);
 }
 
 int ft_exec_pipes(t_var *var, t_list *elem)
@@ -101,32 +93,20 @@ int ft_exec_pipes(t_var *var, t_list *elem)
 	t_list	*tmp;
 	int		fd_close;
 
+
 	i = 0;
 	tmp = elem;
-	write(1, "1111", 4);
 	if (tmp->fd_in != -1)
 		dup2(tmp->fd_in, STDIN_FILENO);
-	else
-		dup2(0, STDIN_FILENO);
-	var->size_of_list = ft_lstsize(tmp);
-	write(1, "2222\n", 4);
-	write(1, tmp->cmd, 2);
-	write(1, "\n", 1);
-	while (i < var->size_of_list - 1)
+	while (tmp->next != NULL)
 	{
-		fd_close = tmp->fd_out;
-		write(1, "sdsds\n", 6);
+		ft_launch_proc(var, tmp);
 		tmp = tmp->next;
-		write(1, "next\n", 6);
-		ft_launch_child_proc_for_pipe(var, tmp, fd_close);
-		i++;
 	}
-	write(1, "3333", 4);
-	//tmp = tmp->next;
 	if (tmp->fd_out != -1)
-		dup2(tmp->fd_out, STDOUT_FILENO);
-	else
-		dup2(1, STDOUT_FILENO);
+		dup2(tmp->fd_out, STDIN_FILENO);
+	execve_for_pipe(tmp, var);
+	write(1, "3333", 4);
 	return (1);
 }
 
