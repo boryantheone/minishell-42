@@ -114,8 +114,8 @@ int	main(int argc, char **argv, char **env)
 	elem->cmd = "ls";
 	elem->cmds = "ls -l";   
 	elem->path = "/bin/ls";
-	elem->fd_open = open("1.txt", O_RDWR);
-	elem->fd_close = -1;
+	elem->fd_in = open("1.txt", O_RDWR);
+	elem->fd_out = -1;
 	ft_lstadd_back(&elem, ft_lstnew());
 	elem3 = elem->next;
 	elem3->cmd = "pwd";

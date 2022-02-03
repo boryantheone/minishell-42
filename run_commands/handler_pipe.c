@@ -88,8 +88,8 @@ void	ft_launch_child_proc_for_pipe(t_var *var, t_list *elem, int	fd_close)
 	{
 		dup2(fd[0], STDIN_FILENO);
 		write(1, &elem->next->cmd, 4);
-		if (elem->next->fd_open != -1)
-			dup2(elem->next->fd_open, STDIN_FILENO);
+		if (elem->next->fd_in != -1)
+			dup2(elem->next->fd_out, STDIN_FILENO);
 		close(fd[1]);
 		close(fd[0]);
 	}
@@ -104,8 +104,8 @@ int ft_exec_pipes(t_var *var, t_list *elem)
 	i = 0;
 	tmp = elem;
 	write(1, "1111", 4);
-	if (tmp->fd_open != -1)
-		dup2(tmp->fd_open, STDIN_FILENO);
+	if (tmp->fd_in != -1)
+		dup2(tmp->fd_in, STDIN_FILENO);
 	else
 		dup2(0, STDIN_FILENO);
 	var->size_of_list = ft_lstsize(tmp);
@@ -114,7 +114,7 @@ int ft_exec_pipes(t_var *var, t_list *elem)
 	write(1, "\n", 1);
 	while (i < var->size_of_list - 1)
 	{
-		fd_close = tmp->fd_close;
+		fd_close = tmp->fd_out;
 		write(1, "sdsds\n", 6);
 		tmp = tmp->next;
 		write(1, "next\n", 6);
@@ -123,8 +123,8 @@ int ft_exec_pipes(t_var *var, t_list *elem)
 	}
 	write(1, "3333", 4);
 	//tmp = tmp->next;
-	if (tmp->fd_close != -1)
-		dup2(tmp->fd_close, STDOUT_FILENO);
+	if (tmp->fd_out != -1)
+		dup2(tmp->fd_out, STDOUT_FILENO);
 	else
 		dup2(1, STDOUT_FILENO);
 	return (1);
