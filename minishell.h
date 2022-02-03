@@ -24,6 +24,7 @@ void ft_error(void);
 //main/preparser
 int ft_preparser(char *line);
 
+
 //build_in
 int	ft_echo(void);
 int	ft_cd(void);

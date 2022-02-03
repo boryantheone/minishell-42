@@ -39,7 +39,6 @@ int ft_preparser_redirect(char *line, int *i)
 		printf("Input error: <>\n");
 		return (1);
 	}
-	
 	return (0);
 }
 //124 = '|'
