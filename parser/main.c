@@ -89,11 +89,11 @@ void ft_printlist(t_list *elem)
 {
 	while(elem->next)
 	{
-		printf("cmd %s\ncmds %s\npath %s\n", elem->cmd, elem->cmds,
+		printf("cmd %s\ncmds %s\npath %s\n", elem->cmd, elem->cmds[1],
 			   elem->path);
 		elem = elem->next;
 	}
-	printf("cmd %s\ncmds %s\npath %s\n", elem->cmd, elem->cmds, elem->path);
+	printf("cmd %s\ncmds %s\npath %s\n", elem->cmd, elem->cmds[1], elem->path);
 }
 
 int	main(int argc, char **argv, char **env)
@@ -111,28 +111,53 @@ int	main(int argc, char **argv, char **env)
 	elem = ft_lstnew();
 	elem = NULL;
 	ft_lstadd_back(&elem, ft_lstnew());
+	// elem->cmd = "cd";
+	// elem->cmds = malloc(sizeof(char **) * 2);
+	// elem->cmds[0] = "cd";   
+	// elem->cmds[1] = "/Users/jcollin/Desktop/GNL";   
+	// elem->path = "/usr/bin/cd";
+	// elem->fd_in = -1;
+	// elem->fd_out = -1;
 	elem->cmd = "ls";
-	elem->cmds = "ls -l";   
-	elem->path = "ls";
-	elem->fd_in = open("/Users/jcollin/Desktop/GNL", O_RDWR);
+	elem->cmds = malloc(sizeof(char **) * 3);
+	elem->cmds[0] = "ls";   
+	elem->cmds[1] = "-l";   
+	elem->path = "/bin/ls";
+	elem->fd_in = -1;
 	elem->fd_out = -1;
 	elem->have_pipe = 0;
+	// elem->cmd = "echo";
+	// elem->cmds = malloc(sizeof(char **) * 4);
+	// elem->cmds[0] = "echo";
+	// elem->cmds[1] = "-n";
+	// elem->cmds[2] = "123";
+	// elem->cmds[3] = "123\0";
+	//elem->cmds[1] = "/Users/boryantheone/Desktop/";
+	//elem->cmds[2] = "123";
+	// elem->path = "/bin/echo";
+	// elem->fd_in = -1;
+	// elem->fd_out = -1;
+	// elem->have_pipe = 0;
 	ft_lstadd_back(&elem, ft_lstnew());
 	elem2 = elem->next;
 	elem2->cmd = "wc";
-	elem2->cmds = "wc -l";
+	elem2->cmds = malloc(sizeof(char **) * 3);
+	elem2->cmds[0] = "wc";
+	elem2->cmds[1] = "-l";
 	elem2->path = "/usr/bin/wc";
 	elem2->fd_in = -1;
 	elem2->fd_out = -1;
 	elem2->have_pipe = 0;
-	ft_lstadd_back(&elem, ft_lstnew());
-	elem3 = elem2->next;
-	elem3->cmd = "cat";
-	elem3->cmds = "cat -e";
-	elem3->path = "/bin/cat";
-	elem3->fd_in = -1;
-	elem3->fd_out = -1;
-	elem3->have_pipe = 0;
+	// ft_lstadd_back(&elem, ft_lstnew());
+	// elem3 = elem2->next;
+	// elem3->cmd = "cat";
+	// elem3->cmds = malloc(sizeof(char **) * 2);
+	// elem3->cmds[0] = "cat";
+	// elem3->cmds[1] = "-e";
+	// elem3->path = "/bin/cat";
+	// elem3->fd_in = -1;
+	// elem3->fd_out = -1;
+	// elem3->have_pipe = 0;
 	ft_printlist(elem);
 	var->envp = env;
 	while (1)
@@ -143,6 +168,7 @@ int	main(int argc, char **argv, char **env)
 		//ft_exec_cmd(elem, var);
 		ft_exec_pipes(var, elem);
 		free(str);
+		//rl_on_new_line();
 	}
 	return (0);
 }

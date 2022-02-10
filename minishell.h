@@ -8,6 +8,7 @@
 #include "libft/libft.h"
  #include <fcntl.h>
 
+#define MAXDIR 4096
 
 //struct for variables
 typedef struct s_var
@@ -18,11 +19,12 @@ typedef struct s_var
 } t_var;
 
 int ft_exec_pipes(t_var *var, t_list *elem);
+int	ft_exec_cmd(t_list *elem, t_var *var);
 
 //build_in
-int	ft_echo(void);
-int	ft_cd(void);
-int	ft_pwd(void);
+int	ft_echo(t_list *elem);
+int	ft_cd(t_list *elem);
+int	ft_pwd(t_list *elem);
 int	ft_export(void);
 int	ft_unset(void);
 int	ft_env(void);

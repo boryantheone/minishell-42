@@ -19,7 +19,7 @@ typedef struct s_list
 {
 	char			*cmd;
 	char			*path;
-	char			*cmds;
+	char			**cmds;
 	int				fd_in;
 	int				fd_out;
 	int				fd_pipe[2];

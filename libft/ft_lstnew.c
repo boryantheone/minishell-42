@@ -21,7 +21,7 @@ t_list	*ft_lstnew(void)
 		return (NULL);
 	node -> cmd = NULL;
 	node -> path = NULL;
-	node -> cmds = NULL;
+
 	node -> fd_in = -1;
 	node -> fd_out = -1;
 	node -> have_pipe = -1;
