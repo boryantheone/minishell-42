@@ -6,7 +6,7 @@ int	ft_exec_buildin(t_list *elem, t_var *var)
 	if (!ft_strncmp(elem->cmd, "pwd", 3))
 		return(ft_pwd(elem));
 	else if (!ft_strncmp(elem->cmd, "cd", 2))
-		return(ft_cd(elem));
+		return(ft_cd(elem, var));
 	else if (!ft_strncmp(elem->cmd, "echo", 4))
 		return(ft_echo(elem));
 	else if (!ft_strncmp(elem->cmd, "export", 6))
@@ -14,7 +14,7 @@ int	ft_exec_buildin(t_list *elem, t_var *var)
 	else if (!ft_strncmp(elem->cmd, "unset", 5))
 		return(ft_unset());
 	else if (!ft_strncmp(elem->cmd, "env", 3))
-		return(ft_env());
+		return(ft_env(elem, var));
 	else if (!ft_strncmp(elem->cmd, "exit", 4))
 		return(ft_exit());
 	return (-1);
@@ -31,15 +31,13 @@ int	ft_exec_cmd(t_list *elem, t_var *var)
 		dup2(elem->fd_in, STDIN_FILENO);
 	if (elem->fd_out != -1)
 		dup2(elem->fd_out, STDOUT_FILENO);
-	//cmd = ft_split(elem->cmds, ' ');
-	//ft_putstr_fd("1111", 1);
 	if ((result = ft_exec_buildin(elem, var)) >= 0)
 		return (result);
 	else
 	{ 
 		if ((pid = fork()) == 0)
 		{
-			if ((execve(elem->path, elem->cmds, var->envp)) == -1)
+			if ((execve(elem->path, elem->cmds, var->envp_for_execve)) == -1)
 			{
 				perror("Error: ");
 				exit(0);
@@ -53,14 +51,11 @@ int	ft_exec_cmd(t_list *elem, t_var *var)
 
 void	execve_for_pipe(t_list *elem,t_var *var)
 {
-	//char **cmds;
-
-	//cmds = ft_split(elem->cmds, ' ');
 	if ((ft_exec_buildin(elem, var)) >= 0)
 		exit(1);
 	else
-		execve(elem->path, elem->cmds, var->envp);
-	exit(1);
+		execve(elem->path, elem->cmds, var->envp_for_execve);
+	exit(EXIT_SUCCESS);
 }
 
 void	ft_launch_proc(t_var *var, t_list *elem)
@@ -94,7 +89,6 @@ int ft_exec_pipes(t_var *var, t_list *elem)
 	t_list	*tmp;
 	int		fd_close;
 
-
 	i = 0;
 	tmp = elem;
 	if (tmp->fd_in != -1)
@@ -109,5 +103,6 @@ int ft_exec_pipes(t_var *var, t_list *elem)
 	execve_for_pipe(tmp, var);
 	write(1, "3333", 4);
 	return (1);
+	//exit(EXIT_SUCCESS);
 }
 
