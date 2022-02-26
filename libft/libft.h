@@ -6,10 +6,11 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 13:44:15 by dronel            #+#    #+#             */
-/*   Updated: 2022/01/29 19:36:18 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/02/03 14:50:47 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#ifndef LIBFT_H
 # define LIBFT_H
 # include <stdlib.h>
 # include <unistd.h>
@@ -18,9 +19,11 @@ typedef struct s_list
 {
 	char			*cmd;
 	char			*path;
-	char			*cmds;
+	char			**cmds;
+	int				fd_in;
+	int				fd_out;
+	int				fd_pipe[2];
 	int				have_pipe;
-	int				fd;
 	struct s_list	*next;
 }	t_list;
 
@@ -60,14 +63,14 @@ void			ft_putstr_fd(char *s, int fd);
 void			ft_putendl_fd(char *s, int fd);
 void			ft_putnbr_fd(int n, int fd);
 
-t_list			*ft_lstnew(void *content);
+t_list			*ft_lstnew(void);
 void			ft_lstadd_front(t_list **lst, t_list *new);
 int				ft_lstsize(t_list *lst);
 t_list			*ft_lstlast(t_list *lst);
 void			ft_lstadd_back(t_list **lst, t_list *new);
-void			ft_lstdelone(t_list *lst, void (*del)(void*));
-void			ft_lstclear(t_list **lst, void (*del)(void*));
-void			ft_lstiter(t_list *lst, void (*f)(void *));
+void			ft_lstdelone(t_list *lst);
+void			ft_lstclear(t_list **lst);
+//void			ft_lstiter(t_list *lst, void (*f)(void *));
 t_list			*ft_lstmap(t_list *lst, void *(*f)(void *), \
 void (*del)(void *));
 
