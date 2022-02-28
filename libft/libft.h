@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 13:44:15 by dronel            #+#    #+#             */
-/*   Updated: 2022/02/03 14:50:47 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/02/28 14:10:19 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,8 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-int				ft_isalpha(int t);
-int				ft_isdigit(int t);
+int				ft_isalpha(char *str);
+int				ft_isdigit(char *str);
 int				ft_isalnum(int t);
 int				ft_isascii(int t);
 int				ft_isprint(int t);

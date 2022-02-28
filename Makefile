@@ -2,7 +2,11 @@ NAME	=	minishell
 
 LIBFT	=	./libft/libft.a
 
-CFLAGS	=	 -I ${HEADER} -Wall -Werror -Wextra
+CFLAGS	=	 -I ${HEADER}
+
+HEADER	=	minishell.h
+
+#  -Wall -Werror -Wextra
 
 SRCS	=	parser/main.c run_commands/handler_pipe.c build_in/build_in.c
 

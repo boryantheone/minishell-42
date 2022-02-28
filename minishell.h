@@ -32,7 +32,7 @@ int	ft_exec_cmd(t_list *elem, t_var *var);
 char	*ft_get_var_or_val_envp(char *str, int or);
 int	ft_cd_change_pwd(char *new_pwd, char *prev_pwd, t_envp **env);
 int	ft_cd_change_oldpwd(t_envp **env, char *prev_pwd);
-
+void ft_printlist_envp(t_envp *env);
 
 //build_in
 int	ft_echo(t_list *elem);
@@ -41,7 +41,7 @@ int	ft_pwd(t_list *elem);
 int	ft_export(void);
 int	ft_unset(void);
 int	ft_env(t_list *elem, t_var *var);
-int	ft_exit(void);
+int	ft_exit(t_list *elem);
 
 
 #endif 

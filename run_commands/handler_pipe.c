@@ -18,7 +18,7 @@ int	ft_exec_buildin(t_list *elem, t_var *var)
 	else if (!ft_strncmp(elem->cmd, "env", 3))
 		return(ft_env(elem, var));
 	else if (!ft_strncmp(elem->cmd, "exit", 4))
-		return(ft_exit());
+		return(ft_exit(elem));
 	return (-1);
 }
 

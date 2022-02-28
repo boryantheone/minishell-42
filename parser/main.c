@@ -157,7 +157,7 @@ void	ft_lstadd_back_envp(t_envp **lst, t_envp *new)
 	tmp -> next = new;
 }
 
-int	ft_make_env_list(char **env, t_var *var)
+int	ft_make_env_list(char **env, t_var  *var)
 {
 	int	i;
 
@@ -167,6 +167,16 @@ int	ft_make_env_list(char **env, t_var *var)
 	while (env[++i])
 		ft_lstadd_back_envp(&var->envp, ft_lstnew_env(env[i]));
 	return (EXIT_SUCCESS);
+}
+
+void ft_printlist_envp(t_envp *elem)
+{
+	while(elem->next)
+	{
+		printf("%s = %s\n", elem->var, elem->val);
+		elem = elem->next;
+	}
+	printf("%s = %s\n", elem->var, elem->val);
 }
 
 // void ft_printlist_envp(t_var *var)
@@ -187,19 +197,16 @@ int	main(int argc, char **argv, char **env)
 	t_list	*elem2;
 	t_list	*elem3;
 	
-	(void)argc;
-	(void)argv;
-	
 	var = (t_var *)malloc(sizeof(t_var));
-	//var->envp = env;
+	var->envp = NULL;
 	ft_make_env_list(env, var);
 	elem = ft_lstnew();
 	elem = NULL;
 	ft_lstadd_back(&elem, ft_lstnew());
 	elem->cmd = "cd";
-	elem->cmds = malloc(sizeof(char **) * 2);
-	elem->cmds[0] = "cd";   
-	elem->cmds[1] = "/Users/boryantheone/Desktop/";   
+	elem->cmds = malloc(sizeof(char **) * 3);
+	elem->cmds[0] = "cd";
+	elem->cmds[1] = "/Users/jcollin/Desktop/alo";
 	elem->path = "/usr/bin/cd";
 	elem->fd_in = -1;
 	elem->fd_out = -1;
@@ -224,16 +231,15 @@ int	main(int argc, char **argv, char **env)
 	// elem->fd_in = -1;
 	// elem->fd_out = -1;
 	// elem->have_pipe = 0;
-	ft_lstadd_back(&elem, ft_lstnew());
-	elem2 = elem->next;
-	elem2->cmd = "env";
-	elem2->cmds = malloc(sizeof(char **) * 3);
-	elem2->cmds[0] = "env";
-//	elem2->cmds[1] = "-l";
-	elem2->path = "/usr/bin/env";
-	elem2->fd_in = -1;
-	elem2->fd_out = -1;
-	elem2->have_pipe = 0;
+	// ft_lstadd_back(&elem, ft_lstnew());
+	// elem2 = elem->next;
+	// elem2->cmd = "env";
+	// elem2->cmds = malloc(sizeof(char **) * 3);
+	// elem2->cmds[0] = "env";
+	// elem2->path = "/usr/bin/env";
+	// elem2->fd_in = -1;
+	// elem2->fd_out = -1;
+	// elem2->have_pipe = 0;
 	// ft_lstadd_back(&elem, ft_lstnew());
 	// elem3 = elem2->next;
 	// elem3->cmd = "cat";
@@ -244,18 +250,19 @@ int	main(int argc, char **argv, char **env)
 	// elem3->fd_in = -1;
 	// elem3->fd_out = -1;
 	// elem3->have_pipe = 0;
-	var->envp_for_execve = env;
-	ft_printlist(elem);
+	//var->envp_for_execve = env;
+	//ft_printlist(elem);
+	
 	while (1)
 	{
-		str = readline("Myshell $ ");
+		str = readline("minishelchik-1.0$ ");
 		if (!str)
 			add_history(str);
-		ft_preparser(str);
-		ft_parser(str, env);
-		//ft_exec_cmd(elem, var);
-		ft_exec_pipes(var, elem);
-		free(str);
+		//ft_preparser(str);
+		//ft_parser(str, env);
+		ft_exec_cmd(elem, var);
+		// ft_exec_pipes(var, elem);
+		//free(str);
 		//rl_on_new_line();
 	}
 	return (0);
