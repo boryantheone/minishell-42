@@ -33,6 +33,8 @@ char	*ft_get_var_or_val_envp(char *str, int or);
 int	ft_cd_change_pwd(char *new_pwd, char *prev_pwd, t_envp **env);
 int	ft_cd_change_oldpwd(t_envp **env, char *prev_pwd);
 void ft_printlist_envp(t_envp *env);
+void	ft_lstadd_back_envp(t_envp **lst, t_envp *new);
+t_envp	*ft_lstnew_env(char *str);
 
 //build_in
 int	ft_echo(t_list *elem);
