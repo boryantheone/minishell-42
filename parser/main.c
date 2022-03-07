@@ -152,8 +152,20 @@ void	ft_lstadd_back_envp(t_envp **lst, t_envp *new)
 		return ;
 	}
 	tmp = *lst;
-	while (tmp -> next != NULL)
-		tmp = tmp -> next;
+	while (tmp->next != NULL)
+	{
+		if (!(ft_strcmp(tmp->var, new->var)))
+		{
+			tmp->val =  new->val;
+			return ;
+		}
+		tmp = tmp->next;
+	}
+	if (!(ft_strcmp(tmp->var, new->var)))
+	{
+		tmp->val =  new->val;
+		return ;
+	}
 	tmp -> next = new;
 }
 
@@ -173,10 +185,13 @@ void ft_printlist_envp(t_envp *elem)
 {
 	while(elem->next)
 	{
-		printf("%s = %s\n", elem->var, elem->val);
+		if (elem->val && elem->var)
+			printf("%s=%s\n", elem->var, elem->val);
+		else
+			printf("%s=%s\n", elem->var, elem->val);
 		elem = elem->next;
 	}
-	printf("%s = %s\n", elem->var, elem->val);
+	printf("%s=%s\n", elem->var, elem->val);
 }
 
 // void ft_printlist_envp(t_var *var)
@@ -199,15 +214,20 @@ int	main(int argc, char **argv, char **env)
 	
 	var = (t_var *)malloc(sizeof(t_var));
 	var->envp = NULL;
+	var->export = NULL;
 	ft_make_env_list(env, var);
+	var->export = (t_envp *)malloc(sizeof(t_envp *));
+	var->export = var->envp;
 	elem = ft_lstnew();
 	elem = NULL;
 	ft_lstadd_back(&elem, ft_lstnew());
-	elem->cmd = "cd";
-	elem->cmds = malloc(sizeof(char **) * 3);
-	elem->cmds[0] = "cd";
-	elem->cmds[1] = "/Users/jcollin/Desktop/alo";
-	elem->path = "/usr/bin/cd";
+	elem->cmd = "unset";
+	elem->cmds = malloc(sizeof(char **) * 5);
+	elem->cmds[0] = "unset";
+	elem->cmds[1] = "SHLVL";
+	//elem->cmds[2] = "nat";
+	elem->cmds[2] = NULL;
+	elem->path = "/usr/bin/export";
 	elem->fd_in = -1;
 	elem->fd_out = -1;
 	// elem->cmd = "env";
@@ -251,8 +271,7 @@ int	main(int argc, char **argv, char **env)
 	// elem3->fd_out = -1;
 	// elem3->have_pipe = 0;
 	//var->envp_for_execve = env;
-	//ft_printlist(elem);
-	
+	// ft_printlist(elem);
 	while (1)
 	{
 		str = readline("minishelchik-1.0$ ");
@@ -261,7 +280,7 @@ int	main(int argc, char **argv, char **env)
 		//ft_preparser(str);
 		//ft_parser(str, env);
 		ft_exec_cmd(elem, var);
-		// ft_exec_pipes(var, elem);
+		//ft_exec_pipes(var, elem);
 		//free(str);
 		//rl_on_new_line();
 	}

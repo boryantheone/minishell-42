@@ -1,6 +1,4 @@
 #include "../minishell.h"
-char	*ft_parsing_path(char *cmd, char **envp)
-{}
 
 int	ft_exec_buildin(t_list *elem, t_var *var)
 {
@@ -12,9 +10,9 @@ int	ft_exec_buildin(t_list *elem, t_var *var)
 	else if (!ft_strncmp(elem->cmd, "echo", 4))
 		return(ft_echo(elem));
 	else if (!ft_strncmp(elem->cmd, "export", 6))
-		return(ft_export());
+		return(ft_export(elem, var->envp));
 	else if (!ft_strncmp(elem->cmd, "unset", 5))
-		return(ft_unset());
+		return(ft_unset(&var->envp, &elem));
 	else if (!ft_strncmp(elem->cmd, "env", 3))
 		return(ft_env(elem, var));
 	else if (!ft_strncmp(elem->cmd, "exit", 4))
