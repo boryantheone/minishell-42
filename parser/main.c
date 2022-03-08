@@ -225,8 +225,8 @@ int	main(int argc, char **argv, char **env)
 	elem->cmds = malloc(sizeof(char **) * 5);
 	elem->cmds[0] = "unset";
 	elem->cmds[1] = "SHLVL";
-	//elem->cmds[2] = "nat";
-	elem->cmds[2] = NULL;
+	elem->cmds[2] = "989";
+	elem->cmds[3] = NULL;
 	elem->path = "/usr/bin/export";
 	elem->fd_in = -1;
 	elem->fd_out = -1;

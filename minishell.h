@@ -37,13 +37,14 @@ void ft_printlist_envp(t_envp *env);
 void	ft_lstadd_back_envp(t_envp **lst, t_envp *new);
 t_envp	*ft_lstnew_env(char *str);
 int	ft_strcmp(const char *s1, const char *s2);
+void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int index);
 
 //build_in
 int	ft_echo(t_list *elem);
 int	ft_cd(t_list *elem, t_var *var);
 int	ft_pwd(t_list *elem);
 int ft_export(t_list *elem, t_var *var);
-int ft_unset(t_envp **list_export, t_envp **list_env, t_list *elem);
+int ft_unset(t_var *var, t_list *elem);
 int	ft_env(t_list *elem, t_var *var);
 int	ft_exit(t_list *elem);
 

@@ -189,7 +189,7 @@ static void ft_print_sorted_envp_list(t_envp *export_list)
 	tmp = ft_get_min_value(export_list);
 	while (tmp != NULL)
 	{
-		if (tmp->val != NULL)
+		if (tmp->var != NULL && tmp->val != NULL)
 			printf("declare -x %s=\"%s\"\n", tmp->var, tmp->val);
 		else
 			printf("declare -x %s\n", tmp->var);
@@ -230,17 +230,22 @@ int ft_export(t_list *elem, t_var *var)
 	return (0);
 }
 
-void ft_lstdelone_envp(t_envp *begin, t_list *elem)
+void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int	index)
 {
-	t_envp *tmp;
-	t_envp *del;
+	t_envp	*tmp;
+	t_envp	*begin;
+	t_envp	*del;
 	int		i;
 
+	i = 1;
+	if (j == 1)
+		begin = var->envp;
+	else
+		begin = var->export;
 	tmp = begin;
-	while (tmp)
+	while (tmp != NULL)
 	{
-		i = 0;
-		if (ft_strcmp(tmp->var, elem->cmds[i]) == 0)
+		if (ft_strcmp(tmp->var, elem->cmds[index]) == 0)
 		{
 			if (!tmp)
 				return;
@@ -265,34 +270,28 @@ void ft_lstdelone_envp(t_envp *begin, t_list *elem)
 	}
 }
 
-int ft_unset(t_envp **list_export, t_envp **list_env, t_list *elem)
+int ft_unset(t_var *var, t_list *elem)
 {
 	t_envp *tmp;
 	int i;
 
 	i = 1;
-	if (*list_export)
-		tmp = *list_export;
-	else
-		tmp = *list_env;
-	ft_printlist_envp(tmp);
 	while (elem->cmds[i] != NULL)
 	{
 		if (ft_isalpha(elem->cmds[i]))
 		{
-			ft_lstdelone_envp(tmp, elem);
-			ft_lstdelone_envp(tmp, elem);
+			ft_lstdelone_envp(var, elem, 0, i);
+			ft_lstdelone_envp(var, elem, 1, i);
 		}
 		else
 		{
 			ft_putstr_fd("minishelchik: bash: `", STDERR_FILENO);
-			ft_putstr_fd(elem->cmds[1], STDERR_FILENO);
+			ft_putstr_fd(elem->cmds[i], STDERR_FILENO);
 			ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 		}
-		printf("command a unset\n");
-		ft_printlist_envp(tmp);
-		return (0);
+		i++;
 	}
+	return (EXIT_SUCCESS);
 }
 
 int ft_env(t_list *elem, t_var *var)
