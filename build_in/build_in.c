@@ -224,9 +224,6 @@ int ft_export(t_list *elem, t_var *var)
 			i++;
 		}
 	}
-	// ft_printlist_envp(envp);
-	// ft_print_sorted_envp_list(export_list);
-	// printf("commanda export\n");
 	return (0);
 }
 
