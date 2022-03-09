@@ -48,5 +48,10 @@ int ft_unset(t_var *var, t_list *elem);
 int	ft_env(t_list *elem, t_var *var);
 int	ft_exit(t_list *elem);
 
+//preparser
+int	ft_preparser(char *line);
+int	ft_skip_space(char *line);
+//parser
+void    ft_parser(char *str, t_list *arguments);
 
 #endif 
