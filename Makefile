@@ -1,14 +1,16 @@
 NAME	=	minishell
 
-HEADER	=  minishell.h 
-
 LIBFT	=	./libft/libft.a
 
 CFLAGS	=	 -I ${HEADER}
 
-# -Wall -Werror -Wextra
+HEADER	=	minishell.h
 
-SRCS	=	parser/main.c parser/preparser.c run_commands/handler_pipe.c build_in/build_in.c
+#  -Wall -Werror -Wextra
+
+
+SRCS	=	parser/main.c parser/preparser.c parser/parser.c\
+ 			run_commands/handler_pipe.c build_in/build_in.c
 
 OBJS	=	${SRCS:.c=.o}
 

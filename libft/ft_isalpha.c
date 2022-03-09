@@ -3,17 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   ft_isalpha.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:  <>                                        +#+  +:+       +#+        */
+/*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 10:23:13 by                   #+#    #+#             */
-/*   Updated: 2021/10/12 10:23:13 by                  ###   ########.fr       */
+/*   Updated: 2022/03/09 09:40:40 by dronel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "libft.h"
 
-int	ft_isalpha(int t)
+
+int	ft_isalpha(char *str)
 {
-	if ((t >= 65 && t <= 90) || (t >= 97 && t <= 122))
-		return (1);
-	return (0);
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if ((str[i] >= 65 && str[i] <= 90) || (str[i] >= 97 && str[i] <= 122) || str[i] == '_')
+			i++;
+		else
+			return (0);
+	}
+	return (1);
 }

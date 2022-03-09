@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/14 13:52:16 by                   #+#    #+#             */
-/*   Updated: 2022/02/03 14:50:34 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/03/09 09:40:40 by dronel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ t_list	*ft_lstnew(void)
 		return (NULL);
 	node -> cmd = NULL;
 	node -> path = NULL;
-	node -> cmds = NULL;
 	node -> fd_in = -1;
 	node -> fd_out = -1;
 	node -> have_pipe = -1;

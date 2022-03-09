@@ -2,20 +2,21 @@
 
 int	ft_exec_buildin(t_list *elem, t_var *var)
 {
-	if (!ft_strncmp(elem->cmd, "pwd", 50000))
-		return(ft_pwd());
-	else if (!ft_strncmp(elem->cmd, "cd", 50000))
-		return(ft_cd());
-	else if (!ft_strncmp(elem->cmd, "echo", 50000))
-		return(ft_echo());
-	else if (!ft_strncmp(elem->cmd, "export", 50000))
-		return(ft_export());
-	else if (!ft_strncmp(elem->cmd, "unset", 50000))
-		return(ft_unset());
-	else if (!ft_strncmp(elem->cmd, "env", 50000))
-		return(ft_env());
-	else if (!ft_strncmp(elem->cmd, "exit", 50000))
-		return(ft_exit());
+
+	if (!ft_strncmp(elem->cmd, "pwd", 3))
+		return(ft_pwd(elem));
+	else if (!ft_strncmp(elem->cmd, "cd", 2))
+		return(ft_cd(elem, var));
+	else if (!ft_strncmp(elem->cmd, "echo", 4))
+		return(ft_echo(elem));
+	else if (!ft_strncmp(elem->cmd, "export", 6))
+		return(ft_export(elem, var->envp));
+	else if (!ft_strncmp(elem->cmd, "unset", 5))
+		return(ft_unset(var, elem));
+	else if (!ft_strncmp(elem->cmd, "env", 3))
+		return(ft_env(elem, var));
+	else if (!ft_strncmp(elem->cmd, "exit", 4))
+		return(ft_exit(elem));
 	return (-1);
 }
 
@@ -24,21 +25,19 @@ int	ft_exec_cmd(t_list *elem, t_var *var)
 	int		i;
 	int		result;
 	pid_t	pid;
-	char	**cmd;
 
 	i = 0;
 	if (elem->fd_in != -1)
 		dup2(elem->fd_in, STDIN_FILENO);
 	if (elem->fd_out != -1)
 		dup2(elem->fd_out, STDOUT_FILENO);
-	cmd = ft_split(elem->cmds, ' ');
 	if ((result = ft_exec_buildin(elem, var)) >= 0)
 		return (result);
 	else
 	{ 
 		if ((pid = fork()) == 0)
 		{
-			if ((execve(elem->path, cmd, var->envp)) == -1)
+			if ((execve(elem->path, elem->cmds, var->envp_for_execve)) == -1)
 			{
 				perror("Error: ");
 				exit(0);
@@ -52,14 +51,11 @@ int	ft_exec_cmd(t_list *elem, t_var *var)
 
 void	execve_for_pipe(t_list *elem,t_var *var)
 {
-	char **cmds;
-
-	cmds = ft_split(elem->cmds, ' ');
 	if ((ft_exec_buildin(elem, var)) >= 0)
 		exit(1);
 	else
-		execve(elem->path, cmds, var->envp);
-	exit(1);
+		execve(elem->path, elem->cmds, var->envp_for_execve);
+	exit(EXIT_SUCCESS);
 }
 
 void	ft_launch_proc(t_var *var, t_list *elem)
@@ -93,7 +89,6 @@ int ft_exec_pipes(t_var *var, t_list *elem)
 	t_list	*tmp;
 	int		fd_close;
 
-
 	i = 0;
 	tmp = elem;
 	if (tmp->fd_in != -1)
@@ -108,5 +103,6 @@ int ft_exec_pipes(t_var *var, t_list *elem)
 	execve_for_pipe(tmp, var);
 	write(1, "3333", 4);
 	return (1);
+	//exit(EXIT_SUCCESS);
 }
 

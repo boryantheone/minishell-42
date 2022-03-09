@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_strchr.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By:  <>                                        +#+  +:+       +#+        */
+/*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 10:24:00 by                   #+#    #+#             */
-/*   Updated: 2021/10/12 10:24:00 by                  ###   ########.fr       */
+/*   Updated: 2022/03/09 09:40:40 by dronel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #include "libft.h"
 
-char	*ft_strchr(const char *s, int c)
+int	ft_strchr(char *s, char c)
 {
 	char	*str;
 	char	g;
@@ -21,11 +21,11 @@ char	*ft_strchr(const char *s, int c)
 	while (*str)
 	{
 		if (*str == g)
-			return (str);
+			return (1);
 		else
 			str++;
 	}
 	if (*str == g)
-		return (str);
-	return (NULL);
+		return (1);
+	return (0);
 }

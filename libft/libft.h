@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 13:44:15 by dronel            #+#    #+#             */
-/*   Updated: 2022/02/03 14:50:47 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/03/09 09:40:40 by dronel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ typedef struct s_list
 {
 	char			*cmd;
 	char			*path;
-	char			*cmds;
+	char			**cmds;
 	int				fd_in;
 	int				fd_out;
 	int 			have_pipe;
@@ -29,11 +29,11 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-int				ft_isalpha(int t);
-int				ft_isdigit(int t);
+int				ft_isalpha(char *str);
+int				ft_isdigit(char *str);
 int				ft_isalnum(int t);
 int				ft_isascii(int t);
-int				ft_isprint(int t);
+int				ft_isprint(char *str);
 size_t			ft_strlen(char *str);
 void			*ft_memset(void *b, int c, size_t len);
 void			ft_bzero(void *s, size_t n);
@@ -43,7 +43,7 @@ size_t			ft_strlcpy(char *dest, const char *src, size_t dstsize);
 size_t			ft_strlcat(char *dst, const char *src, size_t dstsize);
 int				ft_toupper(int t);
 int				ft_tolower(int t);
-char			*ft_strchr(const char *s, int c);
+int			ft_strchr(char *s, char c);
 char			*ft_strrchr(const char *s, int c);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
 void			*ft_memchr(const void *s, int c, size_t n);
@@ -55,7 +55,7 @@ void			*ft_calloc(size_t count, size_t size);
 char			*ft_strdup(const char *s1);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
 char			*ft_strjoin(char const *s1, char const *s2);
-char			*ft_strtrim(char const *s1, char const *set);
+//char			*ft_strtrim(char const *s1, char const *set);
 char			**ft_split(char const *s, char c);
 char			*ft_itoa(int n);
 char			*ft_strmapi(char const *s, char (*f)(unsigned int, char));
