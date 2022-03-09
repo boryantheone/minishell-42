@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 13:44:15 by dronel            #+#    #+#             */
-/*   Updated: 2022/03/09 09:40:40 by dronel           ###   ########.fr       */
+/*   Updated: 2022/03/09 11:50:16 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,6 @@ typedef struct s_list
 	char			**cmds;
 	int				fd_in;
 	int				fd_out;
-	int 			have_pipe;
-	int				fd_pipe[2];
 	int				fd_pipe[2];
 	int				have_pipe;
 	struct s_list	*next;

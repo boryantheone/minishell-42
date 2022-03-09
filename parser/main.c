@@ -205,7 +205,7 @@ int	main(int argc, char **argv, char **env)
 		{
 			write (1, ")\n", 2);
 			ft_parser(str, elem);
-			//		ft_exec_pipes(var, elem);
+			ft_execute(var, elem);
 		}
 		//ft_exec_cmd(elem, var);
 		//ft_exec_pipes(var, elem);
