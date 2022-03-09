@@ -1,9 +1,10 @@
+
 #include "../minishell.h"
 
-int	ft_skip_space(char *line)
+int		ft_skip_space(char *line)
 {
 	int		i;
-
+	
 	i = 0;
 	while (line[i] == ' ')
 		i++;
@@ -42,10 +43,11 @@ int	ft_preparser_redirect(char *line, int *i)
 	return (0);
 }
 
-int	ft_preparser(char *line)//124 = '|'
+//124 = '|'
+int	ft_preparser(char *line)
 {
 	int	i;
-
+	
 	i = ft_skip_space(line);
 	if (line[i--] == 124)
 	{

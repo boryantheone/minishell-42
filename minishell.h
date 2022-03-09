@@ -39,6 +39,12 @@ t_envp	*ft_lstnew_env(char *str);
 int	ft_strcmp(const char *s1, const char *s2);
 void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int index);
 
+//main/main
+void ft_error(void);
+//main/preparser
+int ft_preparser(char *line);
+
+
 //build_in
 int	ft_echo(t_list *elem);
 int	ft_cd(t_list *elem, t_var *var);

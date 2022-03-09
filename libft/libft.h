@@ -22,6 +22,8 @@ typedef struct s_list
 	char			**cmds;
 	int				fd_in;
 	int				fd_out;
+	int 			have_pipe;
+	int				fd_pipe[2];
 	int				fd_pipe[2];
 	int				have_pipe;
 	struct s_list	*next;

@@ -102,6 +102,7 @@ int	ft_make_env_list(char **env, t_var  *var)
 	while (env[++i])
 		ft_lstadd_back_envp(&var->envp, ft_lstnew_env(env[i]));
 	return (EXIT_SUCCESS);
+
 }
 
 void ft_printlist_envp(t_envp *elem)
