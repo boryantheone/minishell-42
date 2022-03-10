@@ -11,12 +11,32 @@
 /* ************************************************************************** */
 #include "libft.h"
 
+//size_t	ft_strlen(char *str)
+//{
+//	size_t	i;
+//
+//	i = 0;
+//	while (str[i] != '\0')
+//		i++;
+//	return (i);
+//}
+//size_t		ft_strlen(char *str)
+//{
+//	char	*str_copy = str;
+//
+//	while (str && *str)
+//		str++;
+//	return ((size_t)(str - str_copy));
+//}
 size_t	ft_strlen(char *str)
 {
-	size_t	i;
+	size_t	size;
 
-	i = 0;
-	while (str[i])
-		i++;
-	return (i);
+	size = 0;
+	while (*str)
+	{
+		size++;
+		str++;
+	}
+	return (size);
 }

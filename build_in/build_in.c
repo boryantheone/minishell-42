@@ -61,10 +61,10 @@ int ft_cd_change_oldpwd(t_envp **env, char *prev_pwd)
 	return (EXIT_FAILURE);
 }
 
-int ft_cd_change_pwd(char *new_pwd, char *prev_pwd, t_envp **env)
+int	ft_cd_change_pwd(char *new_pwd, char *prev_pwd, t_envp **env)
 {
-	t_envp *tmp;
-	char pwd[MAXDIR];
+	t_envp	*tmp;
+	char	pwd[MAXDIR];
 
 	tmp = *env;
 	while (tmp)
