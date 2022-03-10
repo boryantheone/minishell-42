@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-static char	**ft_malloc_free(char **dst)
+char	**ft_malloc_free(char **dst)
 {
 	size_t	i;
 

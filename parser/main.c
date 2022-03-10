@@ -8,15 +8,54 @@ void ft_error(void)
 	printf("error\n");
 }
 
+//void ft_printlist(t_list *elem)
+//{
+//	while(elem != NULL)
+//	{
+//		printf("cmd %s | cmds %s | path %s\n", elem->cmd, elem->cmds[0],
+//			   elem->path);
+//		elem = elem->next;
+//	}
+//	write(1, "!\n", 2);
+//	printf("cmd %s | cmds %s | path %s\n", elem->cmd, elem->cmds[0],
+//		   elem->path);
+//}
+
 void ft_printlist(t_list *elem)
 {
-	while(elem->next)
+	t_list *tmp;
+	
+	tmp = elem;
+//	write(2, "++++++++++++++++++++++++\n", 26);
+	if(elem)
 	{
-		printf("cmd %s\ncmds %s\npath %s\n", elem->cmd, elem->cmds[1],
-			   elem->path);
-		elem = elem->next;
+		while (tmp != NULL)
+		{
+//			write(2, "1111111111111111111\n", 26);
+			if(*(tmp->cmds) && ft_str_double_len(tmp->cmds) != 0)
+			{
+//				write(2, "222222222222222222222\n", 26);
+				printf("%s ", *(tmp->cmds));
+			}
+			else
+			{
+				printf("command not found\n");
+				return;
+			}
+			tmp = tmp->next;
+		}
+		//write(1, "!\n", 2);
+//		if(tmp->cmds)
+//			printf("cmds ?? %s\n", tmp->cmds[0]);
+//		else
+//		{
+//			printf("command not found\n");
+//			return ;
+//		}
 	}
-	printf("cmd %s\ncmds %s\npath %s\n", elem->cmd, elem->cmds[1], elem->path);
+	else
+		printf("elem not found\n");
+	printf("\n----------------------\n");
 }
 
 char	*ft_get_var_or_val_envp(char *str, int or)
@@ -86,7 +125,7 @@ void	ft_lstadd_back_envp(t_envp **lst, t_envp *new)
 	}
 	if (!(ft_strcmp(tmp->var, new->var)))
 	{
-		tmp->val =  new->val;
+		tmp->val = new->val;
 		return ;
 	}
 	tmp -> next = new;
@@ -106,7 +145,7 @@ int	ft_make_env_list(char **env, t_var  *var)
 
 void ft_printlist_envp(t_envp *elem)
 {
-	while(elem->next)
+	while(elem)
 	{
 		if (elem->val && elem->var)
 			printf("%s=%s\n", elem->var, elem->val);
@@ -141,18 +180,18 @@ int	main(int argc, char **argv, char **env)
 	ft_make_env_list(env, var);
 	var->export = (t_envp *)malloc(sizeof(t_envp *));
 	var->export = var->envp;
-	elem = ft_lstnew();
+	//elem = ft_lstnew(NULL);
 	elem = NULL;
-	ft_lstadd_back(&elem, ft_lstnew());
-	elem->cmd = "unset";
-	elem->cmds = malloc(sizeof(char **) * 5);
-	elem->cmds[0] = "unset";
-	elem->cmds[1] = "SHLVL";
-	elem->cmds[2] = "989";
-	elem->cmds[3] = NULL;
-	elem->path = "/usr/bin/export";
-	elem->fd_in = -1;
-	elem->fd_out = -1;
+//	ft_lstadd_back(&elem, ft_lstnew());
+//	elem->cmd = "unset";
+//	elem->cmds = malloc(sizeof(char **) * 5);
+//	elem->cmds[0] = "unset";
+//	elem->cmds[1] = "SHLVL";
+//	elem->cmds[2] = "989";
+//	elem->cmds[3] = NULL;
+//	elem->path = "/usr/bin/export";
+//	elem->fd_in = -1;
+//	elem->fd_out = -1;
 	// elem->cmd = "env";
 	// elem->cmds = malloc(sizeof(char **) * 2);
 	// elem->cmds[0] = "env";   
@@ -194,16 +233,17 @@ int	main(int argc, char **argv, char **env)
 	// elem3->fd_out = -1;
 	// elem3->have_pipe = 0;
 	//var->envp_for_execve = env;
-	// ft_printlist(elem);
+	//ft_printlist(elem);
 	while (1)
 	{
 		str = readline("minishelchik-1.0$ ");
 		if (ft_strncmp(str, "\0", 1) != 0)
 			add_history (str);
+		//printf("a %s\n", str);
 		if (!ft_preparser(str))
 		{
-			write (1, ")\n", 2);
-			ft_parser(str, elem);
+			ft_parser(str, elem, var);
+			//ft_printlist(elem);
 			//		ft_exec_pipes(var, elem);
 		}
 		//ft_exec_cmd(elem, var);
@@ -211,5 +251,6 @@ int	main(int argc, char **argv, char **env)
 		//free(str);
 		//rl_on_new_line();
 	}
+	
 	return (0);
 }

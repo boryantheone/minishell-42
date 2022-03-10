@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-t_list	*ft_lstnew(void)
+t_list	*ft_lstnew(char **arg)
 {
 	t_list	*node;
 
@@ -20,6 +20,7 @@ t_list	*ft_lstnew(void)
 	if (!node)
 		return (NULL);
 	node -> cmd = NULL;
+	node -> cmds = arg;
 	node -> path = NULL;
 	node -> fd_in = -1;
 	node -> fd_out = -1;

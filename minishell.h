@@ -14,8 +14,7 @@ typedef struct s_envp
 	char *var;
 	char *val;
 	struct s_envp *next;
-} t_envp;
-
+}	t_envp;
 
 //struct for variables
 typedef struct s_var
@@ -27,6 +26,7 @@ typedef struct s_var
 	int		size_of_list;
 	int		state; //состояние программы(сигнал ошибки мб или типа того)
 } t_var;
+
 
 int ft_exec_pipes(t_var *var, t_list *elem);
 int	ft_exec_cmd(t_list *elem, t_var *var);
@@ -52,6 +52,10 @@ int	ft_exit(t_list *elem);
 int	ft_preparser(char *line);
 int	ft_skip_space(char *line);
 //parser
-void    ft_parser(char *str, t_list *arguments);
+void	*ft_parser(char *str, t_list *elem);
+int	ft_str_double_len(char **cmds);
+void ft_printlist(t_list *elem);
+//parser_quotes
+char *ft_parse_single_quote(char **str);
 
 #endif 
