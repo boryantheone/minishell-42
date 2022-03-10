@@ -141,6 +141,7 @@ int	ft_make_env_list(char **env, t_var  *var)
 	while (env[++i])
 		ft_lstadd_back_envp(&var->envp, ft_lstnew_env(env[i]));
 	return (EXIT_SUCCESS);
+
 }
 
 void ft_printlist_envp(t_envp *elem)
@@ -242,9 +243,10 @@ int	main(int argc, char **argv, char **env)
 		//printf("a %s\n", str);
 		if (!ft_preparser(str))
 		{
-			ft_parser(str, elem, var);
+			ft_parser(str, elem);
 			//ft_printlist(elem);
 			//		ft_exec_pipes(var, elem);
+//			ft_execute(var, elem);
 		}
 		//ft_exec_cmd(elem, var);
 		//ft_exec_pipes(var, elem);
