@@ -122,10 +122,14 @@ char	*ft_parse_arguments(char **str, t_list *arguments)
 	{
 		if (**str == ' ')
 			break ;
-		if (**str == '\'')
-			temp = ft_parse_single_quote(str);
-		else if (**str == '\"')
-			temp = ft_parse_double_quote(str);
+		// if (**str == '\'')
+		// 	temp = ft_parse_single_quote(str);
+		// else if (**str == '\"')
+		// 	temp = ft_parse_double_quote(str);
+		else if (**str == '|')
+			temp = ft_parse_pipe(str, arguments);
+  		else if (**str == '>' || **str == '<')
+   			temp = ft_parse_redirect(str, arguments);
 		else
 			temp = ft_single_parse(str);
 		if (temp)

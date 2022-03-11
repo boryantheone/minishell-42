@@ -9,7 +9,7 @@ HEADER	=	minishell.h
 #  -Wall -Werror -Wextra
 
 
-SRCS	=	parser/main.c parser/preparser.c parser/parser.c\
+SRCS	=	parser/main.c parser/preparser.c parser/parser.c parser/parser_quotes.c \
  			run_commands/handler_pipe.c build_in/build_in.c run_commands/execute.c
 
 OBJS	=	${SRCS:.c=.o}

@@ -46,11 +46,11 @@ char *ft_parse_double_quote(char **str)
 	
 	temp = ++(*str);
 	index = 0;
-	while (temp[index] && temp[index] != '\"')
-	{
-		temp = NULL;
-		if (**str == '$')
-			temp = parse_with_envp()
-		index++;
-	}
+	// while (temp[index] && temp[index] != '\"')
+	// {
+	// 	temp = NULL;
+	// 	if (**str == '$')
+	// 		temp = parse_with_envp()
+	// 	index++;
+	// }
 }
