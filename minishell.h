@@ -64,7 +64,14 @@ int	ft_skip_space(char *line);
 void	*ft_parser(char *str, t_list *elem);
 int	ft_str_double_len(char **cmds);
 void ft_printlist(t_list *elem);
+char	*ft_strcpy(char *dest, char *src);
+char	*ft_get_var_or_val_envp(char *str, int or);
+void	*ft_realloc(char *result, int size);
 //parser_quotes
 char *ft_parse_single_quote(char **str);
+char *ft_parse_double_quote(char **str);
+//make_envp
+char *ft_parse_with_envp(char **str);
+char *ft_get_env(char *key);
 
 #endif 
