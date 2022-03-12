@@ -81,7 +81,7 @@ char	*ft_single_parse(char **str)
 
 	index = 0;
 	result = NULL;
-	while (**str != ' ' && **str != '\0')
+	while (**str != ' ' && **str != '\0' && **str != '|')
 	{
 		i = 1;
 		result = ft_realloc(result, i + 1);
@@ -120,16 +120,16 @@ char	*ft_parse_arguments(char **str, t_list *arguments)
 	result = NULL;
 	while (**str)
 	{
-		if (**str == ' ')
+		if (**str == ' ' || **str == '|')
 			break ;
-		// if (**str == '\'')
-		// 	temp = ft_parse_single_quote(str);
-		// else if (**str == '\"')
-		// 	temp = ft_parse_double_quote(str);
-		else if (**str == '|')
-			temp = ft_parse_pipe(str, arguments);
-  		else if (**str == '>' || **str == '<')
-   			temp = ft_parse_redirect(str, arguments);
+		 if (**str == '\'')
+		 	temp = ft_parse_single_quote(str);
+		 else if (**str == '\"')
+		 	temp = ft_parse_double_quote(str);
+//		else if (**str == '|')
+//			temp = ft_parse_pipe(str, arguments);
+//  		else if (**str == '>' || **str == '<')
+//   			temp = ft_parse_redirect(str, arguments);
 		else
 			temp = ft_single_parse(str);
 		if (temp)
@@ -165,13 +165,23 @@ void	*ft_parser(char *str, t_list *elem)
 		if (*str == '|')
 		{
 			//r = ft_lstnew(arguments);
-			ft_lstadd_back(&elem, ft_lstnew(arguments));
+			ft_lstadd_back(&elem, ft_lstnew(arguments, 0, 0 ,0));
 			printf("have pipe\n");
 			arguments = NULL;
 			ft_printlist(elem);
 //			if (arguments != NULL)
 //				ft_malloc_free(arguments);
 			i = 0;
+			str++;
+		}
+		if (*str == '>')
+		{
+			//int fd_out = ft_forward_redirect();
+			str++;
+		}
+		if (*str == '<')
+		{
+			//int fd_in = ft_reverse_redisect();
 			str++;
 		}
 		if ((tmp = ft_parse_arguments(&str, elem)))
@@ -187,7 +197,7 @@ void	*ft_parser(char *str, t_list *elem)
 	if (*str == '\0')
 	{
 		//r = ft_lstnew(arguments);
-		ft_lstadd_back(&elem, ft_lstnew(arguments));
+		ft_lstadd_back(&elem, ft_lstnew(arguments,0,0,0));
 	}
 	ft_printlist(elem);
 	printf("end of parser\n");

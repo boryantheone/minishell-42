@@ -12,7 +12,7 @@
 
 #include "libft.h"
 
-t_list	*ft_lstnew(char **arg)
+t_list	*ft_lstnew(char **arg, int fd_read, int fd_write, int pipe)
 {
 	t_list	*node;
 
@@ -22,9 +22,9 @@ t_list	*ft_lstnew(char **arg)
 	node -> cmd = NULL;
 	node -> cmds = arg;
 	node -> path = NULL;
-	node -> fd_in = -1;
-	node -> fd_out = -1;
-	node -> have_pipe = -1;
+	node -> fd_in = fd_read;
+	node -> fd_out = fd_write;
+	node -> have_pipe = pipe;
 	//node -> fd_pipe = 0;
 	node -> next = NULL;
 	return (node);
