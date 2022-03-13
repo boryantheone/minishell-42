@@ -76,6 +76,7 @@ char	*ft_parse_pipe(char **str, t_list *arguments)
 char	*ft_single_parse(char **str)
 {
 	char	*result;
+	char	*temp;
 	int		i;
 	int		index;
 
@@ -83,9 +84,22 @@ char	*ft_single_parse(char **str)
 	result = NULL;
 	while (**str != ' ' && **str != '\0' && **str != '|')
 	{
-		i = 1;
+		temp = NULL;
+		if (**str == '$')
+		{
+			//write(1,"@\n",2);
+			temp = ft_parse_with_envp(str);
+			printf("$ temp %s\n", temp);
+		}
+		if (temp)
+			i = ft_strlen(temp);
+		else
+			i = 1;
 		result = ft_realloc(result, i + 1);
-		result[index++] = *(*str)++;
+		if (temp)
+			index += ft_add_in_result(result, temp, i, index);
+		else
+			result[index++] = *(*str)++;
 	}
 	if (result)
 		result[index] = '\0';
@@ -99,18 +113,14 @@ int	add_in_cmds(char **result, char *temp, int shift)
 {
 	int		length;
 
-	length = ft_strlen(temp);
-//	write(1, "add in cmds\n", 12);
-//	printf("shift %d\n", shift);
-//	printf("result %s\n", *result);
+	length = (int)ft_strlen(temp);
 	*result = ft_realloc(*result, length + 1);
 	ft_strcpy(*result + shift, temp);
-	//write(1, "add in cmds\n", 12);
 	free(temp);
 	return (length);
 }
 
-char	*ft_parse_arguments(char **str, t_list *arguments)
+char	*ft_parse_arguments(char **str)
 {
 	char	*temp;
 	char	*result;
@@ -122,14 +132,10 @@ char	*ft_parse_arguments(char **str, t_list *arguments)
 	{
 		if (**str == ' ' || **str == '|')
 			break ;
-		 if (**str == '\'')
-		 	temp = ft_parse_single_quote(str);
-		 else if (**str == '\"')
-		 	temp = ft_parse_double_quote(str);
-//		else if (**str == '|')
-//			temp = ft_parse_pipe(str, arguments);
-//  		else if (**str == '>' || **str == '<')
-//   			temp = ft_parse_redirect(str, arguments);
+		if (**str == '\'')
+			temp = ft_parse_single_quote(str);
+		else if (**str == '\"')
+			temp = ft_parse_double_quote(str);
 		else
 			temp = ft_single_parse(str);
 		if (temp)
@@ -139,55 +145,53 @@ char	*ft_parse_arguments(char **str, t_list *arguments)
 	if (result)
 		result[shift] = '\0';
 	return (result);
-//	arguments->cmd = result;
-//	printf("cmd: %s\n", arguments->cmd);
-//	if (**str == '-' && *(*str + 1) != '-')
 }
+
+void ft_
 
 void	*ft_parser(char *str, t_list *elem)
 {
 	char		**arguments;
-	t_list 		*r;
-	t_list		*begin;
 	char		*tmp;
 	int			i;
-	
+	int			fd_out;
+	int			fd_in;
+
 	i = 0;
+	fd_out = -1;
+	fd_in = -1;
 //	begin = NULL;
 	arguments = NULL;
-	str += ft_skip_space(str);
 	while (*str)
 	{
         // write (1, "z\n", 2);
-        //printf("a %s\n", str);
 		while (*str == ' ')
 			str++;
+		//printf("STR %s\n", str);
 		if (*str == '|')
 		{
-			//r = ft_lstnew(arguments);
-			ft_lstadd_back(&elem, ft_lstnew(arguments, 0, 0 ,0));
+			ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,1));
 			printf("have pipe\n");
 			arguments = NULL;
 			ft_printlist(elem);
-//			if (arguments != NULL)
-//				ft_malloc_free(arguments);
 			i = 0;
+			fd_in = -1;
+			fd_out = -1;
 			str++;
 		}
 		if (*str == '>')
 		{
-			//int fd_out = ft_forward_redirect();
-			str++;
+			fd_out = ft_forward_redirect(&str);
+//			write(1, ">\n", 2);
 		}
 		if (*str == '<')
 		{
-			//int fd_in = ft_reverse_redisect();
-			str++;
+			fd_in = ft_reverse_redirect(&str);
+//			write(1, "<\n", 2);
 		}
-		if ((tmp = ft_parse_arguments(&str, elem)))
+		if ((tmp = ft_parse_arguments(&str)))
 		{
 			//("TMP %s\n", tmp);
-
 			arguments = ft_double_realloc(arguments, 1);
 			arguments[i] = tmp;
 			printf("CMDS % d %s\n", i, arguments[i]);
@@ -196,10 +200,8 @@ void	*ft_parser(char *str, t_list *elem)
 	}
 	if (*str == '\0')
 	{
-		//r = ft_lstnew(arguments);
-		ft_lstadd_back(&elem, ft_lstnew(arguments,0,0,0));
+		ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,-1));
 	}
 	ft_printlist(elem);
 	printf("end of parser\n");
-
 }

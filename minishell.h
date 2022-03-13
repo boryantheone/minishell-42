@@ -3,6 +3,7 @@
 
 #include "libft/libft.h"
 #include <stdio.h>
+#include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
@@ -63,6 +64,7 @@ int	ft_preparser(char *line);
 int	ft_skip_space(char *line);
 //parser
 void	*ft_parser(char *str, t_list *elem);
+char	*ft_parse_arguments(char **str);
 int	ft_str_double_len(char **cmds);
 void ft_printlist(t_list *elem);
 char	*ft_strcpy(char *dest, char *src);
@@ -71,8 +73,12 @@ void	*ft_realloc(char *result, int size);
 //parser_quotes
 char *ft_parse_single_quote(char **str);
 char *ft_parse_double_quote(char **str);
+int		ft_add_in_result(char *result, char *temp, int i, int index);
 //make_envp
 char *ft_parse_with_envp(char **str);
 char *ft_get_env(char *key);
+//parser_reidrect
+int	ft_forward_redirect(char **str);
+int	ft_reverse_redirect(char **str);
 
 #endif 

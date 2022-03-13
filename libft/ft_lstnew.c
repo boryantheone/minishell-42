@@ -19,13 +19,12 @@ t_list	*ft_lstnew(char **arg, int fd_read, int fd_write, int pipe)
 	node = (t_list *)malloc(sizeof(t_list));
 	if (!node)
 		return (NULL);
-	node -> cmd = NULL;
+	node -> cmd = arg[0];
 	node -> cmds = arg;
 	node -> path = NULL;
 	node -> fd_in = fd_read;
 	node -> fd_out = fd_write;
 	node -> have_pipe = pipe;
-	//node -> fd_pipe = 0;
 	node -> next = NULL;
 	return (node);
 }
