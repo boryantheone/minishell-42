@@ -61,18 +61,6 @@ char	**ft_double_realloc(char **cmds, int size)
 	return (cmds);
 }
 
-char	*ft_parse_redirect(char **str, t_list *arguments)
-{
-	(void *)str;
-	(void *)arguments;
-}
-
-char	*ft_parse_pipe(char **str, t_list *arguments)
-{
-	(void *)str;
-	(void *)arguments;
-}
-
 char	*ft_single_parse(char **str)
 {
 	char	*result;
@@ -147,8 +135,6 @@ char	*ft_parse_arguments(char **str)
 	return (result);
 }
 
-void ft_
-
 void	*ft_parser(char *str, t_list *elem)
 {
 	char		**arguments;
@@ -156,10 +142,12 @@ void	*ft_parser(char *str, t_list *elem)
 	int			i;
 	int			fd_out;
 	int			fd_in;
+	int 		have_heredoc;
 
 	i = 0;
 	fd_out = -1;
 	fd_in = -1;
+	have_heredoc = 0;
 //	begin = NULL;
 	arguments = NULL;
 	while (*str)
@@ -170,13 +158,14 @@ void	*ft_parser(char *str, t_list *elem)
 		//printf("STR %s\n", str);
 		if (*str == '|')
 		{
-			ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,1));
+			ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,1, have_heredoc));
 			printf("have pipe\n");
 			arguments = NULL;
 			ft_printlist(elem);
 			i = 0;
 			fd_in = -1;
 			fd_out = -1;
+			have_heredoc = 0;
 			str++;
 		}
 		if (*str == '>')
@@ -186,7 +175,7 @@ void	*ft_parser(char *str, t_list *elem)
 		}
 		if (*str == '<')
 		{
-			fd_in = ft_reverse_redirect(&str);
+			fd_in = ft_reverse_redirect(&str, &have_heredoc);
 //			write(1, "<\n", 2);
 		}
 		if ((tmp = ft_parse_arguments(&str)))
@@ -200,7 +189,7 @@ void	*ft_parser(char *str, t_list *elem)
 	}
 	if (*str == '\0')
 	{
-		ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,-1));
+		ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,-1, have_heredoc));
 	}
 	ft_printlist(elem);
 	printf("end of parser\n");

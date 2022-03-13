@@ -23,6 +23,7 @@ typedef struct s_list
 	int				fd_in;
 	int				fd_out;
 	int				have_pipe;
+	int 			have_heredoc;
 	struct s_list	*next;
 }	t_list;
 
@@ -62,7 +63,8 @@ void			ft_putstr_fd(char *s, int fd);
 void			ft_putendl_fd(char *s, int fd);
 void			ft_putnbr_fd(int n, int fd);
 
-t_list			*ft_lstnew(char **arg, int fd_read, int fd_write, int pipe);
+t_list			*ft_lstnew(char **arg, int fd_read, int fd_write, int pipe, int
+have_heredoc);
 void			ft_lstadd_front(t_list **lst, t_list *new);
 int				ft_lstsize(t_list *lst);
 t_list			*ft_lstlast(t_list *lst);

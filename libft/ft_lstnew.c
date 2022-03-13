@@ -12,19 +12,29 @@
 
 #include "libft.h"
 
-t_list	*ft_lstnew(char **arg, int fd_read, int fd_write, int pipe)
+t_list	*ft_lstnew(char **arg, int fd_read, int fd_write, int pipe, int
+have_heredoc)
 {
 	t_list	*node;
 
 	node = (t_list *)malloc(sizeof(t_list));
 	if (!node)
 		return (NULL);
-	node -> cmd = arg[0];
-	node -> cmds = arg;
+	if (arg)
+	{
+		node -> cmd = arg[0];
+		node -> cmds = arg;
+	}
+	else
+	{
+		node->cmd = NULL;
+		node->cmds = NULL;
+	}
 	node -> path = NULL;
 	node -> fd_in = fd_read;
 	node -> fd_out = fd_write;
 	node -> have_pipe = pipe;
+	node -> have_heredoc = have_heredoc;
 	node -> next = NULL;
 	return (node);
 }
