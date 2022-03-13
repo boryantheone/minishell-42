@@ -17,6 +17,7 @@ typedef struct s_envp
 	struct s_envp *next;
 }	t_envp;
 
+
 //struct for variables
 typedef struct s_var
 {
@@ -48,6 +49,7 @@ int	ft_strcmp(const char *s1, const char *s2);
 void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int index);
 
 //execute 
+char	*ft_parsing_path(char *cmd, char **envp);
 void	ft_execute(t_var *var, t_list *elem);
 int ft_exec_pipes(t_var *var, t_list *elem);
 int	ft_exec_cmd(t_list *elem, t_var *var);

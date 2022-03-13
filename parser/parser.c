@@ -135,20 +135,6 @@ char	*ft_parse_arguments(char **str)
 	return (result);
 }
 
-//void	ft_pipe(t_list *elem, char **str, char **arg, int fd_in, int
-//fd_out, int pipe, int have_heredoc)
-//{
-//	ft_lstadd_back(&elem, ft_lstnew(arg, fd_in, fd_out,1, have_heredoc));
-//	printf("have pipe\n");
-//	arg = NULL;
-//	ft_printlist(elem);
-//	i = 0;
-//	fd_in = -1;
-//	fd_out = -1;
-//	have_heredoc = 0;
-//	str++;
-//}
-
 void	*ft_parser(char *str, t_list *elem)
 {
 	char		**arguments;
@@ -172,7 +158,7 @@ void	*ft_parser(char *str, t_list *elem)
 		//printf("STR %s\n", str);
 		if (*str == '|')
 		{
-			ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,1, have_heredoc));
+			ft_lstadd_back(&elem, ft_lstnew(arguments));
 			printf("have pipe\n");
 			arguments = NULL;
 			ft_printlist(elem);
@@ -203,7 +189,7 @@ void	*ft_parser(char *str, t_list *elem)
 	}
 	if (*str == '\0')
 	{
-		ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,-1, have_heredoc));
+		ft_lstadd_back(&elem, ft_lstnew(arguments));
 	}
 	ft_printlist(elem);
 	printf("end of parser\n");
