@@ -35,7 +35,8 @@ void ft_printlist(t_list *elem)
 			if(*(tmp->cmds) && ft_str_double_len(tmp->cmds) != 0)
 			{
 //				write(2, "222222222222222222222\n", 26);
-				printf("%s ", *(tmp->cmds));
+				printf("cmds %s,fd_out(write) %d, fd_in(read) %d |", \
+				*(tmp->cmds), tmp->fd_out, tmp->fd_in);
 			}
 			else
 			{
@@ -44,14 +45,6 @@ void ft_printlist(t_list *elem)
 			}
 			tmp = tmp->next;
 		}
-		//write(1, "!\n", 2);
-//		if(tmp->cmds)
-//			printf("cmds ?? %s\n", tmp->cmds[0]);
-//		else
-//		{
-//			printf("command not found\n");
-//			return ;
-//		}
 	}
 	else
 		printf("elem not found\n");
@@ -170,14 +163,14 @@ void ft_printlist_envp(t_envp *elem)
 int	main(int argc, char **argv, char **env)
 {
 	char	*str;
-	t_var	*var;
 	t_list	*elem;
 	t_list	*elem2;
 	t_list	*elem3;
-	
+
 	var = (t_var *)malloc(sizeof(t_var));
 	var->envp = NULL;
 	var->export = NULL;
+	var->state = 0;
 	ft_make_env_list(env, var);
 	var->export = (t_envp *)malloc(sizeof(t_envp *));
 	var->export = var->envp;

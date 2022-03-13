@@ -4,13 +4,13 @@ static char	*ft_strndup(char *src, int len)
 {
 	char	*result;
 	size_t	i;
-	size_t 	str_len;
-	
+	size_t	str_len;
+
 	i = 0;
 	str_len = ft_strlen(src);
 	if (len > str_len)
 		len = str_len;
-	if (!(result = (char*)malloc(sizeof(char) * (len + 1))))
+	if (!(result = (char *)malloc(sizeof(char) * (len + 1))))
 		return (NULL);
 	while (*src && len--)
 		result[i++] = *(src++);
@@ -18,12 +18,12 @@ static char	*ft_strndup(char *src, int len)
 	return (result);
 }
 
-char *ft_parse_single_quote(char **str)
+char	*ft_parse_single_quote(char **str)
 {
 	int		index;
 	char	*temp;
 	char	*result;
-	
+
 	temp = ++(*str);
 	index = 0;
 	while (temp[index] && temp[index] != '\'')
@@ -38,7 +38,7 @@ char *ft_parse_single_quote(char **str)
 	return (result);
 }
 
-int ft_add_in_result(char *result, char *temp, int i, int index)
+int	ft_add_in_result(char *result, char *temp, int i, int index)
 {
 	ft_strcpy(result + index, temp);
 //	free(temp);
@@ -51,19 +51,22 @@ char *ft_parse_double_quote(char **str)
 	char	*temp;
 	char	*result;
 	int		i;
-	
+
 	++(*str);
 	index = 0;
 	result = NULL;
+	printf("%s\n", result);
 	while (**str && **str != '\"')
 	{
 		temp = NULL;
+//		write(1, "!\n",2);
 		if (**str == '$')
+		{
+//			write(1,"@\n",2);
 			temp = ft_parse_with_envp(str);
-		if (temp)
-			i = ft_strlen(temp);
-		else
-			i = 1;
+			printf("$ temp %s\n", temp);
+		}
+		i = (temp) ? ft_strlen(temp) : 1;
 		printf("str quote %s\n", *str);
 		result = ft_realloc(result, i + 1);
 		if (temp)
