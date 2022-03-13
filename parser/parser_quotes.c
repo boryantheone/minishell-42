@@ -1,6 +1,7 @@
+
 #include "../minishell.h"
 
-static char	*ft_strndup(char *src, int len)
+char	*ft_strndup(char *src, int len)
 {
 	char	*result;
 	size_t	i;
@@ -26,7 +27,7 @@ char	*ft_parse_single_quote(char **str)
 
 	temp = ++(*str);
 	index = 0;
-	while (temp[index] && temp[index] != '\'')
+	while (temp[index] && (temp[index] != '\''))
 		index++;
 	if (index)
 		result = ft_strndup(temp, index);
