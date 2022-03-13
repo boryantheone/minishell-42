@@ -1,18 +1,5 @@
 #include "../minishell.h"
 
-t_list	*ft_lstnew_fds(int fd_read, int fd_write)
-{
-	t_list	*node;
-	
-	node = (t_list *)malloc(sizeof(t_list));
-	if (!node)
-		return (NULL);
-	node -> fd_in = fd_read;
-	node -> fd_out = fd_write;
-	node -> next = NULL;
-	return (node);
-}
-
 int	ft_double_redirect(char **temp)
 {
 	int		fd;

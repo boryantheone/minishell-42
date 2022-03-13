@@ -28,6 +28,14 @@ typedef struct s_var
 	int		state; //состояние программы(сигнал ошибки мб или типа того)
 } t_var;
 
+typedef struct s_fds
+{
+	int				fd_in;
+	int				fd_out;
+	int 			fd_heredoc;
+	struct s_fds	*next;
+}	t_fds;
+
 t_var *var;
 
 char	*ft_get_var_or_val_envp(char *str, int or);
@@ -76,8 +84,9 @@ int		ft_add_in_result(char *result, char *temp, int i, int index);
 //make_envp
 char *ft_parse_with_envp(char **str);
 char *ft_get_env(char *key);
-//parser_reidrect
+//parser_redirect
 int	ft_forward_redirect(char **str);
 int	ft_reverse_redirect(char **str, int *have_heredoc);
+//parser_fds
 
 #endif 
