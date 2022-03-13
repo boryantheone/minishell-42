@@ -14,7 +14,7 @@ void ft_printlist(t_list *elem)
 //	write(2, "++++++++++++++++++++++++\n", 26);
 	if(elem)
 	{
-		while (tmp->cmds != NULL)
+		while (tmp != NULL)
 		{
 			printf("cmds %s,fd_out(write) %d, fd_in(read) %d heredoc %d "
 					   "|", \
