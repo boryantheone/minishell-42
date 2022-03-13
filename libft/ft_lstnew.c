@@ -6,14 +6,13 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/14 13:52:16 by                   #+#    #+#             */
-/*   Updated: 2022/03/09 09:40:40 by dronel           ###   ########.fr       */
+/*   Updated: 2022/03/13 15:28:27 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstnew(char **arg, int fd_read, int fd_write, int pipe, int
-have_heredoc)
+t_list	*ft_lstnew(char **arg)
 {
 	t_list	*node;
 

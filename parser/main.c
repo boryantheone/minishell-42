@@ -163,7 +163,7 @@ int	main(int argc, char **argv, char **env)
 			ft_parser(str, elem);
 			//ft_printlist(elem);
 			//		ft_exec_pipes(var, elem);
-//			ft_execute(var, elem);
+			ft_execute(var, elem);
 		}
 		//ft_exec_cmd(elem, var);
 		//ft_exec_pipes(var, elem);

@@ -10,7 +10,7 @@ int	ft_exec_buildin(t_list *elem, t_var *var)
 	else if (!ft_strncmp(elem->cmd, "echo", 4))
 		return(ft_echo(elem));
 	else if (!ft_strncmp(elem->cmd, "export", 6))
-		return(ft_export(elem, var->envp));
+		return(ft_export(elem, var));
 	else if (!ft_strncmp(elem->cmd, "unset", 5))
 		return(ft_unset(var, elem));
 	else if (!ft_strncmp(elem->cmd, "env", 3))
@@ -20,6 +20,35 @@ int	ft_exec_buildin(t_list *elem, t_var *var)
 	return (-1);
 }
 
+char	*ft_parsing_path(char *cmd, char **envp)
+{
+	char	**paths;
+	char	*cmdpath;
+	char	*path;
+	int		i;
+
+	i = 0;
+	while (envp[i] != ft_strnstr(envp[i], "PATH=", 5))
+		i++;
+	path = envp[i];
+	i = 0;
+	paths = ft_split(path + 5, ':');
+	while (paths[i])
+	{
+		path = ft_strjoin(paths[i], "/");
+		cmdpath = ft_strjoin(path, cmd);
+		free(path);
+		if (access(cmdpath, 0) == 0)
+		{
+			//ft_free(paths);
+			return (cmdpath);
+		}
+		i++;
+	}
+	//ft_free(paths);
+	return (0);
+}
+
 int	ft_exec_cmd(t_list *elem, t_var *var)
 {
 	int		i;
@@ -27,6 +56,8 @@ int	ft_exec_cmd(t_list *elem, t_var *var)
 	pid_t	pid;
 
 	i = 0;
+	elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
+	printf("path %s", elem->path);
 	if (elem->fd_in != -1)
 		dup2(elem->fd_in, STDIN_FILENO);
 	if (elem->fd_out != -1)
@@ -90,6 +121,7 @@ int ft_exec_pipes(t_var *var, t_list *elem)
 	int		fd_close;
 
 	i = 0;
+	elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
 	tmp = elem;
 	if (tmp->fd_in != -1)
 		dup2(tmp->fd_in, STDIN_FILENO);
