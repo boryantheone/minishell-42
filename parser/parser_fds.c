@@ -49,13 +49,70 @@ void ft_printfds(t_fds *elem)
 	printf("\n----------------------\n");
 }
 
+char	*ft_remove_quotes(char *str)
+{
+	int		index;
+	int 	end;
+	char	*result1;
+	char 	*result;
+	
+	index = 0;
+	while (str[index] && (str[index] != '\'' && str[index] != '\"'))
+		index++;
+	if (index)
+		result = ft_strndup(str, index);
+	else
+		result = ft_strdup("\0");
+	end = index + 1;
+	while (str[end] && (str[end] != '\'' && str[end] != '\"'))
+		end++;
+	result1 = ft_substr(str, index + 1, end - 2);
+	result = ft_strjoin(result, result1);
+	free(result1);
+	return (result);
+}
+
 int	ft_heredoc(char **str)
 {
-	char	*document;
-	char	*tmp;
-	int		fd_heredoc;
+	char			*result;
+	char			*tmp;
+	char			*stop;
+	static int		fd_heredoc;
+	int 			index;
 	
-	
+	index = 0;
+	if (fd_heredoc != 0)
+		close(fd_heredoc);
+	tmp = *str + 2;
+	printf("tmp %s\n", tmp);
+	while ((*tmp == ' ' || *tmp == '\t') && *tmp != '\0')
+		tmp++;
+	while (tmp[index] != ' ' && tmp[index] != '\0')
+		index++;
+	if (!index)
+	{
+		printf("minishelchik: syntax error near unexpected token `newline'\n");
+		var->state = 258;
+		return (-1);
+	}
+	unlink("here_document");
+	fd_heredoc = open("here_document", O_CREAT | O_APPEND | O_WRONLY, 0644);
+	stop = ft_strndup(tmp, index);
+	stop = ft_remove_quotes(stop);
+	printf("stop %s\n", stop);
+	result = readline("> ");
+//	printf("result|%s\n", result);
+//	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
+//	{
+////		while ((ft_strchr(stop, '\"')) || (ft_strchr(stop, '\'')))
+////			stop = ft_remove_quotes(&stop);
+//		write(1, result, ft_strlen(result));
+//		write(fd_heredoc, result, ft_strlen(result));
+//		write(fd_heredoc, "\n", 1);
+//		result = readline("> ");
+//	}
+	*str = tmp;
+	return(fd_heredoc);
 }
 
 void ft_parser_fds(char *str)
@@ -70,12 +127,13 @@ void ft_parser_fds(char *str)
 		if (*str == '|')
 		{
 			ft_fdsadd_back(&fds, ft_fdsnew(0,0,fd_heredoc));
-			fd_heredoc = 0;
 			str++;
 		}
 		else if (*str == '<' && *(str + 1) == '<')
 		{
 			fd_heredoc = ft_heredoc(&str);
+			if(fd_heredoc == -1)
+				break ;
 //			write(1, "<\n", 2);
 		}
 		else

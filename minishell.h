@@ -83,6 +83,7 @@ void	*ft_realloc(char *result, int size);
 char *ft_parse_single_quote(char **str);
 char *ft_parse_double_quote(char **str);
 int		ft_add_in_result(char *result, char *temp, int i, int index);
+char	*ft_strndup(char *src, int len);
 //make_envp
 char *ft_parse_with_envp(char **str);
 char *ft_get_env(char *key);
@@ -90,5 +91,6 @@ char *ft_get_env(char *key);
 int	ft_forward_redirect(char **str);
 int	ft_reverse_redirect(char **str, int *have_heredoc);
 //parser_fds
+void ft_parser_fds(char *str);
 
 #endif 
