@@ -61,18 +61,6 @@ char	**ft_double_realloc(char **cmds, int size)
 	return (cmds);
 }
 
-char	*ft_parse_redirect(char **str, t_list *arguments)
-{
-	(void *)str;
-	(void *)arguments;
-}
-
-char	*ft_parse_pipe(char **str, t_list *arguments)
-{
-	(void *)str;
-	(void *)arguments;
-}
-
 char	*ft_single_parse(char **str)
 {
 	char	*result;
@@ -146,8 +134,6 @@ char	*ft_parse_arguments(char **str)
 		result[shift] = '\0';
 	return (result);
 }
-
-void ft_
 
 void	*ft_parser(char *str, t_list *elem)
 {
