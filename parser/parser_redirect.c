@@ -41,7 +41,7 @@ int	ft_forward_redirect(char **str)
 	return (fd);
 }
 
-int	ft_reverse_redirect(char **str)
+int	ft_reverse_redirect(char **str, int *have_heredoc)
 {
 	char		*temp;
 	char		*file_name;
@@ -54,7 +54,10 @@ int	ft_reverse_redirect(char **str)
 	}
 	temp = ++(*str);
 	if (*temp == '<' && *(temp + 1) != '\0')
+	{
 		temp++;
+		*have_heredoc = 1;
+	}
 	while ((*temp == ' ' || *temp == '\t') && *temp != '\0')
 		temp++;
 	file_name = ft_parse_arguments(&temp);
