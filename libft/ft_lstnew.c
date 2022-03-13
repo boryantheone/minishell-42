@@ -31,10 +31,7 @@ have_heredoc)
 		node->cmds = NULL;
 	}
 	node -> path = NULL;
-	node -> fd_in = fd_read;
-	node -> fd_out = fd_write;
-	node -> have_pipe = pipe;
-	node -> have_heredoc = have_heredoc;
 	node -> next = NULL;
 	return (node);
 }
+
