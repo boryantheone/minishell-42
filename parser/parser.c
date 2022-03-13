@@ -158,7 +158,7 @@ void	*ft_parser(char *str, t_list *elem)
 		//printf("STR %s\n", str);
 		if (*str == '|')
 		{
-			ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,1, have_heredoc));
+			ft_lstadd_back(&elem, ft_lstnew(arguments));
 			printf("have pipe\n");
 			arguments = NULL;
 			ft_printlist(elem);
@@ -189,7 +189,7 @@ void	*ft_parser(char *str, t_list *elem)
 	}
 	if (*str == '\0')
 	{
-		ft_lstadd_back(&elem, ft_lstnew(arguments, fd_in, fd_out,-1, have_heredoc));
+		ft_lstadd_back(&elem, ft_lstnew(arguments));
 	}
 	ft_printlist(elem);
 	printf("end of parser\n");
