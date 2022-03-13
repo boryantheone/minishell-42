@@ -1,25 +1,10 @@
 
 #include "../minishell.h"
 
-int	g_status = 0;
-
 void ft_error(void)
 {
 	printf("error\n");
 }
-
-//void ft_printlist(t_list *elem)
-//{
-//	while(elem != NULL)
-//	{
-//		printf("cmd %s | cmds %s | path %s\n", elem->cmd, elem->cmds[0],
-//			   elem->path);
-//		elem = elem->next;
-//	}
-//	write(1, "!\n", 2);
-//	printf("cmd %s | cmds %s | path %s\n", elem->cmd, elem->cmds[0],
-//		   elem->path);
-//}
 
 void ft_printlist(t_list *elem)
 {
@@ -31,18 +16,9 @@ void ft_printlist(t_list *elem)
 	{
 		while (tmp != NULL)
 		{
-//			write(2, "1111111111111111111\n", 26);
-			if(*(tmp->cmds) && ft_str_double_len(tmp->cmds) != 0)
-			{
-//				write(2, "222222222222222222222\n", 26);
-				printf("cmds %s,fd_out(write) %d, fd_in(read) %d |", \
-				*(tmp->cmds), tmp->fd_out, tmp->fd_in);
-			}
-			else
-			{
-				printf("command not found\n");
-				return;
-			}
+			printf("cmds %s,fd_out(write) %d, fd_in(read) %d heredoc %d "
+					   "|", \
+				tmp->cmds[0], tmp->fd_out, tmp->fd_in, tmp->have_heredoc);
 			tmp = tmp->next;
 		}
 	}
@@ -176,58 +152,6 @@ int	main(int argc, char **argv, char **env)
 	var->export = var->envp;
 	//elem = ft_lstnew(NULL);
 	elem = NULL;
-//	ft_lstadd_back(&elem, ft_lstnew());
-//	elem->cmd = "unset";
-//	elem->cmds = malloc(sizeof(char **) * 5);
-//	elem->cmds[0] = "unset";
-//	elem->cmds[1] = "SHLVL";
-//	elem->cmds[2] = "989";
-//	elem->cmds[3] = NULL;
-//	elem->path = "/usr/bin/export";
-//	elem->fd_in = -1;
-//	elem->fd_out = -1;
-	// elem->cmd = "env";
-	// elem->cmds = malloc(sizeof(char **) * 2);
-	// elem->cmds[0] = "env";   
-	//elem->cmds[1] = "/Users/boryantheone/Desktop/java projects\0";
-	//elem->cmds[1] = " ";
-	// elem->path = "/usr/bin/env";
-	// elem->fd_in = -1;
-	// elem->fd_out = -1;
-	// elem->have_pipe = 0;
-	// elem->cmd = "echo";
-	// elem->cmds = malloc(sizeof(char **) * 4);
-	// elem->cmds[0] = "echo";
-	// elem->cmds[1] = "-n";
-	// elem->cmds[2] = "123";
-	// elem->cmds[3] = "123\0";
-	//elem->cmds[1] = "/Users/boryantheone/Desktop/";
-	//elem->cmds[2] = "123";
-	// elem->path = "/bin/echo";
-	// elem->fd_in = -1;
-	// elem->fd_out = -1;
-	// elem->have_pipe = 0;
-	// ft_lstadd_back(&elem, ft_lstnew());
-	// elem2 = elem->next;
-	// elem2->cmd = "env";
-	// elem2->cmds = malloc(sizeof(char **) * 3);
-	// elem2->cmds[0] = "env";
-	// elem2->path = "/usr/bin/env";
-	// elem2->fd_in = -1;
-	// elem2->fd_out = -1;
-	// elem2->have_pipe = 0;
-	// ft_lstadd_back(&elem, ft_lstnew());
-	// elem3 = elem2->next;
-	// elem3->cmd = "cat";
-	// elem3->cmds = malloc(sizeof(char **) * 2);
-	// elem3->cmds[0] = "cat";
-	// elem3->cmds[1] = "-e";
-	// elem3->path = "/bin/cat";
-	// elem3->fd_in = -1;
-	// elem3->fd_out = -1;
-	// elem3->have_pipe = 0;
-	//var->envp_for_execve = env;
-	//ft_printlist(elem);
 	while (1)
 	{
 		str = readline("minishelchik-1.0$ ");

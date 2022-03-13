@@ -79,6 +79,6 @@ char *ft_parse_with_envp(char **str);
 char *ft_get_env(char *key);
 //parser_reidrect
 int	ft_forward_redirect(char **str);
-int	ft_reverse_redirect(char **str);
+int	ft_reverse_redirect(char **str, int *have_heredoc);
 
 #endif 
