@@ -16,6 +16,7 @@ typedef struct s_envp
 	struct s_envp *next;
 }	t_envp;
 
+
 //struct for variables
 typedef struct s_var
 {
