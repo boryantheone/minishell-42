@@ -10,7 +10,7 @@ char	*ft_parse_with_envp(char **str)
 	i = 0;
 	temp = ++(*str);
 	result = NULL;
-	while (temp[i] && temp[i] != '\"')
+	while (temp[i] && ft_limiter(temp[i]))
 		i++;
 	temp_symbol = temp[i];
 	temp[i] = 0;
@@ -24,7 +24,6 @@ char	*ft_parse_with_envp(char **str)
 		result = ft_strdup("$");
 	else if (i > 0)
 	{
-		write(1, "i\n",2);
 		result = ft_strdup(ft_get_env(temp));
 		temp[i] = temp_symbol;
 		temp += i;

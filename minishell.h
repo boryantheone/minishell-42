@@ -92,5 +92,6 @@ int	ft_forward_redirect(char **str);
 int	ft_reverse_redirect(char **str, int *have_heredoc);
 //parser_fds
 void ft_parser_fds(char *str);
+int ft_limiter(char c);
 
 #endif 

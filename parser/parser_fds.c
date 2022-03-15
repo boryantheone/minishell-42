@@ -65,11 +65,62 @@ char	*ft_remove_quotes(char *str)
 		result = ft_strdup("\0");
 	end = index + 1;
 	while (str[end] && (str[end] != '\'' && str[end] != '\"'))
+		end++;	
+	result1 = ft_substr(str, index + 1, end - index - 1);
+	result = ft_strjoin(result, result1);
+	free(result1);
+	index = ++end;
+	while (str[end] != '\0')
 		end++;
-	result1 = ft_substr(str, index + 1, end - 2);
+	result1 = ft_substr(str, index, end - index);
 	result = ft_strjoin(result, result1);
 	free(result1);
 	return (result);
+}
+
+int ft_limiter(char c)
+{
+	if ((c >= 33 && c <= 47) || (c >= 58 && c >= 64) ||\
+		(c >= 91 && c <= 96) || (c >= 125 && c <= 126))
+		return (1);
+	else
+		return (0);	
+}
+
+char	*ft_replace_env(char *str)
+{
+	int		index;
+	int 	end;
+	char	*result1;
+	char 	*result;
+
+	index = 0;
+	result1 = NULL;
+	while(str[index] && str[index] != '$')
+		index++;
+	if (index)	
+		result = ft_strndup(str, index);
+	else
+		result = ft_strdup("\0");
+	str = str + index;
+	printf("result %s\n", result);
+	// while (str[end] && ft_limiter(str[end]))
+	// 	end++;
+	result1 = ft_parse_with_envp(&str);
+	if (!result1)
+	{
+		free(result);
+		return ("\0");
+	}	
+	result = ft_strjoin(result, result1);
+	free(result1);
+	index = 0;
+	while (str[index] != '\0')
+		index++;
+	result1 = ft_strndup(str, index);
+	result = ft_strjoin(result, result1);
+	free(result1);
+	printf("resul replace %s\n", result);
 }
 
 int	ft_heredoc(char **str)
@@ -101,16 +152,19 @@ int	ft_heredoc(char **str)
 	stop = ft_remove_quotes(stop);
 	printf("stop %s\n", stop);
 	result = readline("> ");
-//	printf("result|%s\n", result);
-//	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
-//	{
-////		while ((ft_strchr(stop, '\"')) || (ft_strchr(stop, '\'')))
-////			stop = ft_remove_quotes(&stop);
-//		write(1, result, ft_strlen(result));
-//		write(fd_heredoc, result, ft_strlen(result));
-//		write(fd_heredoc, "\n", 1);
-//		result = readline("> ");
-//	}
+	printf("result|%s\n", result);
+	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
+	{
+		while ((ft_strchr(result, '$')))
+		{
+			write(1, "#\n", 2);
+			result = ft_replace_env(result);
+		}	
+		write(1, result, ft_strlen(result));
+		write(fd_heredoc, result, ft_strlen(result));
+		write(fd_heredoc, "\n", 1);
+		result = readline("> ");
+	}
 	*str = tmp;
 	return(fd_heredoc);
 }
