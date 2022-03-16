@@ -157,7 +157,6 @@ int	ft_heredoc(char **str)
 	{
 		while ((ft_strchr(result, '$')))
 		{
-			write(1, "#\n", 2);
 			result = ft_replace_env(result);
 		}	
 		write(1, result, ft_strlen(result));
