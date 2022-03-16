@@ -52,7 +52,7 @@ void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int index);
 char	*ft_parsing_path(char *cmd, char **envp);
 void	ft_execute(t_var *var, t_list *elem);
 int ft_exec_pipes(t_var *var, t_list *elem);
-int	ft_exec_cmd(t_list *elem, t_var *var);
+int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds);
 
 //main/main
 void ft_error(void);
@@ -85,7 +85,7 @@ char *ft_parse_double_quote(char **str);
 int		ft_add_in_result(char *result, char *temp, int i, int index);
 char	*ft_strndup(char *src, int len);
 //make_envp
-char *ft_parse_with_envp(char **str);
+char *ft_parse_with_envp(char **str, int flag);
 char *ft_get_env(char *key);
 //parser_redirect
 int	ft_forward_redirect(char **str);

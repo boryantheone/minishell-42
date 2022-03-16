@@ -42,7 +42,7 @@ char	*ft_parse_single_quote(char **str)
 int	ft_add_in_result(char *result, char *temp, int i, int index)
 {
 	ft_strcpy(result + index, temp);
-//	free(temp);
+	free(temp);
 	return (i);
 }
 
@@ -64,7 +64,7 @@ char *ft_parse_double_quote(char **str)
 		if (**str == '$')
 		{
 //			write(1,"@\n",2);
-			temp = ft_parse_with_envp(str);
+			temp = ft_parse_with_envp(str, 0);
 			printf("$ temp %s\n", temp);
 		}
 		i = (temp) ? ft_strlen(temp) : 1;
