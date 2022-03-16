@@ -86,4 +86,5 @@ void	ft_parser_redirect(char *str, t_fds *fds)
 		else
 			str++;
 	}
+	ft_printfds(fds);
 }

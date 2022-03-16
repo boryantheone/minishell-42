@@ -31,7 +31,7 @@ int ft_pwd(t_list *elem)
 	getcwd(dir, MAXDIR);
 	ft_putstr_fd(dir, STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
-	free(dir);
+//	free(dir);
 	return (EXIT_SUCCESS);
 }
 
@@ -72,8 +72,8 @@ int	ft_cd_change_pwd(char *new_pwd, char *prev_pwd, t_envp **env)
 		if ((!ft_strncmp(tmp->var, "PWD", 3)))
 		{
 			getcwd(pwd, MAXDIR);
-			if (chdir(new_pwd) == -1)
-				return (ft_display_error(tmp->val));
+//			if (chdir(new_pwd) == -1)
+//				return (ft_display_error(tmp->val));
 			if (!(ft_strcmp(new_pwd, "..")))
 				tmp->val = pwd;
 			else
@@ -93,15 +93,21 @@ int ft_cd(t_list *elem, t_var *var)
 	char *path;
 
 	getcwd(prev_pwd, MAXDIR);
-	printf("prewpwd = %s", prev_pwd);
+	printf("oldwpwd = %s\n", prev_pwd);
 	if (!elem->cmds[1] || !(ft_strncmp(elem->cmds[1], "~", 1)))
 		chdir(getenv("HOME")); //!!при парсинге обработать что если подается просто "cd" без пробела, то нужно записать пробел в cmds[1]
 	if (!(ft_strncmp(elem->cmds[1], "/", 1)) || !(ft_strcmp(elem->cmds[1], "..")))
 	{
 		if (chdir(elem->cmds[1]) == -1)
+		{
+			write(1, "error\n", 6);
 			return (ft_display_error(elem->cmds[1]));
+		}
 		else
+		{
+			write(1, "change\n", 7);
 			ft_cd_change_pwd(elem->cmds[1], prev_pwd, &var->envp);
+		}
 	}
 	return (EXIT_SUCCESS);
 }
@@ -171,7 +177,6 @@ static t_envp *ft_get_min_value(t_envp *export_list)
 		{
 			tmp = tmp->next;
 			i++;
-			;
 			continue;
 		}
 		if (min == NULL || ft_strcmp(min->var, tmp->var) > 0)
@@ -316,7 +321,7 @@ int ft_env(t_list *elem, t_var *var)
 
 int ft_exit(t_list *elem)
 {
-	if (elem->have_pipe)
+	if (elem->next)
 		return (EXIT_SUCCESS);
 	ft_putendl_fd("exit", STDERR_FILENO);
 	if (elem->cmds[1] == NULL || (ft_isdigit(elem->cmds[1]) && elem->cmds[2] == NULL))
