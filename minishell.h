@@ -88,10 +88,14 @@ char	*ft_strndup(char *src, int len);
 char *ft_parse_with_envp(char **str, int flag);
 char *ft_get_env(char *key);
 //parser_redirect
-int	ft_forward_redirect(char **str);
-int	ft_reverse_redirect(char **str, int *have_heredoc);
+int		ft_forward_redirect(char **str);
+int		ft_reverse_redirect(char **str, t_fds *fds);
+void	ft_parser_redirect(char *str, t_fds *fds);
 //parser_fds
-void ft_parser_fds(char *str);
+t_fds	*ft_parser_heredoc(char *str);
 int ft_limiter(char c);
+//utils
+void ft_skip_quotes(char **str);
+void ft_printfds(t_fds *elem);
 
 #endif 

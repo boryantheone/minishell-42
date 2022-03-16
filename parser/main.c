@@ -16,9 +16,7 @@ void ft_printlist(t_list *elem)
 	{
 		while (tmp != NULL)
 		{
-			printf("cmds %s,fd_out(write) %d, fd_in(read) %d heredoc %d "
-					   "|", \
-				tmp->cmds[0], tmp->fd_out, tmp->fd_in, tmp->have_heredoc);
+			printf("cmds %s|", *tmp->cmds);
 			tmp = tmp->next;
 		}
 	}

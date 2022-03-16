@@ -60,7 +60,6 @@ char *ft_parse_double_quote(char **str)
 	while (**str && **str != '\"')
 	{
 		temp = NULL;
-//		write(1, "!\n",2);
 		if (**str == '$')
 		{
 //			write(1,"@\n",2);
