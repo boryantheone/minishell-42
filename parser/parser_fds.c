@@ -80,8 +80,9 @@ char	*ft_remove_quotes(char *str)
 
 int ft_limiter(char c)
 {
-	if ((c >= 33 && c <= 47) || (c >= 58 && c >= 64) ||\
-		(c >= 91 && c <= 96) || (c >= 125 && c <= 126))
+	if ((c >= 33 && c <= 47) || (c >= 58 && c <= 62) ||\
+		(c >= 91 && c <= 94) || (c >= 124 && c <= 126) \
+		|| c == 64)
 		return (1);
 	else
 		return (0);	
@@ -92,10 +93,11 @@ char	*ft_replace_env(char *str)
 	int		index;
 	int 	end;
 	char	*result1;
-	char 	*result;
+	static char 	*result;
 
 	index = 0;
 	result1 = NULL;
+	printf("1 str search index $ %s\n", str);
 	while(str[index] && str[index] != '$')
 		index++;
 	if (index)	
@@ -103,24 +105,33 @@ char	*ft_replace_env(char *str)
 	else
 		result = ft_strdup("\0");
 	str = str + index;
-	printf("result %s\n", result);
+	printf("1 str %s\n", str);
+	printf("1 result %s\n", result);
 	// while (str[end] && ft_limiter(str[end]))
 	// 	end++;
-	result1 = ft_parse_with_envp(&str);
+	result1 = ft_parse_with_envp(&str, 1);
+	printf("1 result1 after perse env %s\n", result1);
 	if (!result1)
 	{
 		free(result);
 		return ("\0");
 	}	
 	result = ft_strjoin(result, result1);
+//	printf("result after join %s\n", result);
+	printf("1 str after join %s\n", str);
 	free(result1);
 	index = 0;
 	while (str[index] != '\0')
 		index++;
 	result1 = ft_strndup(str, index);
+	printf("1 index %d\n", index);
+	printf("1 result1 %s\n", result1);
 	result = ft_strjoin(result, result1);
+	printf("1 result %s\n", result);
 	free(result1);
-	printf("resul replace %s\n", result);
+//	printf("resul replace %s\n", result);
+	write(1, "=====================\n", 21);
+	return (result);
 }
 
 int	ft_heredoc(char **str)
@@ -157,8 +168,8 @@ int	ft_heredoc(char **str)
 	{
 		while ((ft_strchr(result, '$')))
 		{
-			write(1, "#\n", 2);
 			result = ft_replace_env(result);
+			printf("RESULT %s\n", result);
 		}	
 		write(1, result, ft_strlen(result));
 		write(fd_heredoc, result, ft_strlen(result));
