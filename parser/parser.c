@@ -76,7 +76,7 @@ char	*ft_single_parse(char **str)
 		if (**str == '$')
 		{
 			//write(1,"@\n",2);
-			temp = ft_parse_with_envp(str);
+			temp = ft_parse_with_envp(str, 0);
 			printf("$ temp %s\n", temp);
 		}
 		if (temp)
