@@ -12,13 +12,11 @@ void ft_printlist(t_list *elem)
 	
 	tmp = elem;
 //	write(2, "++++++++++++++++++++++++\n", 26);
-	if(elem)
+	if(tmp)
 	{
 		while (tmp != NULL)
 		{
-			printf("cmds %s,fd_out(write) %d, fd_in(read) %d heredoc %d "
-					   "|", \
-				tmp->cmds[0], tmp->fd_out, tmp->fd_in, tmp->have_heredoc);
+			printf("cmds %s|", tmp->cmd);
 			tmp = tmp->next;
 		}
 	}
@@ -115,7 +113,7 @@ int	ft_make_env_list(char **env, t_var  *var)
 
 void ft_printlist_envp(t_envp *elem)
 {
-	while(elem)
+	while(elem != NULL)
 	{
 		if (elem->val && elem->var)
 			printf("%s=%s\n", elem->var, elem->val);
@@ -123,7 +121,7 @@ void ft_printlist_envp(t_envp *elem)
 			printf("%s=%s\n", elem->var, elem->val);
 		elem = elem->next;
 	}
-	printf("%s=%s\n", elem->var, elem->val);
+	//printf("%s=%s\n", elem->var, elem->val);
 }
 
 // void ft_printlist_envp(t_var *var)
@@ -140,18 +138,18 @@ int	main(int argc, char **argv, char **env)
 {
 	char	*str;
 	t_list	*elem;
-	t_list	*elem2;
-	t_list	*elem3;
+	t_fds	*fds;
 
 	var = (t_var *)malloc(sizeof(t_var));
 	var->envp = NULL;
+	var->envp_for_execve = env;
 	var->export = NULL;
 	var->state = 0;
 	ft_make_env_list(env, var);
 	var->export = (t_envp *)malloc(sizeof(t_envp *));
 	var->export = var->envp;
 	//elem = ft_lstnew(NULL);
-	elem = NULL;
+//	elem = NULL;
 	while (1)
 	{
 		str = readline("minishelchik-1.0$ ");
@@ -160,10 +158,14 @@ int	main(int argc, char **argv, char **env)
 		//printf("a %s\n", str);
 		if (!ft_preparser(str))
 		{
-			ft_parser(str, elem);
-			//ft_printlist(elem);
+			fds = ft_parser_heredoc(str);
+			ft_parser_redirect(str, fds);
+			elem = ft_parser(str);
+//			printf("%s\n", elem->cmd);
+//			ft_printfds(fds);
+			ft_printlist(elem);
 			//		ft_exec_pipes(var, elem, fds);
-			ft_execute(var, elem);
+			ft_execute(var, elem, fds);
 		}
 		//ft_exec_cmd(elem, var);
 		//ft_exec_pipes(var, elem);

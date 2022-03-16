@@ -135,63 +135,53 @@ char	*ft_parse_arguments(char **str)
 	return (result);
 }
 
-void	*ft_parser(char *str, t_list *elem)
+t_list	*ft_parser(char *str)
 {
 	char		**arguments;
 	char		*tmp;
 	int			i;
-	int			fd_out;
-	int			fd_in;
-	int 		have_heredoc;
+	t_fds		*fds;
+	t_list		*elem;
+	t_list		*temp;
 
 	i = 0;
-	fd_out = -1;
-	fd_in = -1;
-	have_heredoc = 0;
-//	begin = NULL;
 	arguments = NULL;
-	ft_parser_fds(str);
-//	while (*str)
-//	{
-//        // write (1, "z\n", 2);
-//		while (*str == ' ')
+	elem = NULL;
+	temp = NULL;
+//	printf("%s\n", str);
+	while (*str)
+	{
+        // write (1, "z\n", 2);
+		while (*str == ' ' || *str == '>' || *str == '<')
+			str++;
+		//printf("STR %s\n", str);
+		if (*str == '|')
+		{
+			temp = ft_lstnew(arguments);
+			ft_lstadd_back(&elem, temp);
+			printf("have pipe\n");
+			arguments = NULL;
+			ft_printlist(elem);
+			i = 0;
+			str++;
+		}
+//		while (*str == '>' || *str == '<')
 //			str++;
-//		//printf("STR %s\n", str);
-//		if (*str == '|')
-//		{
-//			ft_lstadd_back(&elem, ft_lstnew(arguments));
-//			printf("have pipe\n");
-//			arguments = NULL;
-//			ft_printlist(elem);
-//			i = 0;
-//			fd_in = -1;
-//			fd_out = -1;
-//			have_heredoc = 0;
-//			str++;
-//		}
-//		if (*str == '>')
-//		{
-//			fd_out = ft_forward_redirect(&str);
-////			write(1, ">\n", 2);
-//		}
-//		if (*str == '<')
-//		{
-//			fd_in = ft_reverse_redirect(&str, &have_heredoc);
-////			write(1, "<\n", 2);
-//		}
-//		if ((tmp = ft_parse_arguments(&str)))
-//		{
-//			//("TMP %s\n", tmp);
-//			arguments = ft_double_realloc(arguments, 1);
-//			arguments[i] = tmp;
-//			printf("CMDS % d %s\n", i, arguments[i]);
-//			i++;
-//		}
-//	}
-//	if (*str == '\0')
-//	{
-//		ft_lstadd_back(&elem, ft_lstnew(arguments));
-//	}
-//	ft_printlist(elem);
+		if ((tmp = ft_parse_arguments(&str)))
+		{
+			//("TMP %s\n", tmp);
+			arguments = ft_double_realloc(arguments, 1);
+			arguments[i] = tmp;
+			printf("CMDS % d %s\n", i, arguments[i]);
+			i++;
+		}
+	}
+	if (*str == '\0')
+	{
+		temp = ft_lstnew(arguments);
+		ft_lstadd_back(&elem, temp);
+	}
+	ft_printlist(elem);
 	printf("end of parser\n");
+	return (elem);
 }
