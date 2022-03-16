@@ -51,7 +51,7 @@ void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int index);
 //execute 
 char	*ft_parsing_path(char *cmd, char **envp);
 void	ft_execute(t_var *var, t_list *elem);
-int ft_exec_pipes(t_var *var, t_list *elem);
+int ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds);
 int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds);
 
 //main/main
