@@ -3,19 +3,19 @@
 int	ft_exec_buildin(t_list *elem, t_var *var)
 {
 
-	if (!ft_strncmp(elem->cmd, "pwd", 3))
+	if (!ft_strcmp(elem->cmd, "pwd"))
 		return(ft_pwd(elem));
-	else if (!ft_strncmp(elem->cmd, "cd", 2))
+	else if (!ft_strcmp(elem->cmd, "cd"))
 		return(ft_cd(elem, var));
-	else if (!ft_strncmp(elem->cmd, "echo", 4))
+	else if (!ft_strcmp(elem->cmd, "echo"))
 		return(ft_echo(elem));
-	else if (!ft_strncmp(elem->cmd, "export", 6))
+	else if (!ft_strcmp(elem->cmd, "export"))
 		return(ft_export(elem, var));
-	else if (!ft_strncmp(elem->cmd, "unset", 5))
+	else if (!ft_strcmp(elem->cmd, "unset"))
 		return(ft_unset(var, elem));
-	else if (!ft_strncmp(elem->cmd, "env", 3))
+	else if (!ft_strcmp(elem->cmd, "env"))
 		return(ft_env(elem, var));
-	else if (!ft_strncmp(elem->cmd, "exit", 4))
+	else if (!ft_strcmp(elem->cmd, "exit"))
 		return(ft_exit(elem));
 	return (-1);
 }
@@ -40,16 +40,16 @@ char	*ft_parsing_path(char *cmd, char **envp)
 		free(path);
 		if (access(cmdpath, 0) == 0)
 		{
-			//ft_free(paths);
+			ft_free(paths);
 			return (cmdpath);
 		}
 		i++;
 	}
-	//ft_free(paths);
+	ft_free(paths);
 	return (0);
 }
 
-int	ft_exec_cmd(t_list *elem, t_var *var)
+int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 {
 	int		i;
 	int		result;
@@ -58,10 +58,10 @@ int	ft_exec_cmd(t_list *elem, t_var *var)
 	i = 0;
 	elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
 	printf("path %s", elem->path);
-	if (elem->fd_in != -1)
-		dup2(elem->fd_in, STDIN_FILENO);
-	if (elem->fd_out != -1)
-		dup2(elem->fd_out, STDOUT_FILENO);
+	if (fds->fd_in != -1)
+		dup2(fds->fd_in, STDIN_FILENO);
+	if (fds->fd_out != -1)
+		dup2(fds->fd_out, STDOUT_FILENO);
 	if ((result = ft_exec_buildin(elem, var)) >= 0)
 		return (result);
 	else
@@ -114,25 +114,31 @@ void	ft_launch_proc(t_var *var, t_list *elem)
 	close(fd[0]);
 }
 
-int ft_exec_pipes(t_var *var, t_list *elem)
+int ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 {
-	int	i;
+	int		i;
 	t_list	*tmp;
 	int		fd_close;
+	int		status;
+	t_fds	*tmp_fds;
 
 	i = 0;
-	elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
 	tmp = elem;
-	if (tmp->fd_in != -1)
-		dup2(tmp->fd_in, STDIN_FILENO);
-	while (tmp->next != NULL)
+	tmp_fds = fds;
+	if (fds->fd_in != -1)
+		dup2(fds->fd_in, STDIN_FILENO);
+	while (fds->next != NULL)
 	{
+		tmp->path = ft_parsing_path(tmp->cmd, var->envp_for_execve);
 		ft_launch_proc(var, tmp);
 		tmp = tmp->next;
+		tmp_fds = tmp_fds->next;
 	}
-	if (tmp->fd_out != -1)
-		dup2(tmp->fd_out, STDIN_FILENO);
+	if (tmp_fds->fd_out != -1)
+		dup2(tmp_fds->fd_out, STDIN_FILENO);
 	execve_for_pipe(tmp, var);
+	waitpid(-1, &status, 0);
+	// if (WIFEXITED(status))
 	write(1, "3333", 4);
 	return (1);
 	//exit(EXIT_SUCCESS);
