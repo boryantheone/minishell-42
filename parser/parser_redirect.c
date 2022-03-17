@@ -68,6 +68,7 @@ int	ft_reverse_redirect(char **str, t_fds *fds)
 	{
 		*str = ++temp;
 		return (fds->fd_heredoc);
+		//return (-1);
 	}
 	while ((*temp == ' ' || *temp == '\t') && *temp != '\0')
 		temp++;

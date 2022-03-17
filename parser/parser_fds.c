@@ -76,7 +76,7 @@ char	*ft_replace_env(char *str)
 		result = ft_strdup("\0");
 	str = str + index;
 	printf("1 str %s\n", str);
-	printf("1 result %s\n", result);
+	printf("1 result |%s|\n", result);
 	// while (str[end] && ft_limiter(str[end]))
 	// 	end++;
 	result1 = ft_parse_with_envp(&str, 1);
@@ -95,7 +95,7 @@ char	*ft_replace_env(char *str)
 	result = ft_strjoin(result, result1);
 	free(result1);
 //	printf("resul replace %s\n", result);
-	write(1, "=====================\n", 21);
+	write(1, "====================\n", 21);
 	return (result);
 }
 
@@ -123,7 +123,7 @@ int	ft_heredoc(char **str)
 		return (-1);
 	}
 	unlink("here_document");
-	fd_heredoc = open("here_document", O_CREAT | O_APPEND | O_WRONLY, 0644);
+	fd_heredoc = open("here_document", O_CREAT | O_TRUNC | O_RDWR, 00600);
 	stop = ft_strndup(tmp, index);
 	printf("stop %s\n", stop);
 	stop = ft_remove_quotes(stop);
@@ -162,7 +162,10 @@ t_fds	*ft_parser_heredoc(char *str)
 		{
 			fd_heredoc = ft_heredoc(&str);
 			if(fd_heredoc == -1)
-				break ;
+			{
+				var->state = 258;
+				return (NULL);
+			}
 		}
 		else
 			str++;
