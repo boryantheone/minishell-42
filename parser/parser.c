@@ -140,33 +140,29 @@ t_list	*ft_parser(char *str)
 	char		**arguments;
 	char		*tmp;
 	int			i;
-	t_fds		*fds;
 	t_list		*elem;
-	t_list		*temp;
 
 	i = 0;
 	arguments = NULL;
 	elem = NULL;
-	temp = NULL;
 //	printf("%s\n", str);
 	while (*str)
 	{
         // write (1, "z\n", 2);
-		while (*str == ' ' || *str == '>' || *str == '<')
+		while (*str == ' ')
 			str++;
 		//printf("STR %s\n", str);
 		if (*str == '|')
 		{
-			temp = ft_lstnew(arguments);
-			ft_lstadd_back(&elem, temp);
+			ft_lstadd_back(&elem, ft_lstnew(arguments));
 			printf("have pipe\n");
 			arguments = NULL;
 			ft_printlist(elem);
 			i = 0;
 			str++;
 		}
-//		while (*str == '>' || *str == '<')
-//			str++;
+		if (*str == '>' || *str == '<')
+			ft_skip_redirect(&str);
 		if ((tmp = ft_parse_arguments(&str)))
 		{
 			//("TMP %s\n", tmp);
@@ -177,10 +173,7 @@ t_list	*ft_parser(char *str)
 		}
 	}
 	if (*str == '\0')
-	{
-		temp = ft_lstnew(arguments);
-		ft_lstadd_back(&elem, temp);
-	}
+		ft_lstadd_back(&elem, ft_lstnew(arguments));
 	ft_printlist(elem);
 	printf("end of parser\n");
 	return (elem);
