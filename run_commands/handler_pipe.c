@@ -54,40 +54,53 @@ char	*ft_parsing_path(char *cmd, char **envp)
 			return (cmdpath);
 		i++;
 	}
-	return (0);
+	return ("command not found");
+}
+
+void	ft_execute_terminal_cmd(t_list *elem, t_var *var, t_fds *fds)
+{
+	pid_t	pid;
+	int		reserved_stdout;
+
+	reserved_stdout = dup(1);
+	if ((pid = fork()) == 0)
+	{
+		if ((execve(elem->path, elem->cmds, var->envp_for_execve)) == -1)
+		{
+			perror("Error: ");
+			exit(0);
+		}
+		else
+		{
+
+		}
+		exit(1);
+	}
+	waitpid(pid, NULL, 0);
 }
 
 int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 {
 	int		i;
 	int		result;
-	pid_t	pid;
-	int		reserved_stdout;
 
 	i = 0;
-	reserved_stdout = dup(1);
-	ft_che
+
+	if (ft_check_fds(fds) != -1)
+	{
+		if (fds->fd_in != 0)
+			dup2(fds->fd_in, STDIN_FILENO);
+		if (fds->fd_out != 0)
+			dup2(fds->fd_out, STDOUT_FILENO);
+	}
 	elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
-	if (fds->fd_in != 0)
-		dup2(fds->fd_in, STDIN_FILENO);
-	if (fds->fd_out != 0)
-		dup2(fds->fd_out, STDOUT_FILENO);
+	if (ft_strcmp(elem->path, "command not found") == 0)
+		exit(EXIT_FAILURE);
 	if ((result = ft_exec_buildin(elem, var)) >= 0)
 		return (result);
 	else
-	{ 
-		if ((pid = fork()) == 0)
-		{
-			if ((execve(elem->path, elem->cmds, var->envp_for_execve)) == -1)
-			{
-				perror("Error: ");
-				exit(0);
-			}
-			exit(1);
-		}
-		waitpid(pid, NULL, 0);
-	}
-	return (0);
+		ft_execute_terminal_cmd(elem, var, fds);
+	return (EXIT_SUCCESS);
 }
 
 void	execve_for_pipe(t_list *elem,t_var *var)

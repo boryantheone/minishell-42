@@ -166,6 +166,11 @@ int	main(int argc, char **argv, char **env)
 		str = readline("minishelchik-1.0$ ");
 		if (ft_strncmp(str, "\0", 1) != 0)
 			add_history (str);
+		else
+		{
+			free(str);
+			continue ;
+		}
 		if (!ft_preparser(str))
 		{
 			fds = ft_parser_heredoc(str);
