@@ -96,6 +96,7 @@ t_fds	*ft_parser_heredoc(char *str);
 int ft_limiter(char c);
 //utils
 void ft_skip_quotes(char **str);
+void	ft_skip_redirect(char **str);
 void ft_printfds(t_fds *elem);
 
 //checks

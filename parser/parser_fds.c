@@ -58,16 +58,6 @@ char	*ft_remove_quotes(char *str)
 	return (result);
 }
 
-int ft_limiter(char c)
-{
-	if ((c >= 33 && c <= 47) || (c >= 58 && c <= 62) ||\
-		(c >= 91 && c <= 94) || (c >= 124 && c <= 126) \
-		|| c == 64 || c == '\0')
-		return (1);
-	else
-		return (0);	
-}
-
 char	*ft_replace_env(char *str)
 {
 	int		index;

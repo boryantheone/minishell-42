@@ -99,7 +99,7 @@ void	execve_for_pipe(t_list *elem,t_var *var)
 	exit(EXIT_SUCCESS);
 }
 
-void	ft_launch_proc(t_var *var, t_list *elem)
+void	ft_launch_proc(t_var *var, t_list *elem, t_fds *fds)
 {
 	int		fd[2];
 	pid_t	pid;
@@ -140,7 +140,7 @@ int ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 	while (tmp_fds->next != NULL)
 	{
 		tmp->path = ft_parsing_path(tmp->cmd, var->envp_for_execve);
-		ft_launch_proc(var, tmp);
+		ft_launch_proc(var, tmp, tmp_fds);
 		tmp = tmp->next;
 		tmp_fds = tmp_fds->next;
 	}
