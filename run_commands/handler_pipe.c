@@ -57,6 +57,20 @@ char	*ft_parsing_path(char *cmd, char **envp)
 	return ("command not found");
 }
 
+int	ft_return_child_exit_status(pid_t pid)
+{
+	int	exit_status;
+	int	error_state;
+
+	waitpid(pid, &exit_status, 0);
+	if (exit_status == 0)
+		return (0);
+	if (WIFSIGNALED(exit_status))
+		return(128 + exit_status);
+	error_state = WEXITSTATUS(exit_status);
+	return (error_state);
+}
+
 void	ft_execute_terminal_cmd(t_list *elem, t_var *var, t_fds *fds)
 {
 	pid_t	pid;
@@ -68,15 +82,11 @@ void	ft_execute_terminal_cmd(t_list *elem, t_var *var, t_fds *fds)
 		if ((execve(elem->path, elem->cmds, var->envp_for_execve)) == -1)
 		{
 			perror("Error: ");
-			exit(0);
+			exit(EXIT_FAILURE);
 		}
-		else
-		{
-
-		}
-		exit(1);
+		exit(EXIT_SUCCESS);
 	}
-	waitpid(pid, NULL, 0);
+	var->state = ft_return_child_exit_status(pid);
 }
 
 int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
