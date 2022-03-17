@@ -50,14 +50,10 @@ char	*ft_parsing_path(char *cmd, char **envp)
 	{
 		path = ft_strjoin(paths[i], "/");
 		cmdpath = ft_strjoin(path, cmd);
-		if (access(cmdpath, 0) == 0)
-		{
-//			ft_free(paths);
+		if (access(cmdpath, R_OK) == 0)
 			return (cmdpath);
-		}
 		i++;
 	}
-	//ft_free(paths);
 	return (0);
 }
 
@@ -66,10 +62,12 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 	int		i;
 	int		result;
 	pid_t	pid;
+	int		reserved_stdout;
 
 	i = 0;
+	reserved_stdout = dup(1);
+	ft_che
 	elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
-	printf("path %s\n", elem->path);
 	if (fds->fd_in != 0)
 		dup2(fds->fd_in, STDIN_FILENO);
 	if (fds->fd_out != 0)

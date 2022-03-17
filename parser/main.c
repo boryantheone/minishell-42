@@ -134,6 +134,19 @@ void ft_printlist_envp(t_envp *elem)
 // 	printf("var %s\nval %s\n", var->envp->var, var->envp->val);
 // }
 
+int	ft_check_fds(t_fds *fds)
+{
+	t_fds *tmp_fds;
+
+	tmp_fds = fds;
+	if (tmp_fds != NULL)
+	{
+		if (tmp_fds->fd_in == -1 || tmp_fds->fd_out == -1)
+			return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	char	*str;
@@ -148,29 +161,20 @@ int	main(int argc, char **argv, char **env)
 	ft_make_env_list(env, var);
 	var->export = (t_envp *)malloc(sizeof(t_envp *));
 	var->export = var->envp;
-	//elem = ft_lstnew(NULL);
-//	elem = NULL;
 	while (1)
 	{
 		str = readline("minishelchik-1.0$ ");
 		if (ft_strncmp(str, "\0", 1) != 0)
 			add_history (str);
-		//printf("a %s\n", str);
 		if (!ft_preparser(str))
 		{
 			fds = ft_parser_heredoc(str);
 			ft_parser_redirect(str, fds);
 			elem = ft_parser(str);
-//			printf("%s\n", elem->cmd);
-//			ft_printfds(fds);
 			ft_printlist(elem);
-			//		ft_exec_pipes(var, elem, fds);
 			ft_execute(var, elem, fds);
 		}
-		//ft_exec_cmd(elem, var);
-		//ft_exec_pipes(var, elem);
 		//free(str);
-		//rl_on_new_line();
 	}
 	
 	return (0);

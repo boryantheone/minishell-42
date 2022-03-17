@@ -98,4 +98,6 @@ int ft_limiter(char c);
 void ft_skip_quotes(char **str);
 void ft_printfds(t_fds *elem);
 
+//checks
+int	ft_check_fds(t_fds *fds);
 #endif 
