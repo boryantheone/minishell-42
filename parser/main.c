@@ -147,6 +147,12 @@ int	ft_check_fds(t_fds *fds)
 	return (EXIT_SUCCESS);
 }
 
+static int	eof_exit(void)
+{
+	write(1, "exit\n", 5);
+	return (var->state);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	char	*str;
@@ -166,20 +172,22 @@ int	main(int argc, char **argv, char **env)
 		str = readline("minishelchik-1.0$ ");
 		if (ft_strncmp(str, "\0", 1) != 0)
 			add_history (str);
-		else
+		if (str != NULL)
 		{
+			if (!ft_preparser(str))
+			{
+				fds = ft_parser_heredoc(str);
+				if (fds == NULL && var->state == 258)
+					continue;
+				ft_parser_redirect(str, fds);
+				elem = ft_parser(str);
+				ft_printlist(elem);
+				ft_execute(var, elem, fds);
+			}
 			free(str);
-			continue ;
 		}
-		if (!ft_preparser(str))
-		{
-			fds = ft_parser_heredoc(str);
-			ft_parser_redirect(str, fds);
-			elem = ft_parser(str);
-			ft_printlist(elem);
-			ft_execute(var, elem, fds);
-		}
-		//free(str);
+		else
+			return (eof_exit());
 	}
 	
 	return (0);
