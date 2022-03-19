@@ -53,15 +53,17 @@ char	*ft_parsing_path(char *cmd, char **envp);
 void	ft_execute(t_var *var, t_list *elem, t_fds *fds);
 int ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds);
 int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds);
-
+//handler_cmd
+int	ft_exec_buildin(t_list *elem, t_var *var);
+//handler_pipe
 //main/main
 void ft_error(void);
-//main/preparser
-int ft_preparser(char *line);
+
 
 //build_in
 int	ft_echo(t_list *elem);
 int	ft_cd(t_list *elem, t_var *var);
+int ft_display_error(char *cmd, char *str);
 int	ft_pwd(t_list *elem);
 int ft_export(t_list *elem, t_var *var);
 int ft_unset(t_var *var, t_list *elem);

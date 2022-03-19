@@ -35,12 +35,19 @@ int ft_pwd(t_list *elem)
 	return (EXIT_SUCCESS);
 }
 
-static int ft_display_error(char *str)
+int ft_display_error(char *cmd, char *str)
 {
-	ft_putstr_fd("minishelchik: cd: ", 2);
-	ft_putstr_fd(str, 2);
+	ft_putstr_fd("minishelchik: ", 2);
+	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": ", 2);
-	perror(NULL);
+	ft_putstr_fd(str, 2);
+	if(!(ft_strcmp(cmd, "cd")))
+	{
+		ft_putstr_fd(": ", 2);
+		perror(NULL);
+	}
+	else
+		ft_putstr_fd("\n", 2);
 	return (EXIT_FAILURE);
 }
 
@@ -101,7 +108,7 @@ int ft_cd(t_list *elem, t_var *var)
 		if (chdir(elem->cmds[1]) == -1)
 		{
 			write(1, "error\n", 6);
-			return (ft_display_error(elem->cmds[1]));
+			return (ft_display_error("cd", elem->cmds[1]));
 		}
 		else
 		{

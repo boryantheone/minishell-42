@@ -12,7 +12,8 @@ HEADER	=	minishell.h
 
 SRCS	=	parser/main.c parser/preparser.c parser/parser.c parser/parser_quotes.c\
 			parser/make_envp.c parser/parser_redirect.c parser/parser_fds.c parser/ft_parser_utils.c\
- 			run_commands/handler_pipe.c build_in/build_in.c run_commands/execute.c
+ 			run_commands/handler_pipe.c build_in/build_in.c run_commands/execute.c \
+ 			run_commands/handler_cmd.c
 
 OBJS	=	${SRCS:.c=.o}
 
