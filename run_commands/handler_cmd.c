@@ -33,6 +33,8 @@ reserved_stdin)
 		close (fds->fd_in);
 	dup2(reserved_stdin, STDIN_FILENO);
 	dup2(reserved_stdout, STDOUT_FILENO);
+	close(reserved_stdin);
+	close(reserved_stdout);
 	waitpid(pid, &exit_status, 0);
 	if (exit_status == 0)
 		return (0);
@@ -65,14 +67,12 @@ void	 ft_execute_terminal_cmd(t_list *elem, t_var *var, t_fds *fds, int reserved
 
 int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 {
-	int		i;
 	int		result;
 	int		reserved_stdout;
 	int		reserved_stdin;
 	
 	reserved_stdout = dup(STDOUT_FILENO);
 	reserved_stdin = dup(STDIN_FILENO);
-	i = 0;
 	if (ft_check_fds(fds) != -1)
 	{
 		if (fds->fd_in != 0)
@@ -80,15 +80,18 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 		if (fds->fd_out != 0)
 			dup2(fds->fd_out, STDOUT_FILENO);
 	}
-	elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
-	if (ft_strcmp(elem->path, "command not found") == 0)
-	{
-		ft_display_error(elem->cmd, elem->path);
-		return (0);
-	}
 	if ((result = ft_exec_buildin(elem, var)) >= 0)
 		return (result);
 	else
-		ft_execute_terminal_cmd(elem, var, fds, reserved_stdout, reserved_stdin);
+	{
+		elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
+		if (ft_strcmp(elem->path, "command not found") == 0)
+		{
+			ft_display_error(elem->cmd, elem->path);
+			return (0);
+		}
+		ft_execute_terminal_cmd(elem, var, fds, reserved_stdout,
+								reserved_stdin);
+	}
 	return (EXIT_SUCCESS);
 }

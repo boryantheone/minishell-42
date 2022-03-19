@@ -56,6 +56,7 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds);
 //handler_cmd
 int	ft_exec_buildin(t_list *elem, t_var *var);
 //handler_pipe
+void	ft_free(char **dst);
 //main/main
 void ft_error(void);
 
