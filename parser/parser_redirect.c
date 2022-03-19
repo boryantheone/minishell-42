@@ -73,8 +73,8 @@ int	ft_reverse_redirect(char **str, t_fds *fds)
 		temp++;
 	file_name = ft_parse_arguments(&temp);
 	fd = open(file_name, O_RDONLY, 0644);
-	if (fd == -1 && access(file_name, R_OK))
-		return (ft_perror(file_name, EXIT_FAILURE));
+	//if (fd == -1 && access(file_name, R_OK))
+	//	return (ft_perror(file_name, EXIT_FAILURE));
 	free(file_name);
 	*str = temp;
 	return (fd);

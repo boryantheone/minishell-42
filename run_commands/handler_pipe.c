@@ -43,7 +43,7 @@ char	*ft_parsing_path(char *cmd, char **envp)
 	return ("command not found");
 }
 
-int	execve_for_pipe(t_list *elem,t_var *var)
+void	execve_for_pipe(t_list *elem,t_var *var)
 {
 	if ((ft_exec_buildin(elem, var)) >= 0)
 		exit(EXIT_SUCCESS);

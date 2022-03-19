@@ -104,4 +104,5 @@ void ft_printfds(t_fds *elem);
 
 //checks
 int	ft_check_fds(t_fds *fds);
+int	ft_perror(char *err_message, int return_value);
 #endif 
