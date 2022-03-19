@@ -68,7 +68,7 @@ int	ft_return_child_exit_status(pid_t pid)
 	if (WIFSIGNALED(exit_status))
 		return(128 + exit_status);
 	error_state = WEXITSTATUS(exit_status);
-	return (error_state);
+	return (1);
 }
 
 void	ft_execute_terminal_cmd(t_list *elem, t_var *var, t_fds *fds)
@@ -77,16 +77,23 @@ void	ft_execute_terminal_cmd(t_list *elem, t_var *var, t_fds *fds)
 	int		reserved_stdout;
 
 	reserved_stdout = dup(1);
-	if ((pid = fork()) == 0)
+	pid = fork();
+	if (pid == 0)
 	{
 		if ((execve(elem->path, elem->cmds, var->envp_for_execve)) == -1)
 		{
-			perror("Error: ");
+			perror("Error:");
 			exit(EXIT_FAILURE);
 		}
 		exit(EXIT_SUCCESS);
 	}
-	var->state = ft_return_child_exit_status(pid);
+	else
+	{
+		dup2(reserved_stdout, 1);
+		close(reserved_stdout);
+		var->state = ft_return_child_exit_status(pid);
+	}
+	exit(EXIT_FAILURE);
 }
 
 int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)

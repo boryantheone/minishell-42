@@ -124,6 +124,8 @@ int	ft_heredoc(char **str)
 	}
 	unlink("here_document");
 	fd_heredoc = open("here_document", O_CREAT | O_APPEND | O_WRONLY, 0644);
+	if (fd_heredoc == -1)
+		return (ft_perror("heredoc", -1));
 	stop = ft_strndup(tmp, index);
 	printf("stop %s\n", stop);
 	stop = ft_remove_quotes(stop);
