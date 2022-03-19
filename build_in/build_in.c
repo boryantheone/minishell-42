@@ -167,7 +167,7 @@ static int ft_lstsize_env(t_envp *lst)
 	return (i);
 }
 
-static t_envp *ft_get_min_value(t_envp *export_list)
+static t_envp *ft_get_min_value(t_envp *export_list, t_envp *pred_min)
 {
 	t_envp *min;
 	t_envp *tmp;
@@ -175,7 +175,7 @@ static t_envp *ft_get_min_value(t_envp *export_list)
 	int i;
 
 	i = 0;
-	min = NULL;
+	min = pred_min;
 	size = ft_lstsize_env(export_list);
 	tmp = export_list;
 	while (i < size - 1 && tmp->next != NULL)
@@ -198,7 +198,8 @@ static void ft_print_sorted_envp_list(t_envp *export_list)
 {
 	t_envp *tmp;
 
-	tmp = ft_get_min_value(export_list);
+	tmp = ft_get_min_value(export_list, NULL);
+//	printf("tmp %s", tmp->var);
 	while (tmp != NULL)
 	{
 		if (tmp->var != NULL && tmp->val != NULL)
@@ -207,6 +208,7 @@ static void ft_print_sorted_envp_list(t_envp *export_list)
 			printf("declare -x %s\n", tmp->var);
 		tmp = tmp->next;
 	}
+//	tmp = ft_get_min_value(export_list, tmp);
 }
 
 int ft_export(t_list *elem, t_var *var)

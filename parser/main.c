@@ -172,6 +172,8 @@ int	main(int argc, char **argv, char **env)
 		str = readline("minishelchik-1.0$ ");
 		if (ft_strncmp(str, "\0", 1) != 0)
 			add_history (str);
+		else
+			continue;
 		if (str != NULL)
 		{
 			if (!ft_preparser(str))
@@ -181,14 +183,15 @@ int	main(int argc, char **argv, char **env)
 					continue;
 				ft_parser_redirect(str, fds);
 				elem = ft_parser(str);
-				ft_printlist(elem);
 				ft_execute(var, elem, fds);
+//				free(fds);
+//				ft_lstclear(&elem);
 			}
-			free(str);
+			//free(str);
 		}
 		else
 			return (eof_exit());
 	}
-	
+	free(var);
 	return (0);
 }
