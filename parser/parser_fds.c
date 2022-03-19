@@ -29,26 +29,6 @@ void	ft_fdsadd_back(t_fds **lst, t_fds *new)
 	tmp -> next = new;
 }
 
-void ft_printfds(t_fds *elem)
-{
-	t_fds *tmp;
-	
-	tmp = elem;
-//	write(2, "++++++++++++++++++++++++\n", 26);
-	if(elem)
-	{
-		while (tmp != NULL)
-		{
-			printf("fd_out(write) %d, fd_in(read) %d heredoc %d "
-				   "|", tmp->fd_out, tmp->fd_in, tmp->fd_heredoc);
-			tmp = tmp->next;
-		}
-	}
-	else
-		printf("elem not found\n");
-	printf("\n----------------------\n");
-}
-
 char	*ft_remove_quotes(char *str)
 {
 	int		index;
@@ -78,16 +58,6 @@ char	*ft_remove_quotes(char *str)
 	return (result);
 }
 
-int ft_limiter(char c)
-{
-	if ((c >= 33 && c <= 47) || (c >= 58 && c <= 62) ||\
-		(c >= 91 && c <= 94) || (c >= 124 && c <= 126) \
-		|| c == 64)
-		return (1);
-	else
-		return (0);	
-}
-
 char	*ft_replace_env(char *str)
 {
 	int		index;
@@ -97,7 +67,7 @@ char	*ft_replace_env(char *str)
 
 	index = 0;
 	result1 = NULL;
-	printf("1 str search index $ %s\n", str);
+//	printf("1 str search index $ %s\n", str);
 	while(str[index] && str[index] != '$')
 		index++;
 	if (index)	
@@ -105,32 +75,25 @@ char	*ft_replace_env(char *str)
 	else
 		result = ft_strdup("\0");
 	str = str + index;
-	printf("1 str %s\n", str);
-	printf("1 result %s\n", result);
-	// while (str[end] && ft_limiter(str[end]))
-	// 	end++;
+//	printf("1 str %s\n", str);
+//	printf("1 result |%s|\n", result);
 	result1 = ft_parse_with_envp(&str, 1);
-	printf("1 result1 after perse env %s\n", result1);
+//	printf("1 result1 after perse env %s\n", result1);
 	if (!result1)
 	{
 		free(result);
 		return ("\0");
-	}	
+	}
 	result = ft_strjoin(result, result1);
-//	printf("result after join %s\n", result);
-	printf("1 str after join %s\n", str);
 	free(result1);
 	index = 0;
 	while (str[index] != '\0')
 		index++;
 	result1 = ft_strndup(str, index);
-	printf("1 index %d\n", index);
-	printf("1 result1 %s\n", result1);
 	result = ft_strjoin(result, result1);
-	printf("1 result %s\n", result);
 	free(result1);
 //	printf("resul replace %s\n", result);
-	write(1, "=====================\n", 21);
+//	write(1, "====================\n", 21);
 	return (result);
 }
 
@@ -146,10 +109,10 @@ int	ft_heredoc(char **str)
 	if (fd_heredoc != 0)
 		close(fd_heredoc);
 	tmp = *str + 2;
-	printf("tmp %s\n", tmp);
+//	printf("tmp %s\n", tmp);
 	while ((*tmp == ' ' || *tmp == '\t') && *tmp != '\0')
 		tmp++;
-	while (tmp[index] != ' ' && tmp[index] != '\0')
+	while (tmp[index] != ' ' && tmp[index] != '\0' && tmp[index] != '|')
 		index++;
 	if (!index)
 	{
@@ -158,20 +121,18 @@ int	ft_heredoc(char **str)
 		return (-1);
 	}
 	unlink("here_document");
-	fd_heredoc = open("here_document", O_CREAT | O_APPEND | O_WRONLY, 0644);
+	fd_heredoc = open("here_document", O_CREAT | O_TRUNC | O_RDWR, 00600);
+	if (fd_heredoc == -1)
+		return (ft_perror("heredoc", -1));
 	stop = ft_strndup(tmp, index);
+//	printf("stop %s\n", stop);
 	stop = ft_remove_quotes(stop);
-	printf("stop %s\n", stop);
 	result = readline("> ");
-	printf("result|%s\n", result);
 	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
 	{
 		while ((ft_strchr(result, '$')))
-		{
 			result = ft_replace_env(result);
-			printf("RESULT %s\n", result);
-		}	
-		write(1, result, ft_strlen(result));
+//		write(1, result, ft_strlen(result));
 		write(fd_heredoc, result, ft_strlen(result));
 		write(fd_heredoc, "\n", 1);
 		result = readline("> ");
@@ -180,7 +141,7 @@ int	ft_heredoc(char **str)
 	return(fd_heredoc);
 }
 
-void ft_parser_fds(char *str)
+t_fds	*ft_parser_heredoc(char *str)
 {
 	t_fds	*fds;
 	static int	fd_heredoc;
@@ -192,21 +153,25 @@ void ft_parser_fds(char *str)
 		if (*str == '|')
 		{
 			ft_fdsadd_back(&fds, ft_fdsnew(0,0,fd_heredoc));
+			fd_heredoc = 0;
 			str++;
 		}
+		if (*str == '\"' || *str == '\'')
+			ft_skip_quotes(&str);
 		else if (*str == '<' && *(str + 1) == '<')
 		{
 			fd_heredoc = ft_heredoc(&str);
 			if(fd_heredoc == -1)
-				break ;
-//			write(1, "<\n", 2);
+			{
+				var->state = 258;
+				return (NULL);
+			}
 		}
 		else
 			str++;
 	}
 	if (*str == '\0')
 		ft_fdsadd_back(&fds, ft_fdsnew(0,0,fd_heredoc));
-	ft_printfds(fds);
-	printf("end of heredoc perser\n");
+	return (fds);
 }
 

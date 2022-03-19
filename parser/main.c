@@ -12,13 +12,11 @@ void ft_printlist(t_list *elem)
 	
 	tmp = elem;
 //	write(2, "++++++++++++++++++++++++\n", 26);
-	if(elem)
+	if(tmp)
 	{
 		while (tmp != NULL)
 		{
-			printf("cmds %s,fd_out(write) %d, fd_in(read) %d heredoc %d "
-					   "|", \
-				tmp->cmds[0], tmp->fd_out, tmp->fd_in, tmp->have_heredoc);
+			printf("cmds %s|", tmp->cmd);
 			tmp = tmp->next;
 		}
 	}
@@ -115,7 +113,7 @@ int	ft_make_env_list(char **env, t_var  *var)
 
 void ft_printlist_envp(t_envp *elem)
 {
-	while(elem)
+	while(elem != NULL)
 	{
 		if (elem->val && elem->var)
 			printf("%s=%s\n", elem->var, elem->val);
@@ -123,7 +121,7 @@ void ft_printlist_envp(t_envp *elem)
 			printf("%s=%s\n", elem->var, elem->val);
 		elem = elem->next;
 	}
-	printf("%s=%s\n", elem->var, elem->val);
+	//printf("%s=%s\n", elem->var, elem->val);
 }
 
 // void ft_printlist_envp(t_var *var)
@@ -136,40 +134,63 @@ void ft_printlist_envp(t_envp *elem)
 // 	printf("var %s\nval %s\n", var->envp->var, var->envp->val);
 // }
 
+int	ft_check_fds(t_fds *fds)
+{
+	t_fds *tmp_fds;
+
+	tmp_fds = fds;
+	if (tmp_fds != NULL)
+	{
+		if (tmp_fds->fd_in == -1 || tmp_fds->fd_out == -1)
+			return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}
+
+static int	eof_exit(void)
+{
+	write(1, "exit\n", 5);
+	return (var->state);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	char	*str;
 	t_list	*elem;
-	t_list	*elem2;
-	t_list	*elem3;
+	t_fds	*fds;
 
 	var = (t_var *)malloc(sizeof(t_var));
 	var->envp = NULL;
+	var->envp_for_execve = env;
 	var->export = NULL;
 	var->state = 0;
 	ft_make_env_list(env, var);
 	var->export = (t_envp *)malloc(sizeof(t_envp *));
 	var->export = var->envp;
-	//elem = ft_lstnew(NULL);
-	elem = NULL;
 	while (1)
 	{
-		str = readline("minishelchik-1.0$ ");
+		str = readline("\033[1;35mminishelchik-1.0$ \033[0m");
 		if (ft_strncmp(str, "\0", 1) != 0)
 			add_history (str);
-		//printf("a %s\n", str);
-		if (!ft_preparser(str))
+		else
+			continue;
+		if (str != NULL)
 		{
-			ft_parser(str, elem);
-			//ft_printlist(elem);
-			//		ft_exec_pipes(var, elem, fds);
-			ft_execute(var, elem);
+			if (!ft_preparser(str))
+			{
+				fds = ft_parser_heredoc(str);
+				if (fds == NULL && var->state == 258)
+					continue;
+				ft_parser_redirect(str, fds);
+				elem = ft_parser(str);
+				ft_execute(var, elem, fds);
+//				free(fds);
+//				ft_lstclear(&elem);
+			}
+			free(str);
 		}
-		//ft_exec_cmd(elem, var);
-		//ft_exec_pipes(var, elem);
-		//free(str);
-		//rl_on_new_line();
+		else
+			return (eof_exit());
 	}
-	
 	return (0);
 }

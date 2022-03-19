@@ -1,23 +1,16 @@
 #include "../minishell.h"
 
-int	ft_exec_buildin(t_list *elem, t_var *var)
+void	ft_free(char **dst)
 {
-
-	if (!ft_strcmp(elem->cmd, "pwd"))
-		return(ft_pwd(elem));
-	else if (!ft_strcmp(elem->cmd, "cd"))
-		return(ft_cd(elem, var));
-	else if (!ft_strcmp(elem->cmd, "echo"))
-		return(ft_echo(elem));
-	else if (!ft_strcmp(elem->cmd, "export"))
-		return(ft_export(elem, var));
-	else if (!ft_strcmp(elem->cmd, "unset"))
-		return(ft_unset(var, elem));
-	else if (!ft_strcmp(elem->cmd, "env"))
-		return(ft_env(elem, var));
-	else if (!ft_strcmp(elem->cmd, "exit"))
-		return(ft_exit(elem));
-	return (-1);
+	size_t	i;
+	
+	i = 0;
+	while (dst[i])
+	{
+		free(dst[i]);
+		i++;
+	}
+	free(dst);
 }
 
 char	*ft_parsing_path(char *cmd, char **envp)
@@ -26,7 +19,7 @@ char	*ft_parsing_path(char *cmd, char **envp)
 	char	*cmdpath;
 	char	*path;
 	int		i;
-
+	
 	i = 0;
 	while (envp[i] != ft_strnstr(envp[i], "PATH=", 5))
 		i++;
@@ -38,62 +31,39 @@ char	*ft_parsing_path(char *cmd, char **envp)
 		path = ft_strjoin(paths[i], "/");
 		cmdpath = ft_strjoin(path, cmd);
 		free(path);
-		if (access(cmdpath, 0) == 0)
+		if (access(cmdpath, R_OK) == 0)
 		{
 			ft_free(paths);
 			return (cmdpath);
 		}
+		free(cmdpath);
 		i++;
 	}
 	ft_free(paths);
-	return (0);
-}
-
-int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
-{
-	int		i;
-	int		result;
-	pid_t	pid;
-
-	i = 0;
-	elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
-	printf("path %s", elem->path);
-	if (fds->fd_in != -1)
-		dup2(fds->fd_in, STDIN_FILENO);
-	if (fds->fd_out != -1)
-		dup2(fds->fd_out, STDOUT_FILENO);
-	if ((result = ft_exec_buildin(elem, var)) >= 0)
-		return (result);
-	else
-	{ 
-		if ((pid = fork()) == 0)
-		{
-			if ((execve(elem->path, elem->cmds, var->envp_for_execve)) == -1)
-			{
-				perror("Error: ");
-				exit(0);
-			}
-			exit(1);
-		}
-		waitpid(pid, NULL, 0);
-	}
-	return (0);
+	return ("command not found");
 }
 
 void	execve_for_pipe(t_list *elem,t_var *var)
 {
 	if ((ft_exec_buildin(elem, var)) >= 0)
-		exit(1);
+		exit(EXIT_SUCCESS);
 	else
-		execve(elem->path, elem->cmds, var->envp_for_execve);
-	exit(EXIT_SUCCESS);
+	{
+		if ((execve(elem->path, elem->cmds, var->envp_for_execve)) == -1)
+		{
+			perror("Error: ");
+			exit(EXIT_FAILURE);
+		}
+		exit(EXIT_SUCCESS);
+	}
+
 }
 
-void	ft_launch_proc(t_var *var, t_list *elem)
+void	ft_launch_proc(t_var *var, t_list *elem, t_fds *fds, int i, \
+						int reserved_stdout, int reserved_stdin)
 {
 	int		fd[2];
 	pid_t	pid;
-	int		status;
 
 	if (pipe(fd) < 0)
 	{
@@ -106,41 +76,84 @@ void	ft_launch_proc(t_var *var, t_list *elem)
 	{
 		close(fd[0]);
 		dup2(fd[1], STDOUT_FILENO);
+		if (fds->fd_out != 0)
+		{
+			dup2(fds->fd_out, STDOUT_FILENO);
+			close(fds->fd_out);
+		}
+		close(fd[1]);
+		//sleep(200);
 		execve_for_pipe(elem, var);
 	}
-	waitpid(-1, &status, 0);
-	dup2(fd[0], STDIN_FILENO);
-	close(fd[1]);
-	close(fd[0]);
+	else
+	{
+		close(fd[1]);
+		dup2(fd[0], STDIN_FILENO);
+		if (fds->next->fd_in != 0)
+		{
+			dup2(fds->next->fd_in, STDIN_FILENO);
+			close(fds->next->fd_in);
+		}
+		close(fd[0]);
+	}
 }
 
-int ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
+int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 {
-	int		i;
 	t_list	*tmp;
-	int		fd_close;
 	int		status;
 	t_fds	*tmp_fds;
-
-	i = 0;
+	int		reserved_stdout;
+	int		reserved_stdin;
+	int 	i;
+	int		fd;
+	pid_t	pidor;
+	pid_t 	pid;
+	
+	reserved_stdout = dup(STDOUT_FILENO);
+	reserved_stdin = dup(STDIN_FILENO);
 	tmp = elem;
 	tmp_fds = fds;
-	if (fds->fd_in != -1)
+	i = 0;
+	if (fds->fd_in != 0)
+	{
 		dup2(fds->fd_in, STDIN_FILENO);
-	while (fds->next != NULL)
+		close(fds->fd_in);
+	}
+	else
+		dup2(reserved_stdin, STDIN_FILENO);
+	while (tmp_fds->next != NULL)
 	{
 		tmp->path = ft_parsing_path(tmp->cmd, var->envp_for_execve);
-		ft_launch_proc(var, tmp);
+		ft_launch_proc(var, tmp, tmp_fds, i, \
+			reserved_stdout, reserved_stdin);
 		tmp = tmp->next;
 		tmp_fds = tmp_fds->next;
+		i++;
 	}
-	if (tmp_fds->fd_out != -1)
-		dup2(tmp_fds->fd_out, STDIN_FILENO);
+//	if (tmp_fds->fd_in != 0)
+//	{
+//		write(1, "change fd_in\n", 13);
+//		dup2(tmp_fds->fd_in, STDIN_FILENO);
+//		close(tmp_fds->fd_in);
+//	}
+//	else
+//		dup2(fd, STDIN_FILENO);
+	dup2(reserved_stdout, STDOUT_FILENO);
+	if (tmp_fds->fd_out != 0)
+	{
+		dup2(tmp_fds->fd_out, STDOUT_FILENO);
+		close(tmp_fds->fd_out);
+	}
+	tmp->path = ft_parsing_path(tmp->cmd, var->envp_for_execve);
 	execve_for_pipe(tmp, var);
-	waitpid(-1, &status, 0);
-	// if (WIFEXITED(status))
-	write(1, "3333", 4);
-	return (1);
-	//exit(EXIT_SUCCESS);
+	dup2(reserved_stdin, STDIN_FILENO);
+	dup2(reserved_stdout, STDOUT_FILENO);
+	close(reserved_stdin);
+	close(reserved_stdout);
+	pidor = waitpid(-1, &status, 0);
+	while (pidor != -1)
+		pidor = waitpid(-1, &status, 0);
+	return (EXIT_SUCCESS);
 }
 

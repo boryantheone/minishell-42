@@ -14,7 +14,7 @@ void	*ft_realloc(char *result, int size)
 	temp = result;
 	if (result != NULL)
 	{
-		size += ft_strlen(result);
+		size += (int)ft_strlen(result);
 		result = (char *)ft_calloc(1, (size_t)size);
 		ft_strcpy(result, temp);
 		free(temp);
@@ -74,13 +74,9 @@ char	*ft_single_parse(char **str)
 	{
 		temp = NULL;
 		if (**str == '$')
-		{
-			//write(1,"@\n",2);
 			temp = ft_parse_with_envp(str, 0);
-			printf("$ temp %s\n", temp);
-		}
 		if (temp)
-			i = ft_strlen(temp);
+			i = (int)ft_strlen(temp);
 		else
 			i = 1;
 		result = ft_realloc(result, i + 1);
@@ -93,7 +89,6 @@ char	*ft_single_parse(char **str)
 		result[index] = '\0';
 	else
 		result = ft_strdup("\0");
-	//printf("RESULT %s\n", result);
 	return (result);
 }
 
@@ -129,69 +124,44 @@ char	*ft_parse_arguments(char **str)
 		if (temp)
 			shift += add_in_cmds(&result, temp, shift);
 	}
-	//printf("res %s\n", result);
 	if (result)
 		result[shift] = '\0';
 	return (result);
 }
 
-void	*ft_parser(char *str, t_list *elem)
+t_list	*ft_parser(char *str)
 {
 	char		**arguments;
 	char		*tmp;
 	int			i;
-	int			fd_out;
-	int			fd_in;
-	int 		have_heredoc;
+	t_list		*elem;
 
 	i = 0;
-	fd_out = -1;
-	fd_in = -1;
-	have_heredoc = 0;
-//	begin = NULL;
 	arguments = NULL;
-	ft_parser_fds(str);
-//	while (*str)
-//	{
-//        // write (1, "z\n", 2);
-//		while (*str == ' ')
-//			str++;
-//		//printf("STR %s\n", str);
-//		if (*str == '|')
-//		{
-//			ft_lstadd_back(&elem, ft_lstnew(arguments));
-//			printf("have pipe\n");
-//			arguments = NULL;
-//			ft_printlist(elem);
-//			i = 0;
-//			fd_in = -1;
-//			fd_out = -1;
-//			have_heredoc = 0;
-//			str++;
-//		}
-//		if (*str == '>')
-//		{
-//			fd_out = ft_forward_redirect(&str);
-////			write(1, ">\n", 2);
-//		}
-//		if (*str == '<')
-//		{
-//			fd_in = ft_reverse_redirect(&str, &have_heredoc);
-////			write(1, "<\n", 2);
-//		}
-//		if ((tmp = ft_parse_arguments(&str)))
-//		{
-//			//("TMP %s\n", tmp);
-//			arguments = ft_double_realloc(arguments, 1);
-//			arguments[i] = tmp;
-//			printf("CMDS % d %s\n", i, arguments[i]);
-//			i++;
-//		}
-//	}
-//	if (*str == '\0')
-//	{
-//		ft_lstadd_back(&elem, ft_lstnew(arguments));
-//	}
-//	ft_printlist(elem);
+	elem = NULL;
+	while (*str)
+	{
+		while (*str == ' ')
+			str++;
+		if (*str == '|')
+		{
+			ft_lstadd_back(&elem, ft_lstnew(arguments));
+			arguments = NULL;
+			i = 0;
+			str++;
+		}
+		if (*str == '>' || *str == '<')
+			ft_skip_redirect(&str);
+		if ((tmp = ft_parse_arguments(&str)))
+		{
+			arguments = ft_double_realloc(arguments, 1);
+			arguments[i] = tmp;
+			i++;
+		}
+	}
+	if (*str == '\0')
+		ft_lstadd_back(&elem, ft_lstnew(arguments));
+	ft_printlist(elem);
 	printf("end of parser\n");
+	return (elem);
 }

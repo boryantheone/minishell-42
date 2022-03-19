@@ -4,11 +4,11 @@
 char	*ft_strndup(char *src, int len)
 {
 	char	*result;
-	size_t	i;
-	size_t	str_len;
+	int		i;
+	int		str_len;
 
 	i = 0;
-	str_len = ft_strlen(src);
+	str_len = (int)ft_strlen(src);
 	if (len > str_len)
 		len = str_len;
 	if (!(result = (char *)malloc(sizeof(char) * (len + 1))))
@@ -56,31 +56,23 @@ char *ft_parse_double_quote(char **str)
 	++(*str);
 	index = 0;
 	result = NULL;
-	printf("%s\n", result);
+//	printf("%s\n", result);
 	while (**str && **str != '\"')
 	{
 		temp = NULL;
-//		write(1, "!\n",2);
 		if (**str == '$')
 		{
 //			write(1,"@\n",2);
 			temp = ft_parse_with_envp(str, 0);
-			printf("$ temp %s\n", temp);
+//			printf("$ temp %s\n", temp);
 		}
 		i = (temp) ? ft_strlen(temp) : 1;
-		printf("str quote %s\n", *str);
+//		printf("str quote %s\n", *str);
 		result = ft_realloc(result, i + 1);
 		if (temp)
-		{
-			write(1, "1quote\n", 7);
 			index += ft_add_in_result(result, temp, i, index);
-			write(1, "3quote\n", 7);
-		}
 		else
-		{
-			write(1,&index,2);
 			result[index++] = *(*str)++;
-		}
 	}
 	if (**str == '\"')
 		(*str)++;
