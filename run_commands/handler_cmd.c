@@ -27,10 +27,10 @@ reserved_stdin)
 	int	exit_status;
 	int	error_state;
 	
-	if (fds->fd_out != 0)
-		close (fds->fd_out);
-	if (fds->fd_in != 0)
-		close (fds->fd_in);
+//	if (fds->fd_out != 0)
+//		close (fds->fd_out);
+//	if (fds->fd_in != 0)
+//		close (fds->fd_in);
 	dup2(reserved_stdin, STDIN_FILENO);
 	dup2(reserved_stdout, STDOUT_FILENO);
 	close(reserved_stdin);
@@ -75,6 +75,7 @@ void	 ft_execute_terminal_cmd(t_list *elem, t_var *var, t_fds *fds, int reserved
 	pid = fork();
 	if (pid == 0)
 	{
+		sleep(200);
 		if ((execve(elem->path, elem->cmds, var->envp_for_execve)) == -1)
 		{
 			perror("Error: ");
@@ -98,14 +99,22 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 	if (ft_check_fds(fds) != -1)
 	{
 		if (fds->fd_in != 0)
+		{
 			dup2(fds->fd_in, STDIN_FILENO);
+			close(fds->fd_in);
+		}
 		if (fds->fd_out != 0)
+		{
 			dup2(fds->fd_out, STDOUT_FILENO);
+			close(fds->fd_out);
+		}
 	}
 	if ((result = ft_exec_buildin(elem, var)) >= 0)
 		return (result);
 	else
 	{
+//		if ((ft_strchr(elem->cmd, '/')))
+//			ft_check_acces_dir()
 		elem->path = ft_parsing_path(elem->cmd, var->envp_for_execve);
 		if (ft_strcmp(elem->path, "command not found") == 0)
 		{
