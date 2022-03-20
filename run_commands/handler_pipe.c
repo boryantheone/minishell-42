@@ -59,7 +59,7 @@ void	execve_for_pipe(t_list *elem,t_var *var)
 
 }
 
-void	ft_launch_proc(t_var *var, t_list *elem, t_fds *fds, int i, \
+void	ft_launch_proc(t_var *var, t_list *elem, t_fds *fds,\
 						int reserved_stdout, int reserved_stdin)
 {
 	int		fd[2];
@@ -106,8 +106,7 @@ int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 	int		reserved_stdin;
 	int 	i;
 	int		fd;
-	pid_t	pidor;
-	pid_t 	pid;
+	pid_t	pid;
 	
 	reserved_stdin = dup(STDIN_FILENO);
 	reserved_stdout = dup(STDOUT_FILENO);
@@ -124,7 +123,7 @@ int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 	while (tmp_fds->next != NULL)
 	{
 		tmp->path = ft_parsing_path(tmp->cmd, var->envp_for_execve);
-		ft_launch_proc(var, tmp, tmp_fds, i, \
+		ft_launch_proc(var, tmp, tmp_fds, \
 			reserved_stdout, reserved_stdin);
 		tmp = tmp->next;
 		tmp_fds = tmp_fds->next;
@@ -150,9 +149,9 @@ int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 	dup2(reserved_stdout, STDOUT_FILENO);
 	close(reserved_stdin);
 	close(reserved_stdout);
-	pidor = waitpid(-1, &status, 0);
-	while (pidor != -1)
-		pidor = waitpid(-1, &status, 0);
+	pid = waitpid(-1, &status, 0);
+	while (pid != -1)
+		pid = waitpid(-1, &status, 0);
 	return (EXIT_SUCCESS);
 }
 
