@@ -22,6 +22,8 @@ char	*ft_strnstr(const char *haystack, const char *needle, size_t len)
 	str1 = (char *)haystack;
 	str2 = (char *)needle;
 	i = 0;
+	if (str1 == NULL)
+		return (NULL);
 	len_h = ft_strlen((char *)needle);
 	if (len_h == 0 || str1 == str2)
 		return ((char *)(str1 + i));

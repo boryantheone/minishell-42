@@ -16,7 +16,7 @@ void ft_printlist(t_list *elem)
 	{
 		while (tmp != NULL)
 		{
-			printf("cmds %s|", tmp->cmd);
+			printf("cmds %s|", tmp->cmds[0]);
 			tmp = tmp->next;
 		}
 	}
@@ -142,20 +142,25 @@ static int	eof_exit(void)
 	return (var->state);
 }
 
+void ft_init_var(char **env)
+{
+	var = (t_var *)malloc(sizeof(t_var));
+	var->state = 0;
+	var->envp = NULL;
+	var->envp_for_execve = env;
+	var->export = NULL;
+	ft_make_env_list(env, var);
+	var->export = (t_envp *)malloc(sizeof(t_envp *));
+	var->export = var->envp;
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	char	*str;
 	t_list	*elem;
 	t_fds	*fds;
 
-	var = (t_var *)malloc(sizeof(t_var));
-	var->envp = NULL;
-	var->envp_for_execve = env;
-	var->export = NULL;
-	var->state = 0;
-	ft_make_env_list(env, var);
-	var->export = (t_envp *)malloc(sizeof(t_envp *));
-	var->export = var->envp;
+	ft_init_var(env);
 	while (1)
 	{
 		str = readline("\033[1;35mminishelchik-1.0$ \033[0m");
