@@ -106,8 +106,8 @@ int	ft_heredoc(char **str)
 	int 			index;
 	
 	index = 0;
-	if (fd_heredoc != 0)
-		close(fd_heredoc);
+//	if (fd_heredoc != 0)
+//		close(fd_heredoc);
 	tmp = *str + 2;
 //	printf("tmp %s\n", tmp);
 	while ((*tmp == ' ' || *tmp == '\t') && *tmp != '\0')
@@ -120,8 +120,8 @@ int	ft_heredoc(char **str)
 		var->state = 258;
 		return (-1);
 	}
-	unlink("here_document");
-	fd_heredoc = open("here_document", O_CREAT | O_TRUNC | O_RDWR, 00600);
+	unlink(".here_document");
+	fd_heredoc = open(".here_document", O_RDWR | O_CREAT | O_TRUNC, 0777);
 	if (fd_heredoc == -1)
 		return (ft_perror("heredoc", -1));
 	stop = ft_strndup(tmp, index);

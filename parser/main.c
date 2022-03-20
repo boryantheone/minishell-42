@@ -121,18 +121,7 @@ void ft_printlist_envp(t_envp *elem)
 			printf("%s=%s\n", elem->var, elem->val);
 		elem = elem->next;
 	}
-	//printf("%s=%s\n", elem->var, elem->val);
 }
-
-// void ft_printlist_envp(t_var *var)
-// {
-// 	while(var->envp->next)
-// 	{
-// 		printf("var %s val %s\n", var->envp->var, var->envp->val);
-// 		var->envp = var->envp->next;
-// 	}
-// 	printf("var %s\nval %s\n", var->envp->var, var->envp->val);
-// }
 
 int	ft_check_fds(t_fds *fds)
 {
@@ -169,7 +158,7 @@ int	main(int argc, char **argv, char **env)
 	var->export = var->envp;
 	while (1)
 	{
-		str = readline("minishelchik-1.0$ ");
+		str = readline("\033[1;35mminishelchik-1.0$ \033[0m");
 		if (ft_strncmp(str, "\0", 1) != 0)
 			add_history (str);
 		else
@@ -187,11 +176,10 @@ int	main(int argc, char **argv, char **env)
 //				free(fds);
 //				ft_lstclear(&elem);
 			}
-			//free(str);
+			free(str);
 		}
 		else
 			return (eof_exit());
 	}
-	free(var);
 	return (0);
 }
