@@ -121,18 +121,7 @@ void ft_printlist_envp(t_envp *elem)
 			printf("%s=%s\n", elem->var, elem->val);
 		elem = elem->next;
 	}
-	//printf("%s=%s\n", elem->var, elem->val);
 }
-
-// void ft_printlist_envp(t_var *var)
-// {
-// 	while(var->envp->next)
-// 	{
-// 		printf("var %s val %s\n", var->envp->var, var->envp->val);
-// 		var->envp = var->envp->next;
-// 	}
-// 	printf("var %s\nval %s\n", var->envp->var, var->envp->val);
-// }
 
 int	ft_check_fds(t_fds *fds)
 {
