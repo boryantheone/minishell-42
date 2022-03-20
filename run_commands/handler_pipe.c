@@ -23,7 +23,7 @@ char	*ft_parsing_path(char *cmd, char **envp)
 	i = 0;
 	if (cmd == NULL || ft_strchr(cmd, '/') != 0)
 		return (cmd);
-	while (envp[i] != ft_strnstr(envp[i], "PATH=", 5))
+	while (envp[i] && envp[i] != ft_strnstr(envp[i], "PATH=", 5))
 		i++;
 	if ((ft_strnstr(envp[i], "PATH=", 5)) == NULL)
 		return ("command not found");
@@ -61,6 +61,7 @@ void	execve_for_pipe(t_list *elem)
 			ft_error_message_and_exit(127, elem->cmd, 0);
 		execve(elem->path, elem->cmds, new_envp);
 		ft_perror(elem->cmd, 1);
+		ft_free(new_envp);
 		exit(var->state);
 	}
 }
@@ -92,7 +93,7 @@ void	ft_launch_proc(t_list *elem, t_fds *fds, int i, \
 	}
 	else
 	{
-		wait(0);
+		usleep(100);
 		close(fd[1]);
 		dup2(fd[0], STDIN_FILENO);
 		if (fds->next->fd_in != 0)

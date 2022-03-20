@@ -50,7 +50,6 @@ char	**ft_double_realloc(char **cmds, int size)
 			cmds[i] = temp[i];
 			i++;
 		}
-		printf("arg - %s\n", cmds[i]);
 		cmds[i] = NULL;
 		free(temp);
 	}
@@ -163,6 +162,8 @@ t_list	*ft_parser(char *str)
 	}
 	if (*str == '\0')
 		ft_lstadd_back(&elem, ft_lstnew(arguments));
+//	if (arguments)
+//		ft_free(arguments);
 	ft_printlist(elem);
 	printf("end of parser\n");
 	return (elem);

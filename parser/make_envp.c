@@ -26,6 +26,7 @@ char	*ft_parse_with_envp(char **str, int flag)
 		i++;
 	temp_symbol = temp[i];
 	temp[i] = 0;
+	printf("state %d\n", var->state);
 	if (!ft_strncmp(temp, "?", 1))
 		result = ft_itoa(var->state);
 	else if (i == 0 && flag == 0)
