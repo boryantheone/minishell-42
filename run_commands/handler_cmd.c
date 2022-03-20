@@ -96,6 +96,8 @@ void	 ft_execute_terminal_cmd(t_list *elem, char **new_envp, t_fds *fds, int res
 		var->state = ft_return_child_exit_status(pid, fds, reserved_stdout,
 												 reserved_stdin);
 }
+//
+//int ft_check
 
 int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 {
