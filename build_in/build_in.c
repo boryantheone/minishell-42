@@ -36,6 +36,7 @@ int ft_pwd(t_list *elem)
 
 int ft_display_error(char *cmd, char *str)
 {
+	var->state = 127;
 	ft_putstr_fd("minishelchik: ", 2);
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": ", 2);

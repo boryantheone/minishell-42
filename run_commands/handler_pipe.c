@@ -21,8 +21,10 @@ char	*ft_parsing_path(char *cmd, char **envp)
 	int		i;
 	
 	i = 0;
-	while (envp[i] != ft_strnstr(envp[i], "PATH=", 5))
+	while (envp[i] && envp[i] != ft_strnstr(envp[i], "PATH=", 5))
 		i++;
+	if ((ft_strnstr(envp[i], "PATH=", 5)) == NULL)
+		return ("command not found");
 	path = envp[i];
 	i = 0;
 	paths = ft_split(path + 5, ':');
@@ -49,9 +51,10 @@ void	execve_for_pipe(t_list *elem, char **new_envp)
 		exit(EXIT_SUCCESS);
 	else
 	{
+		//sleep(200);
 		if ((execve(elem->path, elem->cmds, new_envp)) == -1)
 		{
-			perror("Error: ");
+			ft_display_error(elem->cmd, elem->path);
 			exit(EXIT_FAILURE);
 		}
 		exit(EXIT_SUCCESS);
@@ -67,7 +70,7 @@ void	ft_launch_proc(char **new_envp, t_list *elem, t_fds *fds, int i, \
 
 	if (pipe(fd) < 0)
 	{
-		perror("Error :");
+		perror("Error ");
 		exit(1);
 		///free all
 	}
@@ -125,20 +128,17 @@ int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 	{
 		new_envp = ft_new_envp_for_execve();
 		tmp->path = ft_parsing_path(tmp->cmd, new_envp);
+		if ((ft_strcmp(elem->path, "command not found")) == 0)
+		{
+			ft_display_error(elem->cmd, elem->path);
+			return (EXIT_FAILURE);
+		}
 		ft_launch_proc(new_envp, tmp, tmp_fds, i, \
 			reserved_stdout, reserved_stdin);
 		tmp = tmp->next;
 		tmp_fds = tmp_fds->next;
 		i++;
 	}
-//	if (tmp_fds->fd_in != 0)
-//	{
-//		write(1, "change fd_in\n", 13);
-//		dup2(tmp_fds->fd_in, STDIN_FILENO);
-//		close(tmp_fds->fd_in);
-//	}
-//	else
-//		dup2(fd, STDIN_FILENO);
 	dup2(reserved_stdout, STDOUT_FILENO);
 	if (tmp_fds->fd_out != 0)
 	{
@@ -146,6 +146,11 @@ int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 		close(tmp_fds->fd_out);
 	}
 	tmp->path = ft_parsing_path(tmp->cmd, new_envp);
+	if ((ft_strcmp(elem->path, "command not found")) == 0)
+	{
+		ft_display_error(elem->cmd, elem->path);
+		return (EXIT_FAILURE);
+	}
 	execve_for_pipe(tmp, new_envp);
 	dup2(reserved_stdin, STDIN_FILENO);
 	dup2(reserved_stdout, STDOUT_FILENO);
