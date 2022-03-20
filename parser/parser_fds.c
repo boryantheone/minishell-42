@@ -67,7 +67,7 @@ char	*ft_replace_env(char *str)
 
 	index = 0;
 	result1 = NULL;
-	printf("1 str search index $ %s\n", str);
+//	printf("1 str search index $ %s\n", str);
 	while(str[index] && str[index] != '$')
 		index++;
 	if (index)	
@@ -75,12 +75,10 @@ char	*ft_replace_env(char *str)
 	else
 		result = ft_strdup("\0");
 	str = str + index;
-	printf("1 str %s\n", str);
-	printf("1 result |%s|\n", result);
-	// while (str[end] && ft_limiter(str[end]))
-	// 	end++;
+//	printf("1 str %s\n", str);
+//	printf("1 result |%s|\n", result);
 	result1 = ft_parse_with_envp(&str, 1);
-	printf("1 result1 after perse env %s\n", result1);
+//	printf("1 result1 after perse env %s\n", result1);
 	if (!result1)
 	{
 		free(result);
@@ -95,7 +93,7 @@ char	*ft_replace_env(char *str)
 	result = ft_strjoin(result, result1);
 	free(result1);
 //	printf("resul replace %s\n", result);
-	write(1, "====================\n", 21);
+//	write(1, "====================\n", 21);
 	return (result);
 }
 
@@ -111,7 +109,7 @@ int	ft_heredoc(char **str)
 	if (fd_heredoc != 0)
 		close(fd_heredoc);
 	tmp = *str + 2;
-	printf("tmp %s\n", tmp);
+//	printf("tmp %s\n", tmp);
 	while ((*tmp == ' ' || *tmp == '\t') && *tmp != '\0')
 		tmp++;
 	while (tmp[index] != ' ' && tmp[index] != '\0' && tmp[index] != '|')
@@ -127,14 +125,14 @@ int	ft_heredoc(char **str)
 	if (fd_heredoc == -1)
 		return (ft_perror("heredoc", -1));
 	stop = ft_strndup(tmp, index);
-	printf("stop %s\n", stop);
+//	printf("stop %s\n", stop);
 	stop = ft_remove_quotes(stop);
 	result = readline("> ");
 	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
 	{
 		while ((ft_strchr(result, '$')))
 			result = ft_replace_env(result);
-		write(1, result, ft_strlen(result));
+//		write(1, result, ft_strlen(result));
 		write(fd_heredoc, result, ft_strlen(result));
 		write(fd_heredoc, "\n", 1);
 		result = readline("> ");

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "../minishell.h"
 
 void	ft_lstdelone(t_list *lst)
 {
@@ -18,9 +19,12 @@ void	ft_lstdelone(t_list *lst)
 		return ;
 	else
 	{
-		free(lst->cmd);
-		free(lst->path);
-		free(lst->cmds);
-		free (lst);
+		if (lst->cmd)
+			free(lst->cmd);
+		if(lst->path)
+			free(lst->path);
+		if(lst->cmds)
+			free(lst->cmds);
+		//free (lst);
 	}
 }
