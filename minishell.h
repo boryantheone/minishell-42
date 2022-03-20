@@ -7,6 +7,9 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #define MAXDIR 4096 //макс кол-во символов для названия пути
 
@@ -107,4 +110,6 @@ void ft_printfds(t_fds *elem);
 //checks
 int	ft_check_fds(t_fds *fds);
 int	ft_perror(char *err_message, int return_value);
+int	ft_is_a_directory(char *cmd);
+void	ft_error_message_and_exit(int exit_status, char *cmd, int choice);
 #endif 

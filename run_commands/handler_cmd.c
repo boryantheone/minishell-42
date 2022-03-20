@@ -68,29 +68,54 @@ char	**ft_new_envp_for_execve(void)
 	new_envp = malloc(sizeof(char *) * (ft_lstsize_envp(old_envp) + 1));
 	while (old_envp != NULL)
 	{
-		tmp = ft_strjoin(var->envp->var, "=");
+		tmp = ft_strjoin(old_envp->var, "=");
 		new_envp[i] = ft_strjoin(tmp, old_envp->val);
 		i++;
 		old_envp = old_envp->next;
+		free(tmp);
 	}
 	new_envp[i] = NULL;
-	free(tmp);
 	return (new_envp);
 }
 
-void	 ft_execute_terminal_cmd(t_list *elem, char **new_envp, t_fds *fds, int reserved_stdout, int reserved_stdin)
+int	ft_is_a_directory(char *cmd)
+{
+	struct stat dir;
+
+	stat(cmd, &dir);
+	return(S_ISDIR(dir.st_mode));
+}
+
+void	ft_error_message_and_exit(int exit_status, char *cmd, int choice)
+{
+	ft_putstr_fd("minishelchik: ", STDERR_FILENO);
+	ft_putstr_fd(cmd, STDERR_FILENO);
+	if (choice == 0)
+		ft_putendl_fd(": command not found", STDERR_FILENO);
+	else if (choice == 1)
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	var->state = exit_status;
+	exit(exit_status);
+	exit(0);
+}
+
+void	 ft_execute_terminal_cmd(t_list *elem, t_fds *fds, int reserved_stdout, int reserved_stdin)
 {
 	pid_t	pid;
+	char	**new_envp;
 
 	pid = fork();
 	if (pid == 0)
 	{
-		if ((execve(elem->path, elem->cmds, new_envp)) == -1)
-		{
-			perror("Error ");
-			exit(EXIT_FAILURE);
-		}
-		exit(EXIT_SUCCESS);
+		new_envp = ft_new_envp_for_execve();
+		elem->path = ft_parsing_path(elem->cmd, new_envp);
+		if (ft_is_a_directory(elem->path) == 1)
+			ft_error_message_and_exit(127, elem->cmd, 1);
+		if (ft_strcmp(elem->path, "command not found") == 0)
+			ft_error_message_and_exit(127, elem->cmd, 0);
+		execve(elem->path, elem->cmds, new_envp);
+		ft_perror(elem->cmd, 1);
+		exit(var->state);
 	}
 	else
 		var->state = ft_return_child_exit_status(pid, fds, reserved_stdout,
@@ -123,16 +148,7 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 		return (result);
 	else
 	{
-//		if ((ft_strchr(elem->cmd, '/')))
-//			ft_check_acces_dir()
-		new_envp = ft_new_envp_for_execve();
-		elem->path = ft_parsing_path(elem->cmd, new_envp);
-		if (ft_strcmp(elem->path, "command not found") == 0)
-		{
-			ft_display_error(elem->cmd, elem->path);
-			return (EXIT_FAILURE);
-		}
-		ft_execute_terminal_cmd(elem, new_envp, fds, reserved_stdout,
+		ft_execute_terminal_cmd(elem,fds, reserved_stdout,
 								reserved_stdin);
 	}
 	return (EXIT_SUCCESS);
