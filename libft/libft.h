@@ -20,10 +20,6 @@ typedef struct s_list
 	char			*cmd;
 	char			*path;
 	char			**cmds;
-	int				fd_in;
-	int				fd_out;
-	int				have_pipe;
-	int 			have_heredoc;
 	struct s_list	*next;
 }	t_list;
 

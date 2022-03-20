@@ -31,16 +31,22 @@ int ft_pwd(t_list *elem)
 	getcwd(dir, MAXDIR);
 	ft_putstr_fd(dir, STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
-	free(dir);
 	return (EXIT_SUCCESS);
 }
 
-static int ft_display_error(char *str)
+int ft_display_error(char *cmd, char *str)
 {
-	ft_putstr_fd("minishelchik: cd: ", 2);
-	ft_putstr_fd(str, 2);
+	ft_putstr_fd("minishelchik: ", 2);
+	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": ", 2);
-	perror(NULL);
+	ft_putstr_fd(str, 2);
+	if(!(ft_strcmp(cmd, "cd")))
+	{
+		ft_putstr_fd(": ", 2);
+		perror(NULL);
+	}
+	else
+		ft_putstr_fd("\n", 2);
 	return (EXIT_FAILURE);
 }
 
@@ -72,8 +78,8 @@ int	ft_cd_change_pwd(char *new_pwd, char *prev_pwd, t_envp **env)
 		if ((!ft_strncmp(tmp->var, "PWD", 3)))
 		{
 			getcwd(pwd, MAXDIR);
-			if (chdir(new_pwd) == -1)
-				return (ft_display_error(tmp->val));
+//			if (chdir(new_pwd) == -1)
+//				return (ft_display_error(tmp->val));
 			if (!(ft_strcmp(new_pwd, "..")))
 				tmp->val = pwd;
 			else
@@ -93,15 +99,21 @@ int ft_cd(t_list *elem, t_var *var)
 	char *path;
 
 	getcwd(prev_pwd, MAXDIR);
-	printf("prewpwd = %s", prev_pwd);
+	printf("oldwpwd = %s\n", prev_pwd);
 	if (!elem->cmds[1] || !(ft_strncmp(elem->cmds[1], "~", 1)))
 		chdir(getenv("HOME")); //!!при парсинге обработать что если подается просто "cd" без пробела, то нужно записать пробел в cmds[1]
 	if (!(ft_strncmp(elem->cmds[1], "/", 1)) || !(ft_strcmp(elem->cmds[1], "..")))
 	{
 		if (chdir(elem->cmds[1]) == -1)
-			return (ft_display_error(elem->cmds[1]));
+		{
+			write(1, "error\n", 6);
+			return (ft_display_error("cd", elem->cmds[1]));
+		}
 		else
+		{
+			write(1, "change\n", 7);
 			ft_cd_change_pwd(elem->cmds[1], prev_pwd, &var->envp);
+		}
 	}
 	return (EXIT_SUCCESS);
 }
@@ -154,7 +166,7 @@ static int ft_lstsize_env(t_envp *lst)
 	return (i);
 }
 
-static t_envp *ft_get_min_value(t_envp *export_list)
+static t_envp *ft_get_min_value(t_envp *export_list, t_envp *pred_min)
 {
 	t_envp *min;
 	t_envp *tmp;
@@ -162,7 +174,7 @@ static t_envp *ft_get_min_value(t_envp *export_list)
 	int i;
 
 	i = 0;
-	min = NULL;
+	min = pred_min;
 	size = ft_lstsize_env(export_list);
 	tmp = export_list;
 	while (i < size - 1 && tmp->next != NULL)
@@ -171,7 +183,6 @@ static t_envp *ft_get_min_value(t_envp *export_list)
 		{
 			tmp = tmp->next;
 			i++;
-			;
 			continue;
 		}
 		if (min == NULL || ft_strcmp(min->var, tmp->var) > 0)
@@ -186,15 +197,17 @@ static void ft_print_sorted_envp_list(t_envp *export_list)
 {
 	t_envp *tmp;
 
-	tmp = ft_get_min_value(export_list);
+	tmp = ft_get_min_value(export_list, NULL);
+//	printf("tmp %s", tmp->var);
 	while (tmp != NULL)
 	{
 		if (tmp->var != NULL && tmp->val != NULL)
 			printf("declare -x %s=\"%s\"\n", tmp->var, tmp->val);
 		else
 			printf("declare -x %s\n", tmp->var);
-		tmp = tmp->next;
+		tmp = ft_get_min_value(export_list, tmp);
 	}
+//	tmp = ft_get_min_value(export_list, tmp);
 }
 
 int ft_export(t_list *elem, t_var *var)
@@ -237,7 +250,7 @@ void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int	index)
 	i = 1;
 	if (j == 1)
 		begin = var->envp;
-	else
+	else 
 		begin = var->export;
 	tmp = begin;
 	while (tmp != NULL)
@@ -316,7 +329,7 @@ int ft_env(t_list *elem, t_var *var)
 
 int ft_exit(t_list *elem)
 {
-	if (elem->have_pipe)
+	if (elem->next)
 		return (EXIT_SUCCESS);
 	ft_putendl_fd("exit", STDERR_FILENO);
 	if (elem->cmds[1] == NULL || (ft_isdigit(elem->cmds[1]) && elem->cmds[2] == NULL))
