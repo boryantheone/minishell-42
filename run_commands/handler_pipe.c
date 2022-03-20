@@ -82,7 +82,6 @@ void	ft_launch_proc(t_var *var, t_list *elem, t_fds *fds, int i, \
 			close(fds->fd_out);
 		}
 		close(fd[1]);
-		//sleep(200);
 		execve_for_pipe(elem, var);
 	}
 	else
@@ -110,8 +109,8 @@ int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 	pid_t	pidor;
 	pid_t 	pid;
 	
-	reserved_stdout = dup(STDOUT_FILENO);
 	reserved_stdin = dup(STDIN_FILENO);
+	reserved_stdout = dup(STDOUT_FILENO);
 	tmp = elem;
 	tmp_fds = fds;
 	i = 0;
