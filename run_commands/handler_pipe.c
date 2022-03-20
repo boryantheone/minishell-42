@@ -66,33 +66,29 @@ void	ft_launch_proc(t_var *var, t_list *elem, t_fds *fds, int i)
 	pid = fork();
 	if (pid == 0)
 	{
-		close(fd[0]);
 		if (fds->fd_out != 0)
 		{
-			write(1, "change fd_out\n", 14);
 			dup2(fds->fd_out, STDOUT_FILENO);
 			close(fds->fd_out);
 		}
 		else
 		{
-			write(1, "pipe fd_out\n", 12);
 			dup2(fd[1], STDOUT_FILENO);
+			close(fd[1]);
 		}
 		execve_for_pipe(elem, var);
 	}
-	close(fd[1]);
 	if (fds->fd_in != 0)
 	{
-		write(1, "change fd_in\n", 13);
 		dup2(fds->fd_in, STDIN_FILENO);
 		close(fds->fd_in);
 	}
 	else
 		dup2(fd[0], STDIN_FILENO);
 //	dup2(reserved_stdin, STDIN_FILENO);
-	waitpid(-1, &status, 0);
 //	close(fd[1]);
 	close(fd[0]);
+	close(fd[1]);
 }
 
 int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
@@ -104,46 +100,28 @@ int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 	int		reserved_stdin;
 	int 	i;
 	
-	reserved_stdout = dup(STDOUT_FILENO);
 	reserved_stdin = dup(STDIN_FILENO);
+	reserved_stdout = dup(STDOUT_FILENO);
 	tmp = elem;
 	tmp_fds = fds;
 	i = 0;
 	if (fds->fd_in != 0)
 	{
-		write(1, "change fd_in\n", 13);
 		dup2(fds->fd_in, STDIN_FILENO);
 		close(fds->fd_in);
 	}
 	while (tmp_fds->next != NULL)
 	{
-		write(1, "doch\n", 5);
 		tmp->path = ft_parsing_path(tmp->cmd, var->envp_for_execve);
 		ft_launch_proc(var, tmp, tmp_fds, i);
 		tmp = tmp->next;
 		tmp_fds = tmp_fds->next;
 		i++;
 	}
-	if (tmp_fds->fd_in != 0)
-	{
-		write(1, "change fd_in\n", 13);
-		dup2(tmp_fds->fd_in, STDIN_FILENO);
-		close(tmp_fds->fd_in);
-	}
-	else
-		dup2(reserved_stdin, STDIN_FILENO);
-	if (tmp_fds->fd_out != 0)
-	{
-		write(1, "change fd_out\n", 14);
-		dup2(tmp_fds->fd_out, STDOUT_FILENO);
-		close(tmp_fds->fd_out);
-	}
-	else
-		dup2(reserved_stdout, STDOUT_FILENO);
 	tmp->path = ft_parsing_path(tmp->cmd, var->envp_for_execve);
 	execve_for_pipe(tmp, var);
+	dup2(reserved_stdin, STDIN_FILENO);
 	waitpid(-1, &status, 0);
-	// if (WIFEXITED(status))
 	write(1, "finish\n", 7);
 	return (1);
 	//exit(EXIT_SUCCESS);
