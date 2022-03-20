@@ -97,17 +97,37 @@ char	*ft_replace_env(char *str)
 	return (result);
 }
 
+void	ft_child_heredoc(int fd, char *stop)
+{
+	char	*result;
+	
+	result = readline("> ");
+	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
+	{
+		while ((ft_strchr(result, '$')))
+			result = ft_replace_env(result);
+//		write(1, result, ft_strlen(result));
+		write(fd, result, ft_strlen(result));
+		write(fd, "\n", 1);
+		result = readline("> ");
+	}
+//	close(fd[1]);
+//	close(fd[0]);
+}
+
 int	ft_heredoc(char **str)
 {
-	char			*result;
+	
 	char			*tmp;
 	char			*stop;
 	static int		fd_heredoc;
 	int 			index;
+//	int 			fd[2];
+//	pid_t			pid;
 	
 	index = 0;
-//	if (fd_heredoc != 0)
-//		close(fd_heredoc);
+	if (fd_heredoc != 0)
+		close(fd_heredoc);
 	tmp = *str + 2;
 //	printf("tmp %s\n", tmp);
 	while ((*tmp == ' ' || *tmp == '\t') && *tmp != '\0')
@@ -120,31 +140,36 @@ int	ft_heredoc(char **str)
 		var->state = 258;
 		return (-1);
 	}
-	unlink(".here_document");
-	fd_heredoc = open(".here_document", O_RDWR | O_CREAT | O_TRUNC, 0777);
-	if (fd_heredoc == -1)
-		return (ft_perror("heredoc", -1));
 	stop = ft_strndup(tmp, index);
 //	printf("stop %s\n", stop);
 	stop = ft_remove_quotes(stop);
-	result = readline("> ");
-	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
-	{
-		while ((ft_strchr(result, '$')))
-			result = ft_replace_env(result);
-//		write(1, result, ft_strlen(result));
-		write(fd_heredoc, result, ft_strlen(result));
-		write(fd_heredoc, "\n", 1);
-		result = readline("> ");
-	}
+//	pipe(fd);
+//	pid = fork();
+//	if (!pid)
+//		ft_child_heredoc(fd, stop);
+//	else
+//	{
+//		close(fd[0]);
+//		close(fd[1]);
+//		wait(0);
+//	}
+	unlink("here_document");
+	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd_heredoc == -1)
+		return (ft_perror("heredoc", -1));
+	//printf("1 heredoc %d\n", fd_heredoc);
+	ft_child_heredoc(fd_heredoc, stop);
 	*str = tmp;
+	close(fd_heredoc);
+	fd_heredoc = open("here_document", O_RDONLY, 0644);
+//	printf("HEREDOC %d\n", fd[0]);
 	return(fd_heredoc);
 }
 
 t_fds	*ft_parser_heredoc(char *str)
 {
 	t_fds	*fds;
-	static int	fd_heredoc;
+	int		fd_heredoc;
 
 	fd_heredoc = 0;
 	fds = NULL;

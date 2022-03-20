@@ -25,6 +25,8 @@ char	*ft_parsing_path(char *cmd, char **envp)
 		return (cmd);
 	while (envp[i] != ft_strnstr(envp[i], "PATH=", 5))
 		i++;
+	if ((ft_strnstr(envp[i], "PATH=", 5)) == NULL)
+		return ("command not found");
 	path = envp[i];
 	i = 0;
 	paths = ft_split(path + 5, ':');

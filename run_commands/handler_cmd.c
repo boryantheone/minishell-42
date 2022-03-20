@@ -65,12 +65,14 @@ char	**ft_new_envp_for_execve(void)
 
 	i = 0;
 	old_envp = var->envp;
-	new_envp = malloc(sizeof(char *) * (ft_lstsize_envp(old_envp) + 1));
+	new_envp = (char **)malloc(sizeof(char *) * ((ft_lstsize_envp(old_envp)) +
+			1));
 	while (old_envp != NULL)
 	{
 		tmp = ft_strjoin(old_envp->var, "=");
 		new_envp[i] = ft_strjoin(tmp, old_envp->val);
 		i++;
+		free(tmp);
 		old_envp = old_envp->next;
 		free(tmp);
 	}
@@ -107,6 +109,12 @@ void	 ft_execute_terminal_cmd(t_list *elem, t_fds *fds, int reserved_stdout, int
 	pid = fork();
 	if (pid == 0)
 	{
+		if ((execve(elem->path, elem->cmds, new_envp)) == -1)
+		{
+			ft_display_error(elem->cmd, elem->path);
+			exit(EXIT_FAILURE);
+		}
+		exit(EXIT_SUCCESS);
 		new_envp = ft_new_envp_for_execve();
 		elem->path = ft_parsing_path(elem->cmd, new_envp);
 		if (ft_is_a_directory(elem->path) == 1)
@@ -148,7 +156,15 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 		return (result);
 	else
 	{
-		ft_execute_terminal_cmd(elem,fds, reserved_stdout,
+
+		new_envp = ft_new_envp_for_execve();
+		elem->path = ft_parsing_path(elem->cmd, new_envp);
+		if (ft_strcmp(elem->path, "command not found") == 0)
+		{
+			ft_display_error(elem->cmd, elem->path);
+			return (EXIT_FAILURE);
+		}
+		ft_execute_terminal_cmd(elem, new_envp, fds, reserved_stdout,
 								reserved_stdin);
 	}
 	return (EXIT_SUCCESS);
