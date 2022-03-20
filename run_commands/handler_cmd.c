@@ -74,29 +74,56 @@ char	**ft_new_envp_for_execve(void)
 		i++;
 		free(tmp);
 		old_envp = old_envp->next;
+		free(tmp);
 	}
 	new_envp[i] = NULL;
-//	free(tmp);
 	return (new_envp);
 }
 
-void	 ft_execute_terminal_cmd(t_list *elem, char **new_envp, t_fds *fds, int reserved_stdout, int reserved_stdin)
+int	ft_is_a_directory(char *cmd)
+{
+	struct stat dir;
+
+	stat(cmd, &dir);
+	return(S_ISDIR(dir.st_mode));
+}
+
+void	ft_error_message_and_exit(int exit_status, char *cmd, int choice)
+{
+	ft_putstr_fd("minishelchik: ", STDERR_FILENO);
+	ft_putstr_fd(cmd, STDERR_FILENO);
+	if (choice == 0)
+		ft_putendl_fd(": command not found", STDERR_FILENO);
+	else if (choice == 1)
+		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
+	var->state = exit_status;
+	exit(exit_status);
+	exit(0);
+}
+
+void	 ft_execute_terminal_cmd(t_list *elem, t_fds *fds, int reserved_stdout, int reserved_stdin)
 {
 	pid_t	pid;
-	int i = 0;
+	char	**new_envp;
 
 	pid = fork();
 	if (pid == 0)
 	{
-//		sleep(20);
-		while (elem->cmds[i])
-			printf("%s\n", elem->cmds[i++]);
 		if ((execve(elem->path, elem->cmds, new_envp)) == -1)
 		{
 			ft_display_error(elem->cmd, elem->path);
 			exit(EXIT_FAILURE);
 		}
 		exit(EXIT_SUCCESS);
+		new_envp = ft_new_envp_for_execve();
+		elem->path = ft_parsing_path(elem->cmd, new_envp);
+		if (ft_is_a_directory(elem->path) == 1)
+			ft_error_message_and_exit(127, elem->cmd, 1);
+		if (ft_strcmp(elem->path, "command not found") == 0)
+			ft_error_message_and_exit(127, elem->cmd, 0);
+		execve(elem->path, elem->cmds, new_envp);
+		ft_perror(elem->cmd, 1);
+		exit(var->state);
 	}
 	else
 		var->state = ft_return_child_exit_status(pid, fds, reserved_stdout,
@@ -116,9 +143,6 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 	{
 		if (fds->fd_in != 0)
 		{
-			//printf("3 heredoc %d\n", fds->fd_in);
-			//printf("3 heredoc out %d\n", fds->fd_out);
-			//printf("3 heredoc out %d\n", STDOUT_FILENO);
 			dup2(fds->fd_in, STDIN_FILENO);
 			close(fds->fd_in);
 		}
@@ -132,6 +156,7 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 		return (result);
 	else
 	{
+
 		new_envp = ft_new_envp_for_execve();
 		elem->path = ft_parsing_path(elem->cmd, new_envp);
 		if (ft_strcmp(elem->path, "command not found") == 0)
