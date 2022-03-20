@@ -55,6 +55,8 @@ int ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds);
 int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds);
 //handler_cmd
 int	ft_exec_buildin(t_list *elem, t_var *var);
+char	**ft_new_envp_for_execve(void);
+int	ft_lstsize_envp(t_envp *lst);
 //handler_pipe
 void	ft_free(char **dst);
 //main/main
