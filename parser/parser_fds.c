@@ -60,25 +60,24 @@ char	*ft_remove_quotes(char *str)
 
 char	*ft_replace_env(char *str)
 {
-	int		index;
-	int 	end;
-	char	*result1;
-	static char 	*result;
+	int			index;
+	char		*result1;
+	static char	*result;
 
 	index = 0;
 	result1 = NULL;
 //	printf("1 str search index $ %s\n", str);
-	while(str[index] && str[index] != '$')
+	while (str[index] && str[index] != '$')
 		index++;
-	if (index)	
+	if (index)
 		result = ft_strndup(str, index);
 	else
 		result = ft_strdup("\0");
 	str = str + index;
-//	printf("1 str %s\n", str);
-//	printf("1 result |%s|\n", result);
+	printf("1 str %s\n", str);
+	printf("1 result |%s|\n", result);
 	result1 = ft_parse_with_envp(&str, 1);
-//	printf("1 result1 after perse env %s\n", result1);
+	printf("1 result1 after perse env %s\n", result1);
 	if (!result1)
 	{
 		free(result);
@@ -92,8 +91,8 @@ char	*ft_replace_env(char *str)
 	result1 = ft_strndup(str, index);
 	result = ft_strjoin(result, result1);
 	free(result1);
-//	printf("resul replace %s\n", result);
-//	write(1, "====================\n", 21);
+	printf("resul replace %s\n", result);
+	write(1, "====================\n", 21);
 	return (result);
 }
 
@@ -106,30 +105,23 @@ void	ft_child_heredoc(int fd, char *stop)
 	{
 		while ((ft_strchr(result, '$')))
 			result = ft_replace_env(result);
-//		write(1, result, ft_strlen(result));
 		write(fd, result, ft_strlen(result));
 		write(fd, "\n", 1);
 		result = readline("> ");
 	}
-//	close(fd[1]);
-//	close(fd[0]);
 }
 
 int	ft_heredoc(char **str)
 {
-	
 	char			*tmp;
 	char			*stop;
 	static int		fd_heredoc;
 	int 			index;
-//	int 			fd[2];
-//	pid_t			pid;
 	
 	index = 0;
 	if (fd_heredoc != 0)
 		close(fd_heredoc);
 	tmp = *str + 2;
-//	printf("tmp %s\n", tmp);
 	while ((*tmp == ' ' || *tmp == '\t') && *tmp != '\0')
 		tmp++;
 	while (tmp[index] != ' ' && tmp[index] != '\0' && tmp[index] != '|')
@@ -141,18 +133,7 @@ int	ft_heredoc(char **str)
 		return (-1);
 	}
 	stop = ft_strndup(tmp, index);
-//	printf("stop %s\n", stop);
 	stop = ft_remove_quotes(stop);
-//	pipe(fd);
-//	pid = fork();
-//	if (!pid)
-//		ft_child_heredoc(fd, stop);
-//	else
-//	{
-//		close(fd[0]);
-//		close(fd[1]);
-//		wait(0);
-//	}
 	unlink("here_document");
 	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_heredoc == -1)
@@ -162,7 +143,6 @@ int	ft_heredoc(char **str)
 	*str = tmp;
 	close(fd_heredoc);
 	fd_heredoc = open("here_document", O_RDONLY, 0644);
-//	printf("HEREDOC %d\n", fd[0]);
 	return(fd_heredoc);
 }
 

@@ -186,5 +186,4 @@ int	main(int argc, char **argv, char **env)
 		else
 			return (eof_exit());
 	}
-	return (0);
 }

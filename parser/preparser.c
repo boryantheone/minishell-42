@@ -1,10 +1,10 @@
 
 #include "../minishell.h"
 
-int		ft_skip_space(char *line)
+int	ft_skip_space(char *line)
 {
 	int		i;
-	
+
 	i = 0;
 	while (line[i] == ' ')
 		i++;
@@ -43,11 +43,26 @@ int	ft_preparser_redirect(char *line, int *i)
 	return (0);
 }
 
-//124 = '|'
+int	ft_preparser_pipe(char *line, int *i)
+{
+	if (line[(*i)] == 124)
+	{
+		(*i)++;
+		while (line[(*i)] && line[(*i)] == ' ')
+			(*i)++;
+		if (line[(*i)] == '\0' || line[(*i)] == 124)
+		{
+			printf("syntax error near unexpected token `|'\n");
+			return (1);
+		}
+	}
+	return (0);
+}
+
 int	ft_preparser(char *line)
 {
 	int	i;
-	
+
 	i = ft_skip_space(line);
 	if (line[i--] == 124)
 	{
@@ -62,11 +77,9 @@ int	ft_preparser(char *line)
 		if (line[i] == 39)
 			if (ft_preparser_quotes(line, &i, 39))
 				return (1);
-		if (line[i] == 124 && line[i + 1] && line[i + 1] == 124)
-		{
-			printf("syntax error near unexpected token `|'\n");
-			return (1);
-		}
+		if (line[i] == 124)
+			if (ft_preparser_pipe(line, &i))
+				return (1);
 		if (ft_preparser_redirect(line, &i))
 			return (1);
 	}

@@ -1,23 +1,21 @@
 #include "../minishell.h"
 
-
 int	ft_exec_buildin(t_list *elem, t_var *var)
 {
-	
 	if (!ft_strcmp(elem->cmd, "pwd"))
-		return(ft_pwd(elem));
+		return (ft_pwd(elem));
 	else if (!ft_strcmp(elem->cmd, "cd"))
-		return(ft_cd(elem, var));
+		return (ft_cd(elem, var));
 	else if (!ft_strcmp(elem->cmd, "echo"))
-		return(ft_echo(elem));
+		return (ft_echo(elem));
 	else if (!ft_strcmp(elem->cmd, "export"))
-		return(ft_export(elem, var));
+		return (ft_export(elem, var));
 	else if (!ft_strcmp(elem->cmd, "unset"))
-		return(ft_unset(var, elem));
+		return (ft_unset(var, elem));
 	else if (!ft_strcmp(elem->cmd, "env"))
-		return(ft_env(elem, var));
+		return (ft_env(elem, var));
 	else if (!ft_strcmp(elem->cmd, "exit"))
-		return(ft_exit(elem));
+		return (ft_exit(elem));
 	return (-1);
 }
 
@@ -26,7 +24,7 @@ reserved_stdin)
 {
 	int	exit_status;
 	int	error_state;
-	
+
 	dup2(reserved_stdin, STDIN_FILENO);
 	close(reserved_stdin);
 	dup2(reserved_stdout, STDOUT_FILENO);
@@ -35,9 +33,8 @@ reserved_stdin)
 	if (exit_status == 0)
 		return (0);
 	if (WIFSIGNALED(exit_status))
-		return(128 + exit_status);
+		return (128 + exit_status);
 	error_state = WEXITSTATUS(exit_status);
-	
 	return (error_state);
 }
 
