@@ -8,10 +8,13 @@ int ft_echo(t_list *elem)
 
 	i = 0;
 	flag_n = 0;
-	if (!(ft_strncmp(elem->cmds[1], "-n", 2)))
+	if (elem->cmds[1] != NULL)
 	{
-		flag_n = 1;
-		i++;
+		if (!(ft_strncmp(elem->cmds[1], "-n", 2)))
+		{
+			flag_n = 1;
+			i++;
+		}
 	}
 	while (elem->cmds[++i] != NULL)
 	{
@@ -42,7 +45,7 @@ int ft_display_error(char *cmd, char *str)
 	ft_putstr_fd(cmd, 2);
 	ft_putstr_fd(": ", 2);
 	ft_putstr_fd(str, 2);
-	if(!(ft_strcmp(cmd, "cd")))
+	if (!(ft_strcmp(cmd, "cd")))
 	{
 		var->state = 1;
 		ft_putstr_fd(": ", 2);
@@ -70,10 +73,10 @@ int ft_cd_change_oldpwd(t_envp **env, char *prev_pwd)
 	return (EXIT_FAILURE);
 }
 
-int	ft_cd_change_pwd(char *new_pwd, char *prev_pwd, t_envp **env)
+int ft_cd_change_pwd(char *new_pwd, char *prev_pwd, t_envp **env)
 {
-	t_envp	*tmp;
-	char	pwd[MAXDIR];
+	t_envp *tmp;
+	char pwd[MAXDIR];
 
 	tmp = *env;
 	while (tmp)
@@ -157,7 +160,7 @@ static t_envp *ft_get_min_value(t_envp *pred_min)
 		if (pred_min != NULL && ft_strcmp(pred_min->var, tmp->var) >= 0)
 		{
 			tmp = tmp->next;
-			continue ;
+			continue;
 		}
 		if (min == NULL || ft_strcmp(min->var, tmp->var) > 0)
 			min = tmp;
@@ -198,8 +201,7 @@ int ft_export(t_list *elem, t_var *var)
 				ft_lstadd_back_envp(&var->export, ft_lstnew_export(elem->cmds[i]));
 			}
 			else if (ft_isalpha(elem->cmds[i]))
-				ft_lstadd_back_envp(&var->export, ft_lstnew_export
-				(elem->cmds[i]));
+				ft_lstadd_back_envp(&var->export, ft_lstnew_export(elem->cmds[i]));
 			else if ((ft_isdigit(elem->cmds[i]) || ft_isprint(elem->cmds[i])))
 			{
 				ft_putstr_fd("minishelchik: export: `", STDERR_FILENO);
@@ -212,17 +214,17 @@ int ft_export(t_list *elem, t_var *var)
 	return (0);
 }
 
-void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int	index)
+void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int index)
 {
-	t_envp	*tmp;
-	t_envp	*begin;
-	t_envp	*del;
-	int		i;
+	t_envp *tmp;
+	t_envp *begin;
+	t_envp *del;
+	int i;
 
 	i = 1;
 	if (j == 1)
 		begin = var->envp;
-	else 
+	else
 		begin = var->export;
 	tmp = begin;
 	while (tmp != NULL)
@@ -244,7 +246,7 @@ void ft_lstdelone_envp(t_var *var, t_list *elem, int j, int	index)
 			if (tmp->val)
 				free(tmp->val);
 			free(tmp);
-			continue ;
+			continue;
 		}
 		tmp = tmp->next;
 	}
