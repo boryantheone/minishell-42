@@ -1,9 +1,10 @@
+
 #include "../minishell.h"
 
 t_fds	*ft_fdsnew(int fd_read, int fd_write, int heredoc)
 {
 	t_fds	*node;
-	
+
 	node = (t_fds *)malloc(sizeof(t_fds));
 	if (!node)
 		return (NULL);
@@ -17,7 +18,7 @@ t_fds	*ft_fdsnew(int fd_read, int fd_write, int heredoc)
 void	ft_fdsadd_back(t_fds **lst, t_fds *new)
 {
 	t_fds	*tmp;
-	
+
 	if (*lst == NULL)
 	{
 		*lst = new;
@@ -32,10 +33,10 @@ void	ft_fdsadd_back(t_fds **lst, t_fds *new)
 char	*ft_remove_quotes(char *str)
 {
 	int		index;
-	int 	end;
+	int		end;
 	char	*result1;
-	char 	*result;
-	
+	char	*result;
+
 	index = 0;
 	while (str[index] && (str[index] != '\'' && str[index] != '\"'))
 		index++;
@@ -45,7 +46,7 @@ char	*ft_remove_quotes(char *str)
 		result = ft_strdup("\0");
 	end = index + 1;
 	while (str[end] && (str[end] != '\'' && str[end] != '\"'))
-		end++;	
+		end++;
 	result1 = ft_substr(str, index + 1, end - index - 1);
 	result = ft_strjoin(result, result1);
 	free(result1);
@@ -99,7 +100,7 @@ char	*ft_replace_env(char *str)
 void	ft_child_heredoc(int fd, char *stop)
 {
 	char	*result;
-	
+
 	result = readline("> ");
 	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
 	{
@@ -116,8 +117,8 @@ int	ft_heredoc(char **str)
 	char			*tmp;
 	char			*stop;
 	static int		fd_heredoc;
-	int 			index;
-	
+	int				index;
+
 	index = 0;
 	if (fd_heredoc != 0)
 		close(fd_heredoc);
@@ -129,7 +130,7 @@ int	ft_heredoc(char **str)
 	if (!index)
 	{
 		printf("minishelchik: syntax error near unexpected token `newline'\n");
-		var->state = 258;
+		g_var->state = 258;
 		return (-1);
 	}
 	stop = ft_strndup(tmp, index);
@@ -158,7 +159,7 @@ t_fds	*ft_parser_heredoc(char *str)
 	{
 		if (*str == '|')
 		{
-			ft_fdsadd_back(&fds, ft_fdsnew(0,0,fd_heredoc));
+			ft_fdsadd_back(&fds, ft_fdsnew(0, 0, fd_heredoc));
 			fd_heredoc = 0;
 			str++;
 		}
@@ -167,9 +168,9 @@ t_fds	*ft_parser_heredoc(char *str)
 		else if (*str == '<' && *(str + 1) == '<')
 		{
 			fd_heredoc = ft_heredoc(&str);
-			if(fd_heredoc == -1)
+			if (fd_heredoc == -1)
 			{
-				var->state = 258;
+				g_var->state = 258;
 				return (NULL);
 			}
 		}
@@ -177,7 +178,7 @@ t_fds	*ft_parser_heredoc(char *str)
 			str++;
 	}
 	if (*str == '\0')
-		ft_fdsadd_back(&fds, ft_fdsnew(0,0,fd_heredoc));
+		ft_fdsadd_back(&fds, ft_fdsnew(0, 0, fd_heredoc));
 	return (fds);
 }
 

@@ -3,7 +3,7 @@
 void	ft_free(char **dst)
 {
 	size_t	i;
-	
+
 	i = 0;
 	while (dst[i])
 	{
@@ -19,7 +19,7 @@ char	*ft_parsing_path(char *cmd, char **envp)
 	char	*cmdpath;
 	char	*path;
 	int		i;
-	
+
 	i = 0;
 	if (cmd == NULL || ft_strchr(cmd, '/') != 0)
 		return (cmd);
@@ -51,7 +51,7 @@ int	execve_for_pipe(t_list *elem)
 {
 	char	**new_envp;
 
-	if ((ft_exec_buildin(elem, var)) >= 0)
+	if ((ft_exec_buildin(elem)) >= 0)
 		exit(EXIT_SUCCESS);
 	else
 	{
@@ -64,7 +64,7 @@ int	execve_for_pipe(t_list *elem)
 		execve(elem->path, elem->cmds, new_envp);
 		ft_perror(elem->cmd, 1);
 		ft_free(new_envp);
-		exit(var->state);
+		exit(g_var->state);
 	}
 }
 
@@ -119,12 +119,12 @@ void ft_wait(pid_t l_pid, int reserved_stdin, int reserved_stdout)
 	while (temp_pid != -1)
 	{
 		if (temp_pid == l_pid)
-			var->state = WEXITSTATUS(status);
+			g_var->state = WEXITSTATUS(status);
 		temp_pid = waitpid(-1, &status, 0);
 	}
 }
 
-static void ft_dup_fd_in(int reserved_stdin, t_fds *fds)
+static void	ft_dup_fd_in(int reserved_stdin, t_fds *fds)
 {
 	if (fds->fd_in != 0)
 	{
@@ -145,7 +145,7 @@ static void	ft_dup_fd_out(int reserved_stdout, t_fds *fds)
 	}
 }
 
-int	ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
+int	ft_exec_pipes(t_list *elem, t_fds *fds)
 {
 	pid_t	pid;
 	t_list	*tmp;
@@ -166,7 +166,7 @@ int	ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 		tmp_fds = tmp_fds->next;
 	}
 	ft_dup_fd_out(reserved_stdout, tmp_fds);
-	var->state = execve_for_pipe(tmp);
+	g_var->state = execve_for_pipe(tmp);
 	ft_wait(pid, reserved_stdin, reserved_stdout);
-	return (var->state);
+	return (g_var->state);
 }

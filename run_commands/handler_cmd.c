@@ -1,19 +1,19 @@
 #include "../minishell.h"
 
-int	ft_exec_buildin(t_list *elem, t_var *var)
+int	ft_exec_buildin(t_list *elem)
 {
 	if (!ft_strcmp(elem->cmd, "pwd"))
 		return (ft_pwd(elem));
 	else if (!ft_strcmp(elem->cmd, "cd"))
-		return (ft_cd(elem, var));
+		return (ft_cd(elem));
 	else if (!ft_strcmp(elem->cmd, "echo"))
 		return (ft_echo(elem));
 	else if (!ft_strcmp(elem->cmd, "export"))
-		return (ft_export(elem, var));
+		return (ft_export(elem));
 	else if (!ft_strcmp(elem->cmd, "unset"))
-		return (ft_unset(var, elem));
+		return (ft_unset(elem));
 	else if (!ft_strcmp(elem->cmd, "env"))
-		return (ft_env(elem, var));
+		return (ft_env(elem));
 	else if (!ft_strcmp(elem->cmd, "exit"))
 		return (ft_exit(elem));
 	return (-1);
@@ -31,8 +31,8 @@ reserved_stdin)
 	close(reserved_stdout);
 	waitpid(pid, &exit_status, 0);
 	if (WEXITSTATUS(exit_status))
-		var->state = WEXITSTATUS(exit_status);	
-	return (var->state);
+		g_var->state = WEXITSTATUS(exit_status);	
+	return (g_var->state);
 }
 
 int	ft_lstsize_envp(t_envp *lst)
@@ -52,15 +52,15 @@ int	ft_lstsize_envp(t_envp *lst)
 
 char	**ft_new_envp_for_execve(void)
 {
-	t_envp *old_envp;
+	t_envp	*old_envp;
 	int		i;
 	char	**new_envp;
 	char	*tmp;
 
 	i = 0;
-	old_envp = var->envp;
-	new_envp = (char **)malloc(sizeof(char *) * ((ft_lstsize_envp(old_envp)) +
-			1));
+	old_envp = g_var->envp;
+	new_envp = (char **)malloc(sizeof(char *) * \
+	((ft_lstsize_envp(old_envp)) + 1));
 	while (old_envp != NULL)
 	{
 		tmp = ft_strjoin(old_envp->var, "=");
@@ -75,10 +75,10 @@ char	**ft_new_envp_for_execve(void)
 
 int	ft_is_a_directory(char *cmd)
 {
-	struct stat dir;
+	struct stat	dir;
 
 	stat(cmd, &dir);
-	return(S_ISDIR(dir.st_mode));
+	return (S_ISDIR(dir.st_mode));
 }
 
 void	ft_error_message_and_exit(int exit_status, char *cmd, int choice)
@@ -89,11 +89,12 @@ void	ft_error_message_and_exit(int exit_status, char *cmd, int choice)
 		ft_putendl_fd(": command not found", STDERR_FILENO);
 	else if (choice == 1)
 		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-	var->state = exit_status;
-	exit(var->state);
+	g_var->state = exit_status;
+	exit(g_var->state);
 }
 
-void	 ft_execute_terminal_cmd(t_list *elem, t_fds *fds, int reserved_stdout, int reserved_stdin)
+void	ft_execute_terminal_cmd(t_list *elem, t_fds *fds, \
+int reserved_stdout, int reserved_stdin)
 {
 	pid_t	pid;
 	char	**new_envp;
@@ -110,24 +111,23 @@ void	 ft_execute_terminal_cmd(t_list *elem, t_fds *fds, int reserved_stdout, int
 		execve(elem->path, elem->cmds, new_envp);
 		ft_perror(elem->cmd, 1);
 		ft_free(new_envp);
-		exit(var->state);
+		exit(g_var->state);
 	}
 	else
 	{
 		ft_init_signal_handler(ft_handler_child);
-		var->state = ft_return_child_exit_status(pid, fds, reserved_stdout,
-												 reserved_stdin);
-		printf("var state %d", var->state);
+		g_var->state = ft_return_child_exit_status(pid, fds, reserved_stdout, \
+		reserved_stdin);
 	}
 }
 
-int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
+int	ft_exec_cmd(t_list *elem, t_fds *fds)
 {
 	int		result;
 	int		reserved_stdout;
 	int		reserved_stdin;
 	char	**new_envp;
-	
+
 	reserved_stdout = dup(STDOUT_FILENO);
 	reserved_stdin = dup(STDIN_FILENO);
 	if (ft_check_fds(fds) != -1)
@@ -143,7 +143,7 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 			close(fds->fd_out);
 		}
 	}
-	if ((result = ft_exec_buildin(elem, var)) >= 0)
+	if ((result = ft_exec_buildin(elem)) >= 0)
 		return (result);
 	else
 		ft_execute_terminal_cmd(elem, fds, reserved_stdout,
