@@ -11,7 +11,8 @@ char	*ft_strndup(char *src, int len)
 	str_len = (int)ft_strlen(src);
 	if (len > str_len)
 		len = str_len;
-	if (!(result = (char *)malloc(sizeof(char) * (len + 1))))
+	result = (char *)malloc(sizeof(char) * (len + 1));
+	if (!result)
 		return (NULL);
 	while (*src && len--)
 		result[i++] = *(src++);
@@ -46,7 +47,7 @@ int	ft_add_in_result(char *result, char *temp, int i, int index)
 	return (i);
 }
 
-char *ft_parse_double_quote(char **str)
+char	*ft_parse_double_quote(char **str)
 {
 	int		index;
 	char	*temp;
