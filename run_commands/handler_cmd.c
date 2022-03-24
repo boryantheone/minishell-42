@@ -23,7 +23,6 @@ int	ft_return_child_exit_status(pid_t pid, t_fds *fds, int reserved_stdout, int
 reserved_stdin)
 {
 	int	exit_status;
-	int	error_state;
 
 	dup2(reserved_stdin, STDIN_FILENO);
 	close(reserved_stdin);

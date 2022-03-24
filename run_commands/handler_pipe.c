@@ -160,7 +160,7 @@ int	ft_exec_pipes(t_list *elem, t_fds *fds)
 	ft_dup_fd_in(reserved_stdin, tmp_fds);
 	while (tmp_fds->next != NULL)
 	{
-		ft_init_signal_handler(ft_handler_child);
+		// ft_init_signal_handler(ft_handler_child);
 		ft_launch_proc(tmp, tmp_fds);
 		tmp = tmp->next;
 		tmp_fds = tmp_fds->next;

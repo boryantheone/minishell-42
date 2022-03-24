@@ -113,5 +113,6 @@ void	ft_error_message_and_exit(int exit_status, char *cmd, int choice);
 //signal
 void	ft_init_signal_handler(void (*ft_handler)(int));
 void	ft_handler_child(int sig);
-int		ft_edit_exit_status(int errno_val);
+void	ft_handler_main(int sig);
+void	ft_handler_ctrl_d(void);
 #endif 

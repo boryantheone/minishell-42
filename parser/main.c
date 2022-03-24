@@ -45,7 +45,7 @@ int	ft_check_fds(t_fds *fds)
 	return (EXIT_SUCCESS);
 }
 
-static int	eof_exit(void)
+static int	eof_e(void)
 {
 	write(1, "exit\n", 5);
 	return (g_var->state);
@@ -71,27 +71,26 @@ int	main(int argc, char **argv, char **env)
 	ft_init_var(env);
 	while (1)
 	{
+		rl_catch_signals = 0;
+		ft_init_signal_handler(ft_handler_main);
 		str = readline("\033[1;35mminishelchik-1.0$ \033[0m");
+		if (str == NULL)
+			ft_handler_ctrl_d();
 		if (ft_strncmp(str, "\0", 1) != 0)
 			add_history (str);
 		else
 			continue;
-		if (str != NULL)
+		if (!ft_preparser(str))
 		{
-			if (!ft_preparser(str))
-			{
-				fds = ft_parser_heredoc(str);
-				if (fds == NULL && g_var->state == 258)
-					continue;
-				ft_parser_redirect(str, fds);
-				elem = ft_parser(str);
-				ft_execute(elem, fds);
-//				free(fds);
-//				ft_lstclear(&elem);
-			}
-			free(str);
+			fds = ft_parser_heredoc(str);
+			if (fds == NULL && g_var->state == 258)
+				continue;
+			ft_parser_redirect(str, fds);
+			elem = ft_parser(str);
+			ft_execute(elem, fds);
+//			free(fds);
+//			ft_lstclear(&elem);
 		}
-		else
-			return (eof_exit());
+		free(str);
 	}
 }
