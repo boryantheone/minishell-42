@@ -3,7 +3,7 @@
 void ft_execute(t_var *var, t_list *elem, t_fds *fds)
 {
 	pid_t pid;
-	id_t exit_status;
+	int exit_status;
 
 	if (elem)
 	{
@@ -14,12 +14,12 @@ void ft_execute(t_var *var, t_list *elem, t_fds *fds)
 			pid = fork();
 			if (!pid)
 				ft_exec_pipes(var, elem, fds);
-			wait(&exit_status);
+			ft_init_signal_handler(ft_handler_child);
+			waitpid(pid, &exit_status, 0);
 			if (exit_status == 0)
 				var->state = 0;
-			if (WIFSIGNALED(exit_status))
-				var->state = 128 + exit_status;
-			var->state = WEXITSTATUS(exit_status);
+			if (WEXITSTATUS(exit_status))
+				var->state = WEXITSTATUS(exit_status);
 		}
 	}
 	else

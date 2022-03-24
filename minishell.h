@@ -12,6 +12,8 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <signal.h>
+#include <sys/wait.h>
+#include <errno.h>
 
 #define MAXDIR 4096 //макс кол-во символов для названия пути
 
@@ -114,4 +116,9 @@ int	ft_check_fds(t_fds *fds);
 int	ft_perror(char *err_message, int return_value);
 int	ft_is_a_directory(char *cmd);
 void	ft_error_message_and_exit(int exit_status, char *cmd, int choice);
+
+//signal
+void	ft_init_signal_handler(void (*ft_handler)(int));
+void	ft_handler_child(int sig);
+int		ft_edit_exit_status(int errno_val);
 #endif 

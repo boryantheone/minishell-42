@@ -53,6 +53,7 @@ int	ft_preparser_pipe(char *line, int *i)
 		if (line[(*i)] == '\0' || line[(*i)] == 124)
 		{
 			printf("syntax error near unexpected token `|'\n");
+			var->state = 258;
 			return (1);
 		}
 	}
@@ -67,6 +68,7 @@ int	ft_preparser(char *line)
 	if (line[i--] == 124)
 	{
 		printf("syntax error near unexpected token `|'\n");
+		var->state = 258;
 		exit (1);
 	}
 	while (line[++i])

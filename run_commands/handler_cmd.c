@@ -30,12 +30,9 @@ reserved_stdin)
 	dup2(reserved_stdout, STDOUT_FILENO);
 	close(reserved_stdout);
 	waitpid(pid, &exit_status, 0);
-	if (exit_status == 0)
-		return (0);
-	if (WIFSIGNALED(exit_status))
-		return (128 + exit_status);
-	error_state = WEXITSTATUS(exit_status);
-	return (error_state);
+	if (WEXITSTATUS(exit_status))
+		var->state = WEXITSTATUS(exit_status);	
+	return (var->state);
 }
 
 int	ft_lstsize_envp(t_envp *lst)
@@ -116,8 +113,12 @@ void	 ft_execute_terminal_cmd(t_list *elem, t_fds *fds, int reserved_stdout, int
 		exit(var->state);
 	}
 	else
+	{
+		ft_init_signal_handler(ft_handler_child);
 		var->state = ft_return_child_exit_status(pid, fds, reserved_stdout,
 												 reserved_stdin);
+		printf("var state %d", var->state);
+	}
 }
 
 int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
@@ -147,6 +148,5 @@ int	ft_exec_cmd(t_list *elem, t_var *var, t_fds *fds)
 	else
 		ft_execute_terminal_cmd(elem, fds, reserved_stdout,
 								reserved_stdin);
-//	var->state = 0;
 	return (EXIT_SUCCESS);
 }

@@ -160,13 +160,13 @@ int	ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
 	ft_dup_fd_in(reserved_stdin, tmp_fds);
 	while (tmp_fds->next != NULL)
 	{
+		ft_init_signal_handler(ft_handler_child);
 		ft_launch_proc(tmp, tmp_fds);
 		tmp = tmp->next;
 		tmp_fds = tmp_fds->next;
 	}
 	ft_dup_fd_out(reserved_stdout, tmp_fds);
 	var->state = execve_for_pipe(tmp);
-	printf("state = %d", var->state);
 	ft_wait(pid, reserved_stdin, reserved_stdout);
 	return (var->state);
 }
