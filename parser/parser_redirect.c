@@ -67,7 +67,6 @@ int	ft_reverse_redirect(char **str, t_fds *fds)
 	if (*temp == '<' && *(temp + 1) != '\0')
 	{
 		*str = ++temp;
-		//printf("2 heredoc %d\n", fds->fd_heredoc);
 		return (fds->fd_heredoc);
 	}
 	while ((*temp == ' ' || *temp == '\t') && *temp != '\0')
@@ -99,5 +98,4 @@ void	ft_parser_redirect(char *str, t_fds *fds)
 		else
 			str++;
 	}
-//	ft_printfds(fds);
 }

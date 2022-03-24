@@ -101,8 +101,9 @@ void	ft_child_heredoc(int fd, char *stop)
 {
 	char	*result;
 
+	ft_init_signal_handler(ft_handler_heredoc);
 	result = readline("> ");
-	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
+	while (result && ft_strncmp(result, stop, ft_strlen(stop) + 1))
 	{
 		while ((ft_strchr(result, '$')))
 			result = ft_replace_env(result);

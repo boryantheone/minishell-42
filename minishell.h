@@ -115,4 +115,5 @@ void	ft_init_signal_handler(void (*ft_handler)(int));
 void	ft_handler_child(int sig);
 void	ft_handler_main(int sig);
 void	ft_handler_ctrl_d(void);
+void	ft_handler_heredoc(int sig);
 #endif 

@@ -1,5 +1,13 @@
 #include "../minishell.h"
 
+void	ft_handler_heredoc(int sig)
+{
+	g_var->state = 1;
+	if (sig == SIGINT)
+		return ;
+
+}
+
 void	ft_child_sigint(void)
 {
 	int		exit_status;
