@@ -45,7 +45,7 @@ int	ft_forward_redirect(char **str)
 		file_name = ft_parse_arguments(&temp);
 		fd = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 		if (fd == -1)
-			return(ft_perror(file_name, EXIT_FAILURE));
+			return (ft_perror(file_name, EXIT_FAILURE));
 		free(file_name);
 	}
 	*str = temp;
@@ -83,8 +83,8 @@ int	ft_reverse_redirect(char **str, t_fds *fds)
 
 void	ft_parser_redirect(char *str, t_fds *fds)
 {
-	t_fds *tmp;
-	
+	t_fds	*tmp;
+
 	tmp = fds;
 	while (*str)
 	{
@@ -99,5 +99,5 @@ void	ft_parser_redirect(char *str, t_fds *fds)
 		else
 			str++;
 	}
-	ft_printfds(fds);
+//	ft_printfds(fds);
 }

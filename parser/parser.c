@@ -73,6 +73,8 @@ char	*ft_single_parse(char **str)
 	while (**str != ' ' && **str != '\0' && **str != '|')
 	{
 		temp = NULL;
+		if (**str == '\"' || **str == '\'')
+			str++;
 		if (**str == '$')
 			temp = ft_parse_with_envp(str, 0);
 		if (temp)
@@ -164,7 +166,7 @@ t_list	*ft_parser(char *str)
 		ft_lstadd_back(&elem, ft_lstnew(arguments));
 //	if (arguments)
 //		ft_free(arguments);
-	ft_printlist(elem);
+//	ft_printlist(elem);
 	printf("end of parser\n");
 	return (elem);
 }

@@ -1,14 +1,14 @@
+
 #include "../minishell.h"
 
 int	ft_echo(t_list *elem)
 {
 	int	i;
-	int	j;
 	int	flag_n;
-	
+
 	i = 0;
 	flag_n = 0;
-	var->state = 0;
+	g_var->state = 0;
 	if (elem->cmds[1] != NULL)
 	{
 		if (!(ft_strncmp(elem->cmds[1], "-n", 2)))
@@ -28,20 +28,20 @@ int	ft_echo(t_list *elem)
 	return (EXIT_SUCCESS);
 }
 
-int ft_pwd(t_list *elem)
+int	ft_pwd(t_list *elem)
 {
-	char dir[MAXDIR];
-	
+	char	dir[MAXDIR];
+
 	getcwd(dir, MAXDIR);
 	ft_putstr_fd(dir, STDOUT_FILENO);
 	ft_putstr_fd("\n", STDOUT_FILENO);
-	var->state = 0;
+	g_var->state = 0;
 	return (EXIT_SUCCESS);
 }
 
 int	ft_exit(t_list *elem)
 {
-	var->state = 0;
+	g_var->state = 0;
 	if (elem->next)
 		return (EXIT_SUCCESS);
 	ft_putendl_fd("exit", STDERR_FILENO);
@@ -49,7 +49,7 @@ int	ft_exit(t_list *elem)
 		exit (EXIT_FAILURE);
 	else if (ft_isdigit(elem->cmds[1]) && elem->cmds[2] != NULL)
 	{
-		var->state = 1;
+		g_var->state = 1;
 		ft_putendl_fd("minishelchik: exit: too many arguments", STDERR_FILENO);
 	}
 	else if (ft_isalpha(elem->cmds[1]))
@@ -62,17 +62,17 @@ int	ft_exit(t_list *elem)
 	return (EXIT_SUCCESS);
 }
 
-int	ft_env(t_list *elem, t_var *var)
+int	ft_env(t_list *elem)
 {
 	t_envp	*tmp;
-	
-	tmp = var->envp;
+
+	tmp = g_var->envp;
 	if (elem->cmds[1])
 	{
 		ft_putstr_fd("env: ", STDERR_FILENO);
 		ft_putstr_fd(elem->cmds[1], STDERR_FILENO);
 		ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-		var->state = 127;
+		g_var->state = 127;
 		exit(EXIT_FAILURE);
 	}
 	while (tmp)
@@ -86,6 +86,23 @@ int	ft_env(t_list *elem, t_var *var)
 		}
 		tmp = tmp->next;
 	}
-	var->state = 0;
+	g_var->state = 0;
 	return (EXIT_SUCCESS);
+}
+
+int	ft_cd_change_oldpwd(t_envp **env, char *prev_pwd)
+{
+	t_envp	*tmp;
+
+	tmp = *env;
+	while (tmp)
+	{
+		if (!(ft_strncmp(tmp->var, "OLDPWD", 6)))
+		{
+			tmp->val = prev_pwd;
+			return (EXIT_SUCCESS);
+		}
+		tmp = tmp->next;
+	}
+	return (EXIT_FAILURE);
 }
