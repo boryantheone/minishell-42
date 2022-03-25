@@ -6,7 +6,6 @@ char	*ft_get_var_or_val_envp(char *str, int or)
 	int		i;
 	int		j;
 	char	*tmp;
-	char	*clean;
 
 	i = 0;
 	while (str[i] != '=' && str[i])
@@ -22,9 +21,6 @@ char	*ft_get_var_or_val_envp(char *str, int or)
 	else
 	{
 		tmp = (char *)malloc((sizeof(char *) * (ft_strlen(str) - i)));
-//		printf("\ntmp 2 %p\n", tmp);
-//		printf("strlen str 2 %d\n", ((int)ft_strlen(str)));
-//		printf("i 2 %d\n", i);
 		j = 0;
 		while (str[++i])
 			tmp[j++] = str[i];
@@ -95,4 +91,19 @@ int	ft_make_env_list(char **env)
 		ft_lstadd_back_envp(&g_var->envp, ft_lstnew_env(env[i]));
 	}
 	return (EXIT_SUCCESS);
+}
+
+int	ft_lstsize_envp(t_envp *lst)
+{
+	int	i;
+
+	i = 0;
+	if (!lst)
+		return (0);
+	while (lst != NULL)
+	{
+		i++;
+		lst = lst -> next;
+	}
+	return (i);
 }

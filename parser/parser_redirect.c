@@ -7,7 +7,7 @@ int	ft_perror(char *err_message, int return_value)
 	return (return_value);
 }
 
-int	ft_double_redirect(char **temp)
+static int	ft_double_redirect(char **temp)
 {
 	int		fd;
 	char	*file_name;
@@ -24,7 +24,7 @@ int	ft_double_redirect(char **temp)
 	return (fd);
 }
 
-int	ft_forward_redirect(char **str)
+static int	ft_forward_redirect(char **str)
 {
 	char		*temp;
 	char		*file_name;
@@ -52,7 +52,7 @@ int	ft_forward_redirect(char **str)
 	return (fd);
 }
 
-int	ft_reverse_redirect(char **str, t_fds *fds)
+static int	ft_reverse_redirect(char **str, t_fds *fds)
 {
 	char		*temp;
 	char		*file_name;
