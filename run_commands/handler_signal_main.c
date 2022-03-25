@@ -32,6 +32,21 @@ void	ft_handler_main(int sig)
 		ft_handler_sigint();
 }
 
+void	my_sigint(int signum)
+{
+	if (signum == SIGINT)
+	{
+		rl_on_new_line();
+		rl_redisplay();
+		write(2, "!!\n", 3);
+		write(2, "  \n", 3);
+		rl_replace_line("", 0);
+		rl_on_new_line();
+		rl_redisplay();
+		g_var->state = 1;
+	}
+}
+
 void	ft_init_signal_handler(void (*ft_handler)(int))
 {
 	struct sigaction	sa;
