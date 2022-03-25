@@ -1,7 +1,6 @@
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
-
 # include "libft/libft.h"
 # include <stdio.h>
 # include <fcntl.h>
@@ -14,7 +13,7 @@
 # include <unistd.h>
 # include <signal.h>
 
-# define MAXDIR 4096 //макс кол-во символов для названия пути
+# define MAXDIR 4096
 
 typedef struct s_envp
 {
@@ -112,4 +111,15 @@ int	ft_check_fds(t_fds *fds);
 int	ft_perror(char *err_message, int return_value);
 int	ft_is_a_directory(char *cmd);
 void	ft_error_message_and_exit(int exit_status, char *cmd, int choice);
+
+//signal
+void	ft_init_signal_handler(void (*ft_handler)(int));
+void	ft_handler_child(int sig);
+void	ft_handler_main(int sig);
+void	ft_handler_ctrl_d(void);
+void	ft_handler_heredoc(int sig);
+
+//change fds
+void	ft_dup_fd_in(int reserved_stdin, t_fds *fds);
+void	ft_dup_fd_out(int reserved_stdout, t_fds *fds);
 #endif 

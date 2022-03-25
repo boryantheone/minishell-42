@@ -1,39 +1,34 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   execute.c                                          :+:      :+:    :+:   */
+/*   change_fds.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/25 15:52:33 by jcollin           #+#    #+#             */
-/*   Updated: 2022/03/25 15:53:01 by jcollin          ###   ########.fr       */
+/*   Created: 2022/03/25 16:21:43 by jcollin           #+#    #+#             */
+/*   Updated: 2022/03/25 16:21:44 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-void	ft_execute(t_list *elem, t_fds *fds)
+void	ft_dup_fd_in(int reserved_stdin, t_fds *fds)
 {
-	pid_t	pid;
-	int		exit_status;
-
-	if (elem)
+	if (fds->fd_in != 0)
 	{
-		if (elem->next == NULL)
-			ft_exec_cmd(elem, fds);
-		else
-		{
-			pid = fork();
-			if (!pid)
-				ft_exec_pipes(elem, fds);
-			ft_init_signal_handler(ft_handler_child);
-			waitpid(pid, &exit_status, 0);
-			if (exit_status == 0)
-				g_var->state = 0;
-			if (WEXITSTATUS(exit_status))
-				g_var->state = WEXITSTATUS(exit_status);
-		}
+		dup2(fds->fd_in, STDIN_FILENO);
+		close(fds->fd_in);
 	}
 	else
-		return ;
+		dup2(reserved_stdin, STDIN_FILENO);
+}
+
+void	ft_dup_fd_out(int reserved_stdout, t_fds *fds)
+{
+	dup2(reserved_stdout, STDOUT_FILENO);
+	if (fds->fd_out != 0)
+	{
+		dup2(fds->fd_out, STDOUT_FILENO);
+		close(fds->fd_out);
+	}
 }

@@ -41,9 +41,6 @@ char	*ft_parse_with_envp(char **str, int flag)
 	{
 		printf("res %s\n", result);
 		result = ft_strdup(ft_get_env(temp));
-//		printf("result %s\n", result);
-//		temp[i] = temp_symbol;
-//		temp += i;
 	}
 	len = (int)ft_strlen(temp);
 	printf("len %d\n", len);
@@ -76,4 +73,19 @@ char	*ft_get_env(char *key)
 		tmp = tmp->next;
 	}
 	return ("\0");
+}
+
+int	ft_lstsize_envp(t_envp *lst)
+{
+	int	i;
+
+	i = 0;
+	if (!lst)
+		return (0);
+	while (lst != NULL)
+	{
+		i++;
+		lst = lst -> next;
+	}
+	return (i);
 }

@@ -126,6 +126,7 @@ void	ft_child_heredoc(int fd, char *stop)
 {
 	char	*result;
 
+	ft_init_signal_handler(ft_handler_heredoc);
 	result = readline("> ");
 	while (result && ft_strncmp(result, stop, ft_strlen(stop) + 1))
 	{
@@ -168,12 +169,13 @@ int	ft_heredoc(char **str)
 	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_heredoc == -1)
 		return (ft_perror("heredoc", -1));
-	//printf("1 heredoc %d\n", fd_heredoc);
 	ft_child_heredoc(fd_heredoc, stop);
 	*str = tmp;
 	close(fd_heredoc);
 	fd_heredoc = open("here_document", O_RDONLY, 0644);
 	free(stop);
+	if (fd_heredoc == -1)
+		return (ft_perror("heredoc", -1));
 	return (fd_heredoc);
 }
 
@@ -210,4 +212,3 @@ t_fds	*ft_parser_heredoc(char *str)
 		ft_fdsadd_back(&fds, ft_fdsnew(0, 0, fd_heredoc));
 	return (fds);
 }
-

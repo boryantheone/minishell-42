@@ -67,3 +67,16 @@ void	ft_printfds(t_fds *elem)
 		printf("elem not found\n");
 	printf("\n----------------------\n");
 }
+
+void	ft_free(char **dst)
+{
+	size_t	i;
+
+	i = 0;
+	while (dst[i])
+	{
+		free(dst[i]);
+		i++;
+	}
+	free(dst);
+}
