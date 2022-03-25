@@ -1,25 +1,6 @@
 
 #include "../minishell.h"
 
-char	*ft_strndup(char *src, int len)
-{
-	char	*result;
-	int		i;
-	int		str_len;
-
-	i = 0;
-	str_len = (int)ft_strlen(src);
-	if (len > str_len)
-		len = str_len;
-	result = (char *)malloc(sizeof(char) * (len + 1));
-	if (!result)
-		return (NULL);
-	while (*src && len--)
-		result[i++] = *(src++);
-	result[i] = '\0';
-	return (result);
-}
-
 char	*ft_parse_single_quote(char **str)
 {
 	int		index;
@@ -57,18 +38,12 @@ char	*ft_parse_double_quote(char **str)
 	++(*str);
 	index = 0;
 	result = NULL;
-//	printf("%s\n", result);
 	while (**str && **str != '\"')
 	{
 		temp = NULL;
 		if (**str == '$')
-		{
-//			write(1,"@\n",2);
 			temp = ft_parse_with_envp(str, 0);
-//			printf("$ temp %s\n", temp);
-		}
-		i = (temp) ? ft_strlen(temp) : 1;
-//		printf("str quote %s\n", *str);
+		i = (temp) ? (int)ft_strlen(temp) : 1;
 		result = ft_realloc(result, i + 1);
 		if (temp)
 			index += ft_add_in_result(result, temp, i, index);
@@ -77,9 +52,6 @@ char	*ft_parse_double_quote(char **str)
 	}
 	if (**str == '\"')
 		(*str)++;
-	if (result)
-		result[index] = 0;
-	else
-		result = ft_strdup("\0");
+	result = check_result(result, index);
 	return (result);
 }

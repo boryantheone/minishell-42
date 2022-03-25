@@ -11,12 +11,21 @@
 /* ************************************************************************** */
 #include "libft.h"
 
-int ft_strcmp(const char *s1, const char *s2)
+char	*ft_strndup(char *src, int len)
 {
-	while (*s1 != '\0' && *s2 != '\0' && *s1 == *s2)
-	{
-		s1++;
-		s2++;
-	}
-	return (*s1 - *s2);
+	char	*result;
+	int		i;
+	int		str_len;
+
+	i = 0;
+	str_len = (int)ft_strlen(src);
+	if (len > str_len)
+		len = str_len;
+	result = (char *)malloc(sizeof(char) * (len + 1));
+	if (!result)
+		return (NULL);
+	while (*src && len--)
+		result[i++] = *(src++);
+	result[i] = '\0';
+	return (result);
 }

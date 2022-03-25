@@ -70,11 +70,10 @@ char	*ft_single_parse(char **str)
 
 	index = 0;
 	result = NULL;
-	while (**str != ' ' && **str != '\0' && **str != '|')
+	while (**str != ' ' && **str != '\0' && **str != '|' \
+	&& **str != '\"' && **str != '\'')
 	{
 		temp = NULL;
-		if (**str == '\"' || **str == '\'')
-			str++;
 		if (**str == '$')
 			temp = ft_parse_with_envp(str, 0);
 		if (temp)
@@ -87,10 +86,7 @@ char	*ft_single_parse(char **str)
 		else
 			result[index++] = *(*str)++;
 	}
-	if (result)
-		result[index] = '\0';
-	else
-		result = ft_strdup("\0");
+	result = check_result(result, index);
 	return (result);
 }
 
@@ -131,16 +127,11 @@ char	*ft_parse_arguments(char **str)
 	return (result);
 }
 
-t_list	*ft_parser(char *str)
+t_list	*ft_help_parser(char *str, t_list *elem, char **arguments, char *tmp)
 {
-	char		**arguments;
-	char		*tmp;
-	int			i;
-	t_list		*elem;
+	int	i;
 
 	i = 0;
-	arguments = NULL;
-	elem = NULL;
 	while (*str)
 	{
 		while (*str == ' ')
@@ -157,16 +148,24 @@ t_list	*ft_parser(char *str)
 		if ((tmp = ft_parse_arguments(&str)))
 		{
 			arguments = ft_double_realloc(arguments, 1);
-			arguments[i] = tmp;
-			//printf("argum %s\n", arguments[i]);
-			i++;
+			arguments[i++] = tmp;
 		}
 	}
 	if (*str == '\0')
 		ft_lstadd_back(&elem, ft_lstnew(arguments));
-//	if (arguments)
-//		ft_free(arguments);
-//	ft_printlist(elem);
+	return (elem);
+}
+
+t_list	*ft_parser(char *str)
+{
+	char		**arguments;
+	char		*tmp;
+	t_list		*elem;
+
+	arguments = NULL;
+	elem = NULL;
+	tmp = NULL;
+	elem = ft_help_parser(str, elem, arguments, tmp);
 	printf("end of parser\n");
 	return (elem);
 }

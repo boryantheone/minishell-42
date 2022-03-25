@@ -15,25 +15,34 @@
 
 void	ft_lstdelone(t_list *lst)
 {
-	int i;
-	
+	int	i;
+
 	i = 0;
 	if (!lst)
 		return ;
 	else
 	{
-		if (lst->cmd)
-			free(lst->cmd);
-		if(lst->path && (ft_strcmp(lst->path, "command not found")))
+		if (lst->path && !(ft_strcmp(lst->path, "command not found")))
 			free(lst->path);
-//		if(lst->cmds)
-//		{
-//			while (lst->cmds[i])
-//			{
-//				free(lst->cmds[i]);
-//				i++;
-//			}
-//			free(lst->cmds);
-//		}
+		if (lst->cmds)
+			ft_free(lst->cmds);
+		free(lst);
 	}
 }
+
+//void	ft_lstdelone(t_fds *lst)
+//{
+//	int	i;
+//
+//	i = 0;
+//	if (!lst)
+//		return ;
+//	else
+//	{
+//
+//		if (lst->path && !(ft_strcmp(lst->path, "command not found")))
+//			free(lst->path);
+//		if (lst->cmds)
+//			free(lst->cmds);
+//	}
+//}

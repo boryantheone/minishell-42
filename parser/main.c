@@ -41,8 +41,9 @@ int	ft_check_fds(t_fds *fds)
 	{
 		if (tmp_fds->fd_in == -1 || tmp_fds->fd_out == -1)
 			return (EXIT_FAILURE);
+		return (EXIT_SUCCESS);
 	}
-	return (EXIT_SUCCESS);
+	return (-1);
 }
 
 static int	eof_e(void)
@@ -58,15 +59,32 @@ void	ft_init_var(char **env)
 	g_var->envp = NULL;
 	g_var->export = NULL;
 	ft_make_env_list(env);
-	g_var->export = (t_envp *)malloc(sizeof(t_envp *));
+//	g_var->export = (t_envp *)malloc(sizeof(t_envp *));
 	g_var->export = g_var->envp;
+}
+
+int	ft_minishell(char *str)
+{
+	t_list	*elem;
+	t_fds	*fds;
+
+	if (!ft_preparser(str))
+	{
+		fds = ft_parser_heredoc(str);
+		if (fds == NULL && g_var->state == 258)
+			return (1);
+		ft_parser_redirect(str, fds);
+		elem = ft_parser(str);
+		ft_execute(elem, fds);
+		ft_lstclear_fds(&fds);
+		ft_lstclear(&elem);
+	}
+	return (0);
 }
 
 int	main(int argc, char **argv, char **env)
 {
 	char	*str;
-	t_list	*elem;
-	t_fds	*fds;
 
 	ft_init_var(env);
 	while (1)
@@ -79,15 +97,13 @@ int	main(int argc, char **argv, char **env)
 		if (ft_strncmp(str, "\0", 1) != 0)
 			add_history (str);
 		else
-			continue;
-		if (!ft_preparser(str))
 		{
-			fds = ft_parser_heredoc(str);
-			if (fds == NULL && g_var->state == 258)
-				continue;
-			ft_parser_redirect(str, fds);
-			elem = ft_parser(str);
-			ft_execute(elem, fds);
+			free(str);
+			continue;
+		}
+		if (str != NULL)
+		{
+			ft_minishell(str);
 		}
 		free(str);
 	}
