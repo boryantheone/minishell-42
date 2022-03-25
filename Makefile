@@ -10,7 +10,7 @@ HEADER	=	minishell.h
 #  -Wall -Werror -Wextra
 
 SRCS	=	parser/main.c parser/preparser.c parser/preparser_utils.c parser/parser.c parser/parser_quotes.c\
-			parser/new_env_list.c \
+			parser/new_env_list.c parser/ft_parser_utils2.c parser/new_fds_list.c\
 			parser/make_envp.c parser/parser_redirect.c parser/parser_fds.c parser/ft_parser_utils.c\
  			run_commands/handler_pipe.c build_in/build_in.c build_in/build_in2.c build_in/build_in3.c \
  			run_commands/execute.c run_commands/handler_cmd.c run_commands/cmd_check.c \

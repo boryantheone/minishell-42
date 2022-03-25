@@ -48,26 +48,6 @@ int	ft_limiter(char c)
 		return (0);
 }
 
-void	ft_printfds(t_fds *elem)
-{
-	t_fds	*tmp;
-
-	tmp = elem;
-//	write(2, "++++++++++++++++++++++++\n", 26);
-	if (elem)
-	{
-		while (tmp != NULL)
-		{
-			printf("fd_out(write) %d, fd_in(read) %d heredoc %d|" \
-			, tmp->fd_out, tmp->fd_in, tmp->fd_heredoc);
-			tmp = tmp->next;
-		}
-	}
-	else
-		printf("elem not found\n");
-	printf("\n----------------------\n");
-}
-
 void	ft_free(char **dst)
 {
 	size_t	i;
