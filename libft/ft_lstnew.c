@@ -11,12 +11,14 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include <stdio.h>
 
 t_list	*ft_lstnew(char **arg)
 {
 	t_list	*node;
 
 	node = (t_list *)malloc(sizeof(t_list));
+//	printf("list malloc %p\n", node);
 	if (!node)
 		return (NULL);
 	if (arg)
@@ -33,4 +35,3 @@ t_list	*ft_lstnew(char **arg)
 	node -> next = NULL;
 	return (node);
 }
-

@@ -1,6 +1,15 @@
 
 #include "../minishell.h"
 
+char	*check_result(char *result, int index)
+{
+	if (result)
+		result[index] = 0;
+	else
+		result = ft_strdup("\0");
+	return (result);
+}
+
 void	ft_skip_quotes(char **str)
 {
 	char	*temp;

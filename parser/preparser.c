@@ -64,7 +64,8 @@ int	ft_preparser_pipe(const char *line, int *i)
 	if (line[(*i)] == 124)
 	{
 		(*i)++;
-		while (line[(*i)] && line[(*i)] == ' ')
+		while (line[(*i)] && line[(*i)] == ' ' && line[(*i)] != 34 && \
+		line[(*i)] != 39)
 			(*i)++;
 		if (line[(*i)] == '\0' || line[(*i)] == 124)
 		{
@@ -85,14 +86,14 @@ int	ft_preparser(char *line)
 		return (1);
 	while (line[i])
 	{
+		if (line[i] == 124)
+			if (ft_preparser_pipe(line, &i))
+				return (1);
 		if (line[i] == 34)
 			if (ft_preparser_quotes(line, &i, 34))
 				return (1);
 		if (line[i] == 39)
 			if (ft_preparser_quotes(line, &i, 39))
-				return (1);
-		if (line[i] == 124)
-			if (ft_preparser_pipe(line, &i))
 				return (1);
 		if (ft_preparser_redirect(line, &i))
 			return (1);

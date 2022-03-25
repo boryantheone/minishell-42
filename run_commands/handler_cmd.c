@@ -147,6 +147,5 @@ int	ft_exec_cmd(t_list *elem, t_fds *fds)
 		return (result);
 	else
 		ft_execute_terminal_cmd(elem, fds, reserved_stdout, reserved_stdin);
-//	var->state = 0;
 	return (EXIT_SUCCESS);
 }

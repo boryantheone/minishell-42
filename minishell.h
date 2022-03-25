@@ -41,6 +41,7 @@ typedef struct s_fds
 
 t_var	*g_var;
 
+void	ft_lstclear_fds(t_fds **lst);
 void	ft_printlist_envp(t_envp *env);
 
 //new_env_list
@@ -65,6 +66,7 @@ int		ft_preparser(char *line);
 //preparser_utils
 int		ft_skip_space(const char *line, int *i);
 int		ft_write_error(int flag);
+char	*check_result(char *result, int index);
 //parser
 t_list	*ft_parser(char *str);
 char	*ft_parse_arguments(char **str);

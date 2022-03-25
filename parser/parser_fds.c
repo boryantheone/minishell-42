@@ -6,6 +6,7 @@ t_fds	*ft_fdsnew(int fd_read, int fd_write, int heredoc)
 	t_fds	*node;
 
 	node = (t_fds *)malloc(sizeof(t_fds));
+//	printf("fds malloc %p\n", node);
 	if (!node)
 		return (NULL);
 	node -> fd_in = fd_read;
@@ -30,6 +31,36 @@ void	ft_fdsadd_back(t_fds **lst, t_fds *new)
 	tmp -> next = new;
 }
 
+char	*ft_my_strjoin(char *s1, char *s2)
+{
+	char	*str;
+	int		i;
+	int		j;
+
+	if (!s1 || !s2)
+		return (NULL);
+	i = ft_strlen((char *)s1);
+	j = ft_strlen((char *)s2);
+	str = malloc(sizeof(char) * (i + j + 1));
+	if (!str)
+		return (NULL);
+	i = 0;
+	j = 0;
+	while (s1[i] != '\0')
+	{
+		str[i] = s1[i];
+		i++;
+	}
+	while (s2[j] != '\0')
+	{
+		str[i + j] = s2[j];
+		j++;
+	}
+	str[i + j] = '\0';
+	free(s1);
+	return (str);
+}
+
 char	*ft_remove_quotes(char *str)
 {
 	int		index;
@@ -48,13 +79,13 @@ char	*ft_remove_quotes(char *str)
 	while (str[end] && (str[end] != '\'' && str[end] != '\"'))
 		end++;
 	result1 = ft_substr(str, index + 1, end - index - 1);
-	result = ft_strjoin(result, result1);
+	result = ft_my_strjoin(result, result1);
 	free(result1);
 	index = ++end;
 	while (str[end] != '\0')
 		end++;
 	result1 = ft_substr(str, index, end - index);
-	result = ft_strjoin(result, result1);
+	result = ft_my_strjoin(result, result1);
 	free(result1);
 	return (result);
 }
@@ -67,7 +98,6 @@ char	*ft_replace_env(char *str)
 
 	index = 0;
 	result1 = NULL;
-//	printf("1 str search index $ %s\n", str);
 	while (str[index] && str[index] != '$')
 		index++;
 	if (index)
@@ -75,25 +105,20 @@ char	*ft_replace_env(char *str)
 	else
 		result = ft_strdup("\0");
 	str = str + index;
-	printf("1 str %s\n", str);
-	printf("1 result |%s|\n", result);
 	result1 = ft_parse_with_envp(&str, 1);
-	printf("1 result1 after perse env %s\n", result1);
 	if (!result1)
 	{
 		free(result);
 		return ("\0");
 	}
-	result = ft_strjoin(result, result1);
+	result = ft_my_strjoin(result, result1);
 	free(result1);
 	index = 0;
 	while (str[index] != '\0')
 		index++;
 	result1 = ft_strndup(str, index);
-	result = ft_strjoin(result, result1);
+	result = ft_my_strjoin(result, result1);
 	free(result1);
-	printf("resul replace %s\n", result);
-	write(1, "====================\n", 21);
 	return (result);
 }
 
@@ -102,20 +127,23 @@ void	ft_child_heredoc(int fd, char *stop)
 	char	*result;
 
 	result = readline("> ");
-	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
+	while (result && ft_strncmp(result, stop, ft_strlen(stop) + 1))
 	{
 		while ((ft_strchr(result, '$')))
 			result = ft_replace_env(result);
 		write(fd, result, ft_strlen(result));
 		write(fd, "\n", 1);
+		free(result);
 		result = readline("> ");
 	}
+	free(result);
 }
 
 int	ft_heredoc(char **str)
 {
 	char			*tmp;
 	char			*stop;
+	char			*clean;
 	static int		fd_heredoc;
 	int				index;
 
@@ -133,8 +161,9 @@ int	ft_heredoc(char **str)
 		g_var->state = 258;
 		return (-1);
 	}
-	stop = ft_strndup(tmp, index);
-	stop = ft_remove_quotes(stop);
+	clean = ft_strndup(tmp, index);
+	stop = ft_remove_quotes(clean);
+	free(clean);
 	unlink("here_document");
 	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_heredoc == -1)
@@ -144,6 +173,7 @@ int	ft_heredoc(char **str)
 	*str = tmp;
 	close(fd_heredoc);
 	fd_heredoc = open("here_document", O_RDONLY, 0644);
+	free(stop);
 	return (fd_heredoc);
 }
 

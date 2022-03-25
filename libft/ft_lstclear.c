@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "libft.h"
+#include "../minishell.h"
 
 void	ft_lstclear(t_list **lst)
 {
@@ -24,5 +25,23 @@ void	ft_lstclear(t_list **lst)
 		ft_lstdelone(l);
 		l = save;
 	}
+	*lst = NULL;
+}
+
+void	ft_lstclear_fds(t_fds **lst)
+{
+	t_fds	*l;
+	t_fds	*save;
+
+	if (lst == NULL)
+		return ;
+	l = *lst;
+	while (l && l->next)
+	{
+		save = l->next;
+		free(l);
+		l = save;
+	}
+	free(l);
 	*lst = NULL;
 }
