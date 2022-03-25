@@ -14,9 +14,16 @@
 
 void	ft_handler_heredoc(int sig)
 {
-	g_var->state = 1;
+//	int		exit_status;
+//	pid_t	pid;
+//
+//	pid = waitpid(-1, &exit_status, 0);
+//	g_var->state = 1;
+//	rl_on_new_line();
 	if (sig == SIGINT)
+	{
 		exit(EXIT_SUCCESS);
+	}
 }
 
 void	ft_child_sigint(void)

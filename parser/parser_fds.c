@@ -6,7 +6,6 @@ t_fds	*ft_fdsnew(int fd_read, int fd_write, int heredoc)
 	t_fds	*node;
 
 	node = (t_fds *)malloc(sizeof(t_fds));
-//	printf("fds malloc %p\n", node);
 	if (!node)
 		return (NULL);
 	node -> fd_in = fd_read;
@@ -134,10 +133,14 @@ void	ft_child_heredoc(int fd, char *stop)
 			result = ft_replace_env(result);
 		write(fd, result, ft_strlen(result));
 		write(fd, "\n", 1);
-		free(result);
+		if (result)
+			free(result);
 		result = readline("> ");
 	}
-	free(result);
+	if (result)
+		free(result);
+	close (fd);
+	exit(EXIT_SUCCESS);
 }
 
 int	ft_heredoc(char **str)
@@ -147,6 +150,8 @@ int	ft_heredoc(char **str)
 	char			*clean;
 	static int		fd_heredoc;
 	int				index;
+	pid_t			pid;
+	int 			status;
 
 	index = 0;
 	if (fd_heredoc != 0)
@@ -169,7 +174,15 @@ int	ft_heredoc(char **str)
 	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_heredoc == -1)
 		return (ft_perror("heredoc", -1));
-	ft_child_heredoc(fd_heredoc, stop);
+	signal(SIGINT, SIG_IGN);
+	pid = fork();
+	if (!pid)
+		ft_child_heredoc(fd_heredoc, stop);
+	waitpid(pid, &status, 0);
+	g_var->state = WEXITSTATUS(status);
+	//rl_redisplay();
+	ft_init_signal_handler(ft_handler_main);
+//	signal(SIGINT, my_sigint);
 	*str = tmp;
 	close(fd_heredoc);
 	fd_heredoc = open("here_document", O_RDONLY, 0644);

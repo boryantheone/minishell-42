@@ -16,7 +16,6 @@ char	*ft_parse_with_envp(char **str, int flag)
 	char	*temp;
 	char	temp_symbol;
 	char	*result;
-	char	*result1;
 	int		i;
 	int		len;
 
@@ -27,40 +26,27 @@ char	*ft_parse_with_envp(char **str, int flag)
 		i++;
 	temp_symbol = temp[i];
 	temp[i] = 0;
-	printf("2 temp (%s)\n", temp);
 	if (!ft_strncmp(temp, "?", 1))
 		result = ft_itoa(g_var->state);
 	else if (i == 0 && flag == 0)
 	{
 		result = ft_strdup("$");
 		i++;
-//		temp[i] = temp_symbol;
-//		temp += 1;
 	}
 	else if (i > 0)
-	{
-		printf("res %s\n", result);
 		result = ft_strdup(ft_get_env(temp));
-	}
 	len = (int)ft_strlen(temp);
-	printf("len %d\n", len);
-	printf("i %d\n", i);
-	printf("symbol (%d)\n", (ft_symbol(temp_symbol)));
 	temp[i] = temp_symbol;
-	if((ft_symbol(temp[i])) && len <= 2)
-	{
-		write(1, "skip symbol\n", 12);
+	if ((ft_symbol(temp[i])) && len <= 2)
 		i++;
-	}
 	*str = temp + i;
-	printf("2! str after replace env (%s)\n", *str);
 	return (result);
 }
 
 char	*ft_get_env(char *key)
 {
 	t_envp	*tmp;
-	
+
 	tmp = g_var->envp;
 	if (*key == '$')
 		return ("88228");
