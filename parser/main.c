@@ -88,8 +88,6 @@ int	main(int argc, char **argv, char **env)
 			ft_parser_redirect(str, fds);
 			elem = ft_parser(str);
 			ft_execute(elem, fds);
-//			free(fds);
-//			ft_lstclear(&elem);
 		}
 		free(str);
 	}

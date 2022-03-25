@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handler_cmd.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/25 15:49:49 by jcollin           #+#    #+#             */
+/*   Updated: 2022/03/25 15:50:18 by jcollin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	ft_exec_buildin(t_list *elem)
@@ -30,23 +42,8 @@ reserved_stdin)
 	close(reserved_stdout);
 	waitpid(pid, &exit_status, 0);
 	if (WEXITSTATUS(exit_status))
-		g_var->state = WEXITSTATUS(exit_status);	
+		g_var->state = WEXITSTATUS(exit_status);
 	return (g_var->state);
-}
-
-int	ft_lstsize_envp(t_envp *lst)
-{
-	int	i;
-
-	i = 0;
-	if (!lst)
-		return (0);
-	while (lst != NULL)
-	{
-		i++;
-		lst = lst -> next;
-	}
-	return (i);
 }
 
 char	**ft_new_envp_for_execve(void)
@@ -70,26 +67,6 @@ char	**ft_new_envp_for_execve(void)
 	}
 	new_envp[i] = NULL;
 	return (new_envp);
-}
-
-int	ft_is_a_directory(char *cmd)
-{
-	struct stat	dir;
-
-	stat(cmd, &dir);
-	return (S_ISDIR(dir.st_mode));
-}
-
-void	ft_error_message_and_exit(int exit_status, char *cmd, int choice)
-{
-	ft_putstr_fd("minishelchik: ", STDERR_FILENO);
-	ft_putstr_fd(cmd, STDERR_FILENO);
-	if (choice == 0)
-		ft_putendl_fd(": command not found", STDERR_FILENO);
-	else if (choice == 1)
-		ft_putendl_fd(": No such file or directory", STDERR_FILENO);
-	g_var->state = exit_status;
-	exit(g_var->state);
 }
 
 void	ft_execute_terminal_cmd(t_list *elem, t_fds *fds, \
@@ -125,7 +102,6 @@ int	ft_exec_cmd(t_list *elem, t_fds *fds)
 	int		result;
 	int		reserved_stdout;
 	int		reserved_stdin;
-	char	**new_envp;
 
 	reserved_stdout = dup(STDOUT_FILENO);
 	reserved_stdin = dup(STDIN_FILENO);
@@ -142,10 +118,10 @@ int	ft_exec_cmd(t_list *elem, t_fds *fds)
 			close(fds->fd_out);
 		}
 	}
-	if ((result = ft_exec_buildin(elem)) >= 0)
+	result = ft_exec_buildin(elem);
+	if (result >= 0)
 		return (result);
 	else
-		ft_execute_terminal_cmd(elem, fds, reserved_stdout,
-								reserved_stdin);
+		ft_execute_terminal_cmd(elem, fds, reserved_stdout, reserved_stdin);
 	return (EXIT_SUCCESS);
 }
