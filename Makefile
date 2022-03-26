@@ -21,10 +21,10 @@ OBJS	=	${SRCS:.c=.o}
 CC		=	cc
 
 %.o	:	%.c
-		${CC} ${CFLAGS} $< -c -o $@
+		@${CC} ${CFLAGS} $< -c -o $@
 
-${NAME}	:	${OBJS} ${LIBFT} 
-			${CC} ${CFLAGS} ${OBJS} -lreadline \
+${NAME}	:	${OBJS} ${LIBFT}
+			@ ${CC} ${CFLAGS} ${OBJS} -lreadline \
  			-L${HOME}/.brew/Cellar/readline/8.1.2/lib/ \
  			-I${HOME}/.brew/Cellar/readline/8.1.2/include/ \
  			-L./libft -lft -o ${NAME}
@@ -36,15 +36,15 @@ all		:	${NAME}
 ${LIBFT} : libft ;
 
 libft	:
-			${MAKE} -C ./libft
+			@${MAKE} -C ./libft
 
 clean	:
-			rm -rf ${OBJS}
-			${MAKE} -C ./libft clean
+			@rm -rf ${OBJS}
+			@${MAKE} -C ./libft clean
 
 fclean	:	clean
-			rm -rf ${NAME}
-			${MAKE} -C ./libft fclean
+			@rm -rf ${NAME}
+			@${MAKE} -C ./libft fclean
 
 re		: fclean all
 

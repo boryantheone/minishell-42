@@ -34,9 +34,10 @@ static int	ft_minishell(char *str)
 			return (1);
 		ft_parser_redirect(str, fds);
 		elem = ft_parser(str);
-		ft_execute(elem, fds);
-		ft_lstclear_fds(&fds);
+		if (elem->cmd != NULL)
+			ft_execute(elem, fds);
 		ft_lstclear(&elem);
+		ft_lstclear_fds(&fds);
 	}
 	return (0);
 }

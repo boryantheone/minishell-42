@@ -37,18 +37,18 @@ LIB		= ranlib
 all: ${NAME}
 
 .c.o:
-			gcc $(CFLAGS) -c -I ${HEAD} $< -o ${<:.c=.o}
+			@gcc $(CFLAGS) -c -I ${HEAD} $< -o ${<:.c=.o}
 
 ${NAME}	:	${OBJS} ${HEAD}
-			${AR} ${NAME} ${OBJS}
-			${LIB} ${NAME}
+			@${AR} ${NAME} ${OBJS}
+			@${LIB} ${NAME}
 
 clean :
-			${RM} ${OBJS}
-			${RM} ${BONUS_OBJS}
+			@${RM} ${OBJS}
+			@${RM} ${BONUS_OBJS}
 
 fclean :	clean
-			${RM} ${NAME}
+			@${RM} ${NAME}
 
 #bonus :	${NAME} ${BONUS_FUNC} ${HEAD}
 #		gcc ${CFLAGS} -c ${BONUS_FUNC}

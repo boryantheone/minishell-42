@@ -12,11 +12,13 @@
 
 #include "../minishell.h"
 
-int	ft_perror(char *err_message, int return_value)
+int	ft_perror(char **err_message, int return_value)
 {
 	g_var->state = 1;
 	ft_putstr_fd("minishelchik: ", STDERR_FILENO);
-	perror(err_message);
+	perror(*err_message);
+	if (return_value == -1)
+		free(*err_message);
 	return (return_value);
 }
 
@@ -31,7 +33,7 @@ static int	ft_double_redirect(char **temp)
 	file_name = ft_parse_arguments(temp);
 	fd = open(file_name, O_CREAT | O_APPEND | O_WRONLY, 0644);
 	if (fd == -1)
-		return (ft_perror(file_name, -1));
+		return (ft_perror(&file_name, -1));
 	free(file_name);
 	return (fd);
 }
@@ -54,7 +56,7 @@ static int	ft_forward_redirect(char **str)
 		file_name = ft_parse_arguments(&temp);
 		fd = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 		if (fd == -1)
-			return (ft_perror(file_name, -1));
+			return (ft_perror(&file_name, -1));
 		free(file_name);
 	}
 	*str = temp;
@@ -80,7 +82,7 @@ static int	ft_reverse_redirect(char **str, t_fds *fds)
 	file_name = ft_parse_arguments(&temp);
 	fd = open(file_name, O_RDONLY, 0644);
 	if (fd == -1 && access(file_name, R_OK))
-		return (ft_perror(file_name, -1));
+		return (ft_perror(&file_name, -1));
 	free(file_name);
 	*str = temp;
 	return (fd);
