@@ -1,41 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_fds.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/26 15:48:50 by jcollin           #+#    #+#             */
+/*   Updated: 2022/03/26 15:48:52 by jcollin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
-
-t_fds	*ft_fdsnew(int fd_read, int fd_write, int heredoc)
-{
-	t_fds	*node;
-	
-	node = (t_fds *)malloc(sizeof(t_fds));
-	if (!node)
-		return (NULL);
-	node -> fd_in = fd_read;
-	node -> fd_out = fd_write;
-	node -> fd_heredoc = heredoc;
-	node -> next = NULL;
-	return (node);
-}
-
-void	ft_fdsadd_back(t_fds **lst, t_fds *new)
-{
-	t_fds	*tmp;
-	
-	if (*lst == NULL)
-	{
-		*lst = new;
-		return ;
-	}
-	tmp = *lst;
-	while (tmp -> next != NULL)
-		tmp = tmp -> next;
-	tmp -> next = new;
-}
 
 char	*ft_remove_quotes(char *str)
 {
 	int		index;
-	int 	end;
+	int		end;
 	char	*result1;
-	char 	*result;
-	
+	char	*result;
+
 	index = 0;
 	while (str[index] && (str[index] != '\'' && str[index] != '\"'))
 		index++;
@@ -45,114 +28,106 @@ char	*ft_remove_quotes(char *str)
 		result = ft_strdup("\0");
 	end = index + 1;
 	while (str[end] && (str[end] != '\'' && str[end] != '\"'))
-		end++;	
+		end++;
 	result1 = ft_substr(str, index + 1, end - index - 1);
-	result = ft_strjoin(result, result1);
+	result = ft_my_strjoin(result, result1);
 	free(result1);
 	index = ++end;
 	while (str[end] != '\0')
 		end++;
 	result1 = ft_substr(str, index, end - index);
-	result = ft_strjoin(result, result1);
+	result = ft_my_strjoin(result, result1);
 	free(result1);
 	return (result);
 }
 
-char	*ft_replace_env(char *str)
+void	ft_child_heredoc(int fd, char *stop)
 {
-	int		index;
-	int 	end;
-	char	*result1;
-	static char 	*result;
+	char	*result;
 
-	index = 0;
-	result1 = NULL;
-//	printf("1 str search index $ %s\n", str);
-	while(str[index] && str[index] != '$')
-		index++;
-	if (index)	
-		result = ft_strndup(str, index);
-	else
-		result = ft_strdup("\0");
-	str = str + index;
-//	printf("1 str %s\n", str);
-//	printf("1 result |%s|\n", result);
-	result1 = ft_parse_with_envp(&str, 1);
-//	printf("1 result1 after perse env %s\n", result1);
-	if (!result1)
+	ft_init_signal_handler(ft_handler_heredoc);
+	result = readline("> ");
+	while (result && ft_strncmp(result, stop, ft_strlen(stop) + 1))
 	{
-		free(result);
-		return ("\0");
+		while ((ft_strchr(result, '$')))
+			result = ft_replace_env(result);
+		write(fd, result, ft_strlen(result));
+		write(fd, "\n", 1);
+		if (result)
+			free(result);
+		result = readline("> ");
 	}
-	result = ft_strjoin(result, result1);
-	free(result1);
-	index = 0;
-	while (str[index] != '\0')
-		index++;
-	result1 = ft_strndup(str, index);
-	result = ft_strjoin(result, result1);
-	free(result1);
-//	printf("resul replace %s\n", result);
-//	write(1, "====================\n", 21);
-	return (result);
+	if (result)
+		free(result);
+	close (fd);
+	exit(EXIT_SUCCESS);
+}
+
+static int	ft_help_heredoc(char **stop)
+{
+	int		fd_heredoc;
+	pid_t	pid;
+	int		status;
+
+	unlink("here_document");
+	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	rl_catch_signals = 1;
+	pid = fork();
+	if (!pid)
+		ft_child_heredoc(fd_heredoc, *stop);
+	else
+	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+		waitpid(0, NULL, 0);
+	}
+	rl_catch_signals = 0;
+	ft_init_signal_handler(ft_handler_main);
+	close(fd_heredoc);
+	free(*stop);
+	fd_heredoc = open("here_document", O_RDONLY, 0644);
+	return (fd_heredoc);
 }
 
 int	ft_heredoc(char **str)
 {
-	char			*result;
 	char			*tmp;
 	char			*stop;
+	char			*clean;
 	static int		fd_heredoc;
-	int 			index;
-	
+	int				index;
+
 	index = 0;
 	if (fd_heredoc != 0)
 		close(fd_heredoc);
 	tmp = *str + 2;
-//	printf("tmp %s\n", tmp);
 	while ((*tmp == ' ' || *tmp == '\t') && *tmp != '\0')
 		tmp++;
 	while (tmp[index] != ' ' && tmp[index] != '\0' && tmp[index] != '|')
 		index++;
 	if (!index)
-	{
-		printf("minishelchik: syntax error near unexpected token `newline'\n");
-		var->state = 258;
-		return (-1);
-	}
-	unlink(".here_document");
-	fd_heredoc = open(".here_document", O_CREAT | O_TRUNC | O_RDWR, 0644);
-	if (fd_heredoc == -1)
-		return (ft_perror("heredoc", -1));
-	stop = ft_strndup(tmp, index);
-//	printf("stop %s\n", stop);
-	stop = ft_remove_quotes(stop);
-	result = readline("> ");
-	while (ft_strncmp(result, stop, ft_strlen(stop) + 1))
-	{
-		while ((ft_strchr(result, '$')))
-			result = ft_replace_env(result);
-//		write(1, result, ft_strlen(result));
-		write(fd_heredoc, result, ft_strlen(result));
-		write(fd_heredoc, "\n", 1);
-		result = readline("> ");
-	}
+		return (ft_perror_heredoc(NULL, 0));
+	clean = ft_strndup(tmp, index);
+	stop = ft_remove_quotes(clean);
+	free(clean);
+	if (!(ft_strcmp(stop, "<<")))
+		return (ft_perror_heredoc(&stop, 1));
+	fd_heredoc = ft_help_heredoc(&stop);
 	*str = tmp;
-	return(fd_heredoc);
+	return (fd_heredoc);
 }
 
 t_fds	*ft_parser_heredoc(char *str)
 {
 	t_fds	*fds;
-	static int	fd_heredoc;
+	int		fd_heredoc;
 
-	fd_heredoc = 0;
 	fds = NULL;
 	while (*str)
 	{
 		if (*str == '|')
 		{
-			ft_fdsadd_back(&fds, ft_fdsnew(0,0,fd_heredoc));
+			ft_fdsadd_back(&fds, ft_fdsnew(0, 0, fd_heredoc));
 			fd_heredoc = 0;
 			str++;
 		}
@@ -161,17 +136,12 @@ t_fds	*ft_parser_heredoc(char *str)
 		else if (*str == '<' && *(str + 1) == '<')
 		{
 			fd_heredoc = ft_heredoc(&str);
-			if(fd_heredoc == -1)
-			{
-				var->state = 258;
+			if (fd_heredoc == -1)
 				return (NULL);
-			}
 		}
-		else
-			str++;
+		str++;
 	}
 	if (*str == '\0')
-		ft_fdsadd_back(&fds, ft_fdsnew(0,0,fd_heredoc));
+		ft_fdsadd_back(&fds, ft_fdsnew(0, 0, fd_heredoc));
 	return (fds);
 }
-

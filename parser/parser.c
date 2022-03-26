@@ -1,65 +1,16 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/26 15:49:02 by jcollin           #+#    #+#             */
+/*   Updated: 2022/03/26 15:49:04 by jcollin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
-
-char	*ft_strcpy(char *dest, char *src)
-{
-	while (*src != '\0')
-		*dest++ = *src++;
-	return (dest);
-}
-
-void	*ft_realloc(char *result, int size)
-{
-	char	*temp;
-
-	temp = result;
-	if (result != NULL)
-	{
-		size += (int)ft_strlen(result);
-		result = (char *)ft_calloc(1, (size_t)size);
-		ft_strcpy(result, temp);
-		free(temp);
-	}
-	else
-		result = (char *)ft_calloc(1, (size_t)size);
-	return (result);
-}
-
-int	ft_str_double_len(char **cmds)
-{
-	int	i;
-
-	i = 0;
-	while (cmds[i])
-		i++;
-	return (i);
-}
-
-char	**ft_double_realloc(char **cmds, int size)
-{
-	char	**temp;
-	int		i;
-
-	i = 0;
-	temp = cmds;
-	if (cmds)
-	{
-		size += ft_str_double_len(cmds);
-		cmds = (char **)malloc(sizeof(char *) * (size + 1));
-		while (i < size)
-		{
-			cmds[i] = temp[i];
-			i++;
-		}
-		cmds[i] = NULL;
-		free(temp);
-	}
-	else
-	{
-		cmds = (char **)malloc(sizeof(char *) * (size + 1));
-		cmds[size] = NULL;
-	}
-	return (cmds);
-}
 
 char	*ft_single_parse(char **str)
 {
@@ -70,7 +21,8 @@ char	*ft_single_parse(char **str)
 
 	index = 0;
 	result = NULL;
-	while (**str != ' ' && **str != '\0' && **str != '|')
+	while (**str != ' ' && **str != '\0' && **str != '|' \
+	&& **str != '\"' && **str != '\'' && **str != '>' && **str != '<')
 	{
 		temp = NULL;
 		if (**str == '$')
@@ -85,10 +37,7 @@ char	*ft_single_parse(char **str)
 		else
 			result[index++] = *(*str)++;
 	}
-	if (result)
-		result[index] = '\0';
-	else
-		result = ft_strdup("\0");
+	result = check_result(result, index);
 	return (result);
 }
 
@@ -113,7 +62,7 @@ char	*ft_parse_arguments(char **str)
 	result = NULL;
 	while (**str)
 	{
-		if (**str == ' ' || **str == '|')
+		if (**str == ' ' || **str == '|' || **str == '<' || **str == '>')
 			break ;
 		if (**str == '\'')
 			temp = ft_parse_single_quote(str);
@@ -129,16 +78,11 @@ char	*ft_parse_arguments(char **str)
 	return (result);
 }
 
-t_list	*ft_parser(char *str)
+t_list	*ft_help_parser(char *str, t_list *elem, char **arguments, char *tmp)
 {
-	char		**arguments;
-	char		*tmp;
-	int			i;
-	t_list		*elem;
+	int	i;
 
 	i = 0;
-	arguments = NULL;
-	elem = NULL;
 	while (*str)
 	{
 		while (*str == ' ')
@@ -150,18 +94,28 @@ t_list	*ft_parser(char *str)
 			i = 0;
 			str++;
 		}
-		if (*str == '>' || *str == '<')
-			ft_skip_redirect(&str);
-		if ((tmp = ft_parse_arguments(&str)))
+		ft_skip_redirect(&str);
+		tmp = ft_parse_arguments(&str);
+		if (tmp)
 		{
 			arguments = ft_double_realloc(arguments, 1);
-			arguments[i] = tmp;
-			i++;
+			arguments[i++] = tmp;
 		}
 	}
 	if (*str == '\0')
 		ft_lstadd_back(&elem, ft_lstnew(arguments));
-	ft_printlist(elem);
-	printf("end of parser\n");
+	return (elem);
+}
+
+t_list	*ft_parser(char *str)
+{
+	char		**arguments;
+	char		*tmp;
+	t_list		*elem;
+
+	arguments = NULL;
+	elem = NULL;
+	tmp = NULL;
+	elem = ft_help_parser(str, elem, arguments, tmp);
 	return (elem);
 }

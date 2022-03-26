@@ -6,7 +6,7 @@
 /*   By: dronel <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/12 10:18:01 by dronel            #+#    #+#             */
-/*   Updated: 2021/10/12 10:18:16 by dronel           ###   ########.fr       */
+/*   Updated: 2022/03/21 17:18:52 by dronel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@ char	*ft_strjoin(char *s1, char *s2)
 
 	if (!s1 || !s2)
 		return (NULL);
-	i = ft_strlen((char *)s1);
-	j = ft_strlen((char *)s2);
+	i = (int)ft_strlen((char *)s1);
+	j = (int)ft_strlen((char *)s2);
 	str = malloc(sizeof(char) * (i + j + 1));
 	if (!str)
 		return (NULL);
@@ -38,6 +38,5 @@ char	*ft_strjoin(char *s1, char *s2)
 		j++;
 	}	
 	str[i + j] = '\0';
-//	free(s1);
 	return (str);
 }	

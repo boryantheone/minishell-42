@@ -6,7 +6,7 @@
 /*   By:  <>                                        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/14 16:19:35 by                   #+#    #+#             */
-/*   Updated: 2022/03/09 09:40:40 by dronel           ###   ########.fr       */
+/*   Updated: 2022/03/21 17:18:52 by dronel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,16 +15,34 @@
 
 void	ft_lstdelone(t_list *lst)
 {
+	int	i;
+
+	i = 0;
 	if (!lst)
 		return ;
 	else
 	{
-		if (lst->cmd)
-			free(lst->cmd);
-		if(lst->path)
+		if (lst->path && !(ft_strcmp(lst->path, "command not found")))
 			free(lst->path);
-		if(lst->cmds)
-			free(lst->cmds);
-		//free (lst);
+		if (lst->cmds)
+			ft_free(lst->cmds);
+		free(lst);
 	}
 }
+
+//void	ft_lstdelone(t_fds *lst)
+//{
+//	int	i;
+//
+//	i = 0;
+//	if (!lst)
+//		return ;
+//	else
+//	{
+//
+//		if (lst->path && !(ft_strcmp(lst->path, "command not found")))
+//			free(lst->path);
+//		if (lst->cmds)
+//			free(lst->cmds);
+//	}
+//}

@@ -1,10 +1,31 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_parser_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/26 15:48:18 by jcollin           #+#    #+#             */
+/*   Updated: 2022/03/26 15:48:22 by jcollin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-void ft_skip_quotes(char **str)
+char	*check_result(char *result, int index)
 {
-	char *temp;
-	int i;
-	
+	if (result)
+		result[index] = 0;
+	else
+		result = ft_strdup("\0");
+	return (result);
+}
+
+void	ft_skip_quotes(char **str)
+{
+	char	*temp;
+	int		i;
+
 	i = 0;
 	temp = ++(*str);
 	while (temp[i] && (temp[i] != '\'' && temp[i] != '\"'))
@@ -16,44 +37,40 @@ void	ft_skip_redirect(char **str)
 {
 	char	*temp;
 	int		i;
-	
+
 	i = 0;
-	temp = ++(*str);
-	if (temp[i] && (temp[i] == '>' || temp[i] == '<'))
-		i++;
-	while (temp[i] && (temp[i] == ' ' || temp[i] == '\t'))
-		i++;
-	while (temp[i] && temp[i] != ' ')
-		i++;
-	*str = temp + i;
+	if (**str == '>' || **str == '<')
+	{
+		temp = ++(*str);
+		if (temp[i] && (temp[i] == '>' || temp[i] == '<'))
+			i++;
+		while (temp[i] && (temp[i] == ' ' || temp[i] == '\t'))
+			i++;
+		while (temp[i] && temp[i] != ' ' && temp[i] != '|')
+			i++;
+		*str = temp + i;
+	}
 }
 
-int ft_limiter(char c)
+int	ft_limiter(char c)
 {
-	if ((c >= 33 && c <= 47) || (c >= 58 && c <= 62) ||\
-		(c >= 91 && c <= 94) || (c >= 124 && c <= 126) \
-		|| c == 64 || c == '\0')
+	if ((c >= 33 && c <= 47) || (c >= 58 && c <= 62) \
+		|| (c >= 91 && c <= 95) || (c >= 124 && c <= 126) \
+		|| c == 64 || c == ' ')
 		return (1);
 	else
 		return (0);
 }
 
-void ft_printfds(t_fds *elem)
+void	ft_free(char **dst)
 {
-	t_fds *tmp;
-	
-	tmp = elem;
-//	write(2, "++++++++++++++++++++++++\n", 26);
-	if(elem)
+	size_t	i;
+
+	i = 0;
+	while (dst[i])
 	{
-		while (tmp != NULL)
-		{
-			printf("fd_out(write) %d, fd_in(read) %d heredoc %d "
-				   "|", tmp->fd_out, tmp->fd_in, tmp->fd_heredoc);
-			tmp = tmp->next;
-		}
+		free(dst[i]);
+		i++;
 	}
-	else
-		printf("elem not found\n");
-	printf("\n----------------------\n");
+	free(dst);
 }

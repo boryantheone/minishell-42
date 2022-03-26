@@ -33,4 +33,3 @@ t_list	*ft_lstnew(char **arg)
 	node -> next = NULL;
 	return (node);
 }
-

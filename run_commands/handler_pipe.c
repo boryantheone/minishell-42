@@ -1,75 +1,60 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   handler_pipe.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/25 16:19:15 by jcollin           #+#    #+#             */
+/*   Updated: 2022/03/26 11:34:07 by jcollin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
-void	ft_free(char **dst)
+int	execve_for_pipe(t_list *elem)
 {
-	size_t	i;
-	
-	i = 0;
-	while (dst[i])
-	{
-		free(dst[i]);
-		i++;
-	}
-	free(dst);
-}
+	char	**new_envp;
 
-char	*ft_parsing_path(char *cmd, char **envp)
-{
-	char	**paths;
-	char	*cmdpath;
-	char	*path;
-	int		i;
-	
-	i = 0;
-	while (envp[i] != ft_strnstr(envp[i], "PATH=", 5))
-		i++;
-	path = envp[i];
-	i = 0;
-	paths = ft_split(path + 5, ':');
-	while (paths[i])
-	{
-		path = ft_strjoin(paths[i], "/");
-		cmdpath = ft_strjoin(path, cmd);
-		free(path);
-		if (access(cmdpath, R_OK) == 0)
-		{
-			ft_free(paths);
-			return (cmdpath);
-		}
-		free(cmdpath);
-		i++;
-	}
-	ft_free(paths);
-	return ("command not found");
-}
-
-void	execve_for_pipe(t_list *elem, char **new_envp)
-{
-	if ((ft_exec_buildin(elem, var)) >= 0)
+	if ((ft_exec_buildin(elem)) >= 0)
 		exit(EXIT_SUCCESS);
 	else
 	{
-		if ((execve(elem->path, elem->cmds, new_envp)) == -1)
-		{
-			perror("Error: ");
-			exit(EXIT_FAILURE);
-		}
-		exit(EXIT_SUCCESS);
+		new_envp = ft_new_envp_for_execve();
+		elem->path = ft_parsing_path(elem->cmd, new_envp);
+		if (ft_is_a_directory(elem->path) == 1)
+			ft_error_message_and_exit(127, elem->cmd, 1);
+		if (ft_strcmp(elem->path, "command not found") == 0)
+			ft_error_message_and_exit(127, elem->cmd, 0);
+		execve(elem->path, elem->cmds, new_envp);
+		ft_perror(elem->cmd, 1);
+		ft_free(new_envp);
+		exit(g_var->state);
 	}
-
 }
 
-void	ft_launch_proc(char **new_envp, t_list *elem, t_fds *fds, int i, \
-						int reserved_stdout, int reserved_stdin)
+static void	ft_parent_proc(int *fd, t_fds *fds)
+{
+	usleep(100);
+	close(fd[1]);
+	dup2(fd[0], STDIN_FILENO);
+	if (fds->next->fd_in != 0)
+	{
+		dup2(fds->next->fd_in, STDIN_FILENO);
+		close(fds->next->fd_in);
+	}
+	close(fd[0]);
+}
+
+void	ft_launch_proc(t_list *elem, t_fds *fds)
 {
 	int		fd[2];
 	pid_t	pid;
 
 	if (pipe(fd) < 0)
 	{
-		perror("Error :");
+		perror("minishelchik :");
 		exit(1);
-		///free all
 	}
 	pid = fork();
 	if (pid == 0)
@@ -82,78 +67,53 @@ void	ft_launch_proc(char **new_envp, t_list *elem, t_fds *fds, int i, \
 			close(fds->fd_out);
 		}
 		close(fd[1]);
-		execve_for_pipe(elem, new_envp);
+		execve_for_pipe(elem);
 	}
 	else
-	{
-		close(fd[1]);
-		dup2(fd[0], STDIN_FILENO);
-		if (fds->next->fd_in != 0)
-		{
-			dup2(fds->next->fd_in, STDIN_FILENO);
-			close(fds->next->fd_in);
-		}
-		close(fd[0]);
-	}
+		ft_parent_proc(fd, fds);
 }
 
-int  ft_exec_pipes(t_var *var, t_list *elem, t_fds *fds)
+void	ft_wait(pid_t l_pid, int reserved_stdin, int reserved_stdout)
 {
-	t_list	*tmp;
+	pid_t	temp_pid;
 	int		status;
-	t_fds	*tmp_fds;
-	int		reserved_stdout;
-	int		reserved_stdin;
-	int 	i;
-	int		fd;
-	pid_t 	pid;
-	char	**new_envp;
-	
-	reserved_stdin = dup(STDIN_FILENO);
-	reserved_stdout = dup(STDOUT_FILENO);
-	tmp = elem;
-	tmp_fds = fds;
-	i = 0;
-	if (fds->fd_in != 0)
-	{
-		dup2(fds->fd_in, STDIN_FILENO);
-		close(fds->fd_in);
-	}
-	else
-		dup2(reserved_stdin, STDIN_FILENO);
-	while (tmp_fds->next != NULL)
-	{
-		new_envp = ft_new_envp_for_execve();
-		tmp->path = ft_parsing_path(tmp->cmd, new_envp);
-		ft_launch_proc(new_envp, tmp, tmp_fds, i, \
-			reserved_stdout, reserved_stdin);
-		tmp = tmp->next;
-		tmp_fds = tmp_fds->next;
-		i++;
-	}
-//	if (tmp_fds->fd_in != 0)
-//	{
-//		write(1, "change fd_in\n", 13);
-//		dup2(tmp_fds->fd_in, STDIN_FILENO);
-//		close(tmp_fds->fd_in);
-//	}
-//	else
-//		dup2(fd, STDIN_FILENO);
-	dup2(reserved_stdout, STDOUT_FILENO);
-	if (tmp_fds->fd_out != 0)
-	{
-		dup2(tmp_fds->fd_out, STDOUT_FILENO);
-		close(tmp_fds->fd_out);
-	}
-	tmp->path = ft_parsing_path(tmp->cmd, new_envp);
-	execve_for_pipe(tmp, new_envp);
+
 	dup2(reserved_stdin, STDIN_FILENO);
 	dup2(reserved_stdout, STDOUT_FILENO);
 	close(reserved_stdin);
 	close(reserved_stdout);
-	pid = waitpid(-1, &status, 0);
-	while (pid != -1)
-		pid = waitpid(-1, &status, 0);
-	return (EXIT_SUCCESS);
+	ft_init_signal_handler(ft_handler_child);
+	temp_pid = waitpid(-1, &status, 0);
+	while (temp_pid != -1)
+	{
+		if (temp_pid == l_pid)
+			g_var->state = WEXITSTATUS(status);
+		temp_pid = waitpid(-1, &status, 0);
+	}
 }
 
+int	ft_exec_pipes(t_list *elem, t_fds *fds)
+{
+	pid_t	pid;
+	t_list	*tmp;
+	t_fds	*tmp_fds;
+	int		reserved_stdout;
+	int		reserved_stdin;
+
+	reserved_stdin = dup(STDIN_FILENO);
+	reserved_stdout = dup(STDOUT_FILENO);
+	tmp = elem;
+	tmp_fds = fds;
+	if (ft_check_fds(fds) != -1)
+		ft_dup_fd_in(reserved_stdin, tmp_fds);
+	while (tmp_fds->next != NULL)
+	{
+		ft_launch_proc(tmp, tmp_fds);
+		tmp = tmp->next;
+		tmp_fds = tmp_fds->next;
+	}
+	ft_dup_fd_out(reserved_stdout, &tmp_fds);
+	g_var->state = execve_for_pipe(tmp);
+	ft_wait(pid, reserved_stdin, reserved_stdout);
+	return (g_var->state);
+}

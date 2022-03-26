@@ -23,7 +23,7 @@ typedef struct s_list
 	struct s_list	*next;
 }	t_list;
 
-int				ft_isalpha(char *str);
+int				ft_isalpha(const char *str);
 int				ft_isdigit(char *str);
 int				ft_isalnum(int t);
 int				ft_isascii(int t);
@@ -37,16 +37,20 @@ size_t			ft_strlcpy(char *dest, const char *src, size_t dstsize);
 size_t			ft_strlcat(char *dst, const char *src, size_t dstsize);
 int				ft_toupper(int t);
 int				ft_tolower(int t);
-int			ft_strchr(char *s, char c);
+int				ft_strchr(char *s, char c);
 char			*ft_strrchr(const char *s, int c);
+int				ft_strcmp(const char *s1, const char *s2);
 int				ft_strncmp(const char *s1, const char *s2, size_t n);
+char			*ft_strcpy(char *dest, char *src);
 void			*ft_memchr(const void *s, int c, size_t n);
 int				ft_memcmp(const void *s1, const void *s2, size_t n);
 char			*ft_strnstr(const char *haystack, \
 const char *needle, size_t len);
 int				ft_atoi(const char *str);
 void			*ft_calloc(size_t count, size_t size);
+void			*ft_realloc(char *result, int size);
 char			*ft_strdup(const char *s1);
+char			*ft_strndup(char *src, int len);
 char			*ft_substr(char const *s, unsigned int start, size_t len);
 char			*ft_strjoin(char *s1, char *s2);
 //char			*ft_strtrim(char const *s1, char const *set);

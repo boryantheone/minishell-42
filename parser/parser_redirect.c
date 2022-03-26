@@ -1,40 +1,49 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parser_redirect.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/03/26 15:48:58 by jcollin           #+#    #+#             */
+/*   Updated: 2022/03/26 15:48:59 by jcollin          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "../minishell.h"
 
 int	ft_perror(char *err_message, int return_value)
 {
+	g_var->state = 1;
 	ft_putstr_fd("minishelchik: ", STDERR_FILENO);
 	perror(err_message);
 	return (return_value);
 }
 
-int	ft_double_redirect(char **temp)
+static int	ft_double_redirect(char **temp)
 {
 	int		fd;
 	char	*file_name;
 
 	++(*temp);
-	printf("temp %s\n", *temp);
 	while ((**temp == ' ' || **temp == '\t') && **temp != '\0')
 		(*temp)++;
 	file_name = ft_parse_arguments(temp);
 	fd = open(file_name, O_CREAT | O_APPEND | O_WRONLY, 0644);
 	if (fd == -1)
-		return (ft_perror(file_name, EXIT_FAILURE));
+		return (ft_perror(file_name, -1));
 	free(file_name);
 	return (fd);
 }
 
-int	ft_forward_redirect(char **str)
+static int	ft_forward_redirect(char **str)
 {
 	char		*temp;
 	char		*file_name;
 	static int	fd;
 
 	if (fd != 0)
-	{
-		write(1, "fd close\n", 9);
 		close(fd);
-	}
 	temp = ++(*str);
 	if (*temp == '>')
 		fd = ft_double_redirect(&temp);
@@ -45,24 +54,21 @@ int	ft_forward_redirect(char **str)
 		file_name = ft_parse_arguments(&temp);
 		fd = open(file_name, O_CREAT | O_TRUNC | O_WRONLY, 0644);
 		if (fd == -1)
-			return(ft_perror(file_name, EXIT_FAILURE));
+			return (ft_perror(file_name, -1));
 		free(file_name);
 	}
 	*str = temp;
 	return (fd);
 }
 
-int	ft_reverse_redirect(char **str, t_fds *fds)
+static int	ft_reverse_redirect(char **str, t_fds *fds)
 {
 	char		*temp;
 	char		*file_name;
 	static int	fd;
 
 	if (fd > 0)
-	{
-		write(1, "fd close\n", 9);
 		close(fd);
-	}
 	temp = ++(*str);
 	if (*temp == '<' && *(temp + 1) != '\0')
 	{
@@ -74,7 +80,7 @@ int	ft_reverse_redirect(char **str, t_fds *fds)
 	file_name = ft_parse_arguments(&temp);
 	fd = open(file_name, O_RDONLY, 0644);
 	if (fd == -1 && access(file_name, R_OK))
-		return (ft_perror(file_name, EXIT_FAILURE));
+		return (ft_perror(file_name, -1));
 	free(file_name);
 	*str = temp;
 	return (fd);
@@ -82,8 +88,8 @@ int	ft_reverse_redirect(char **str, t_fds *fds)
 
 void	ft_parser_redirect(char *str, t_fds *fds)
 {
-	t_fds *tmp;
-	
+	t_fds	*tmp;
+
 	tmp = fds;
 	while (*str)
 	{
@@ -98,5 +104,4 @@ void	ft_parser_redirect(char *str, t_fds *fds)
 		else
 			str++;
 	}
-	ft_printfds(fds);
 }
