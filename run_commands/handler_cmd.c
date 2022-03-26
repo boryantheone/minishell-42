@@ -106,18 +106,9 @@ int	ft_exec_cmd(t_list *elem, t_fds *fds)
 	reserved_stdout = dup(STDOUT_FILENO);
 	reserved_stdin = dup(STDIN_FILENO);
 	if (ft_check_fds(fds) != -1)
-	{
-		if (fds->fd_in != 0)
-		{
-			dup2(fds->fd_in, STDIN_FILENO);
-			close(fds->fd_in);
-		}
-		if (fds->fd_out != 0)
-		{
-			dup2(fds->fd_out, STDOUT_FILENO);
-			close(fds->fd_out);
-		}
-	}
+		ft_dup_fd_in_out(&fds);
+	else
+		return (EXIT_FAILURE);
 	result = ft_exec_buildin(elem);
 	if (result >= 0)
 		return (result);

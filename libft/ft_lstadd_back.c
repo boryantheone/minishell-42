@@ -25,7 +25,4 @@ void	ft_lstadd_back(t_list **lst, t_list *new)
 	while (tmp -> next != NULL)
 		tmp = tmp -> next;
 	tmp -> next = new;
-//	i = 0;
-//	(*str)++;
-//	**arguments = NULL;
 }

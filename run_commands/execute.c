@@ -27,7 +27,6 @@ void	ft_execute(t_list *elem, t_fds *fds)
 			if (!pid)
 				ft_exec_pipes(elem, fds);
 			ft_init_signal_handler(ft_handler_child);
-			// wait(-1);
 			waitpid(pid, &exit_status, 0);
 			if (exit_status == 0)
 				g_var->state = 0;

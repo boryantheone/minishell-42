@@ -9,16 +9,17 @@
 /*   Updated: 2022/03/09 09:40:40 by dronel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+#include "libft.h"
 
-
-int	ft_isalpha(char *str)
+int	ft_isalpha(const char *str)
 {
 	int	i;
 
 	i = 0;
 	while (str[i])
 	{
-		if ((str[i] >= 65 && str[i] <= 90) || (str[i] >= 97 && str[i] <= 122) || str[i] == '_')
+		if ((str[i] >= 65 && str[i] <= 90) || \
+		(str[i] >= 97 && str[i] <= 122) || str[i] == '_')
 			i++;
 		else
 			return (0);

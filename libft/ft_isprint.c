@@ -9,7 +9,7 @@
 /*   Updated: 2022/03/09 09:40:40 by dronel           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
+#include "libft.h"
 
 int	ft_isprint(char *str)
 {
@@ -18,7 +18,8 @@ int	ft_isprint(char *str)
 	i = 0;
 	while (str[i])
 	{
-		if ((str[i] >= 0 && str[i] <= 65) || (str[i] >= 91 && str[i] <= 96) || (str[i] >= 123 && str[i] <= 127))
+		if ((str[i] >= 0 && str[i] <= 65) || \
+		(str[i] >= 91 && str[i] <= 96) || (str[i] >= 123 && str[i] <= 127))
 			return (1);
 		i++;
 	}

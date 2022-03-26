@@ -104,14 +104,15 @@ int	ft_exec_pipes(t_list *elem, t_fds *fds)
 	reserved_stdout = dup(STDOUT_FILENO);
 	tmp = elem;
 	tmp_fds = fds;
-	ft_dup_fd_in(reserved_stdin, tmp_fds);
+	if (ft_check_fds(fds) != -1)
+		ft_dup_fd_in(reserved_stdin, tmp_fds);
 	while (tmp_fds->next != NULL)
 	{
 		ft_launch_proc(tmp, tmp_fds);
 		tmp = tmp->next;
 		tmp_fds = tmp_fds->next;
 	}
-	ft_dup_fd_out(reserved_stdout, tmp_fds);
+	ft_dup_fd_out(reserved_stdout, &tmp_fds);
 	g_var->state = execve_for_pipe(tmp);
 	ft_wait(pid, reserved_stdin, reserved_stdout);
 	return (g_var->state);

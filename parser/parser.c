@@ -10,7 +10,7 @@ char	*ft_single_parse(char **str)
 	index = 0;
 	result = NULL;
 	while (**str != ' ' && **str != '\0' && **str != '|' \
-	&& **str != '\"' && **str != '\'')
+	&& **str != '\"' && **str != '\'' && **str != '>' && **str != '<')
 	{
 		temp = NULL;
 		if (**str == '$')
@@ -50,7 +50,7 @@ char	*ft_parse_arguments(char **str)
 	result = NULL;
 	while (**str)
 	{
-		if (**str == ' ' || **str == '|')
+		if (**str == ' ' || **str == '|' || **str == '<' || **str == '>')
 			break ;
 		if (**str == '\'')
 			temp = ft_parse_single_quote(str);
@@ -82,9 +82,9 @@ t_list	*ft_help_parser(char *str, t_list *elem, char **arguments, char *tmp)
 			i = 0;
 			str++;
 		}
-		if (*str == '>' || *str == '<')
-			ft_skip_redirect(&str);
-		if ((tmp = ft_parse_arguments(&str)))
+		ft_skip_redirect(&str);
+		tmp = ft_parse_arguments(&str);
+		if (tmp)
 		{
 			arguments = ft_double_realloc(arguments, 1);
 			arguments[i++] = tmp;
@@ -105,6 +105,5 @@ t_list	*ft_parser(char *str)
 	elem = NULL;
 	tmp = NULL;
 	elem = ft_help_parser(str, elem, arguments, tmp);
-//	printf("end of parser\n");
 	return (elem);
 }

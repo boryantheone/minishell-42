@@ -47,7 +47,7 @@ int	main(int argc, char **argv, char **env)
 		else
 		{
 			free(str);
-			continue;
+			continue ;
 		}
 		if (str != NULL)
 		{

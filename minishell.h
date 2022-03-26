@@ -60,8 +60,6 @@ int		ft_preparser(char *line);
 //preparser_utils
 int		ft_skip_space(const char *line, int *i);
 int		ft_write_error(int flag);
-
-
 //parser/parser - 5
 t_list	*ft_parser(char *str);
 char	*ft_parse_arguments(char **str);
@@ -94,26 +92,25 @@ void	ft_free(char **dst);
 int		ft_limiter(char c);
 void	ft_skip_quotes(char **str);
 void	ft_skip_redirect(char **str);
-//parser_utils2-4
+//parser_utils2-5
 char	**ft_double_realloc(char **cmds, int size);
 int		ft_str_double_len(char **cmds);//TODO:check str_doub_llen
 int		ft_check_fds(t_fds *fds);
 char	*ft_my_strjoin(char *s1, char *s2);
+int		ft_perror_heredoc(char **stop, int flag);
 //execute
-char	*ft_parsing_path(char *cmd, char **envp);
 void	ft_execute(t_list *elem, t_fds *fds);
-int		ft_exec_pipes(t_list *elem, t_fds *fds);
-int		ft_exec_cmd(t_list *elem, t_fds *fds);
 //handler_cmd
 int		ft_exec_buildin(t_list *elem);
 char	**ft_new_envp_for_execve(void);
 
 //handler_pipe
-
+int		ft_exec_pipes(t_list *elem, t_fds *fds);
+int		ft_exec_cmd(t_list *elem, t_fds *fds);
 //checks
+char	*ft_parsing_path(char *cmd, char **envp);
 int		ft_is_a_directory(char *cmd);
 void	ft_error_message_and_exit(int exit_status, char *cmd, int choice);
-
 //signal
 void	ft_init_signal_handler(void (*ft_handler)(int));
 void	ft_handler_child(int sig);
@@ -121,9 +118,8 @@ void	ft_handler_main(int sig);
 void	ft_handler_ctrl_d(void);
 void	ft_handler_heredoc(int sig);
 void	ft_handler_sigint(void);
-void	ft_do_nothing(void);
-
 //change fds
 void	ft_dup_fd_in(int reserved_stdin, t_fds *fds);
-void	ft_dup_fd_out(int reserved_stdout, t_fds *fds);
+void	ft_dup_fd_out(int reserved_stdout, t_fds **fds);
+void	ft_dup_fd_in_out(t_fds **fds);
 #endif 

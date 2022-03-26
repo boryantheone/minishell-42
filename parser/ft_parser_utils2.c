@@ -46,7 +46,7 @@ int	ft_check_fds(t_fds *fds)
 	if (tmp_fds != NULL)
 	{
 		if (tmp_fds->fd_in == -1 || tmp_fds->fd_out == -1)
-			return (EXIT_FAILURE);
+			return (-1);
 		return (EXIT_SUCCESS);
 	}
 	return (-1);
@@ -77,4 +77,17 @@ char	*ft_my_strjoin(char *s1, char *s2)
 	str[i + j] = '\0';
 	free(s1);
 	return (str);
+}
+
+int	ft_perror_heredoc(char **stop, int flag)
+{
+	g_var->state = 258;
+	if (flag == 0)
+		printf("minishelchik: syntax error near unexpected token `newline'\n");
+	else
+	{
+		free(*stop);
+		printf("minishelchik: syntax error near unexpected token `<<'\n");
+	}
+	return (-1);
 }

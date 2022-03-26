@@ -28,14 +28,17 @@ void	ft_skip_redirect(char **str)
 	int		i;
 
 	i = 0;
-	temp = ++(*str);
-	if (temp[i] && (temp[i] == '>' || temp[i] == '<'))
-		i++;
-	while (temp[i] && (temp[i] == ' ' || temp[i] == '\t'))
-		i++;
-	while (temp[i] && temp[i] != ' ' && temp[i] != '|')
-		i++;
-	*str = temp + i;
+	if (**str == '>' || **str == '<')
+	{
+		temp = ++(*str);
+		if (temp[i] && (temp[i] == '>' || temp[i] == '<'))
+			i++;
+		while (temp[i] && (temp[i] == ' ' || temp[i] == '\t'))
+			i++;
+		while (temp[i] && temp[i] != ' ' && temp[i] != '|')
+			i++;
+		*str = temp + i;
+	}
 }
 
 int	ft_limiter(char c)

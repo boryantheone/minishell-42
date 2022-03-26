@@ -19,7 +19,6 @@ size_t	ft_strlcpy(char *dest, const char *src, size_t dstsize)
 
 	i = 0;
 	j = 0;
-	printf("dest %s\n", dest);
 	if (dstsize == 0)
 		return (ft_strlen((char *)src));
 	if (!dest[i] && !src[i])

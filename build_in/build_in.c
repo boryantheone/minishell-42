@@ -24,7 +24,7 @@ int	ft_display_error(char *cmd, char *str)
 	return (EXIT_FAILURE);
 }
 
-static t_envp	*ft_lstnew_export(char *str)
+static t_envp	*ft_new_exp(char *str)
 {
 	t_envp	*export;
 
@@ -93,13 +93,14 @@ int	ft_export(t_list *elem)
 	{
 		while (elem->cmds[i] != NULL)
 		{
-			if (ft_strchr(elem->cmds[i], '=') && (ft_strlen(elem->cmds[i]) != 1))
+			if (ft_strchr(elem->cmds[i], '=') && \
+			(ft_strlen(elem->cmds[i]) != 1))
 			{
 				ft_lstadd_back_envp(&g_var->envp, ft_lstnew_env(elem->cmds[i]));
-				ft_lstadd_back_envp(&g_var->export, ft_lstnew_export(elem->cmds[i]));
+				ft_lstadd_back_envp(&g_var->export, ft_new_exp(elem->cmds[i]));
 			}
 			else if (ft_isalpha(elem->cmds[i]))
-				ft_lstadd_back_envp(&g_var->export, ft_lstnew_export(elem->cmds[i]));
+				ft_lstadd_back_envp(&g_var->export, ft_new_exp(elem->cmds[i]));
 			else if ((ft_isdigit(elem->cmds[i]) || ft_isprint(elem->cmds[i])))
 				ft_display_error("export", elem->cmds[i]);
 			i++;

@@ -45,7 +45,8 @@ int	ft_exit(t_list *elem)
 	if (elem->next)
 		return (EXIT_SUCCESS);
 	ft_putendl_fd("exit", STDERR_FILENO);
-	if (elem->cmds[1] == NULL || (ft_isdigit(elem->cmds[1]) && elem->cmds[2] == NULL))
+	if (elem->cmds[1] == NULL || (ft_isdigit(elem->cmds[1]) \
+	&& elem->cmds[2] == NULL))
 		exit (EXIT_FAILURE);
 	else if (ft_isdigit(elem->cmds[1]) && elem->cmds[2] != NULL)
 	{

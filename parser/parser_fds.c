@@ -1,7 +1,6 @@
 
 #include "../minishell.h"
 
-
 char	*ft_remove_quotes(char *str)
 {
 	int		index;
@@ -36,8 +35,6 @@ void	ft_child_heredoc(int fd, char *stop)
 	char	*result;
 
 	ft_init_signal_handler(ft_handler_heredoc);
-	// signal(SIGINT, SIG_DFL);
-	// signal(SIGQUIT, SIG_IGN);
 	result = readline("> ");
 	while (result && ft_strncmp(result, stop, ft_strlen(stop) + 1))
 	{
@@ -55,6 +52,32 @@ void	ft_child_heredoc(int fd, char *stop)
 	exit(EXIT_SUCCESS);
 }
 
+static int	ft_help_heredoc(char **stop)
+{
+	int		fd_heredoc;
+	pid_t	pid;
+	int		status;
+
+	unlink("here_document");
+	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	rl_catch_signals = 1;
+	pid = fork();
+	if (!pid)
+		ft_child_heredoc(fd_heredoc, *stop);
+	else
+	{
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+		waitpid(0, NULL, 0);
+	}
+	rl_catch_signals = 0;
+	ft_init_signal_handler(ft_handler_main);
+	close(fd_heredoc);
+	free(*stop);
+	fd_heredoc = open("here_document", O_RDONLY, 0644);
+	return (fd_heredoc);
+}
+
 int	ft_heredoc(char **str)
 {
 	char			*tmp;
@@ -62,8 +85,6 @@ int	ft_heredoc(char **str)
 	char			*clean;
 	static int		fd_heredoc;
 	int				index;
-	pid_t			pid;
-	int 			status;
 
 	index = 0;
 	if (fd_heredoc != 0)
@@ -74,38 +95,14 @@ int	ft_heredoc(char **str)
 	while (tmp[index] != ' ' && tmp[index] != '\0' && tmp[index] != '|')
 		index++;
 	if (!index)
-	{
-		printf("minishelchik: syntax error near unexpected token `newline'\n");
-		g_var->state = 258;
-		return (-1);
-	}
+		return (ft_perror_heredoc(NULL, 0));
 	clean = ft_strndup(tmp, index);
 	stop = ft_remove_quotes(clean);
 	free(clean);
-	unlink("here_document");
-	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd_heredoc == -1)
-		return (ft_perror("heredoc", -1));
-	rl_catch_signals = 1;
-	pid = fork();
-	if (!pid)
-		ft_child_heredoc(fd_heredoc, stop);
-	else
-	{
-	// 	signal(SIGINT, SIG_IGN);
-	// 	// ft_init_signal_handler(ft_handler_heredoc);
-		signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
-		waitpid(0, NULL, 0);
-	}
-	rl_catch_signals = 0;
-	ft_init_signal_handler(ft_handler_main);
+	if (!(ft_strcmp(stop, "<<")))
+		return (ft_perror_heredoc(&stop, 1));
+	fd_heredoc = ft_help_heredoc(&stop);
 	*str = tmp;
-	close(fd_heredoc);
-	fd_heredoc = open("here_document", O_RDONLY, 0644);
-	free(stop);
-	if (fd_heredoc == -1)
-		return (ft_perror("heredoc", -1));
 	return (fd_heredoc);
 }
 
@@ -114,7 +111,6 @@ t_fds	*ft_parser_heredoc(char *str)
 	t_fds	*fds;
 	int		fd_heredoc;
 
-	fd_heredoc = 0;
 	fds = NULL;
 	while (*str)
 	{
@@ -130,13 +126,9 @@ t_fds	*ft_parser_heredoc(char *str)
 		{
 			fd_heredoc = ft_heredoc(&str);
 			if (fd_heredoc == -1)
-			{
-				g_var->state = 258;
 				return (NULL);
-			}
 		}
-		else
-			str++;
+		str++;
 	}
 	if (*str == '\0')
 		ft_fdsadd_back(&fds, ft_fdsnew(0, 0, fd_heredoc));
