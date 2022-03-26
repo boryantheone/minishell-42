@@ -23,12 +23,12 @@ void	ft_dup_fd_in(int reserved_stdin, t_fds *fds)
 		dup2(reserved_stdin, STDIN_FILENO);
 }
 
-void	ft_dup_fd_out(int reserved_stdout, t_fds *fds)
+void	ft_dup_fd_out(int reserved_stdout, t_fds **fds)
 {
 	dup2(reserved_stdout, STDOUT_FILENO);
-	if (fds->fd_out != 0)
+	if ((*fds)->fd_out != 0)
 	{
-		dup2(fds->fd_out, STDOUT_FILENO);
-		close(fds->fd_out);
+		dup2((*fds)->fd_out, STDOUT_FILENO);
+		close((*fds)->fd_out);
 	}
 }

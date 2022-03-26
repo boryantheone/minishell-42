@@ -125,5 +125,5 @@ void	ft_handler_sigint(void);
 
 //change fds
 void	ft_dup_fd_in(int reserved_stdin, t_fds *fds);
-void	ft_dup_fd_out(int reserved_stdout, t_fds *fds);
+void	ft_dup_fd_out(int reserved_stdout, t_fds **fds);
 #endif 

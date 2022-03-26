@@ -10,7 +10,7 @@ char	*ft_single_parse(char **str)
 	index = 0;
 	result = NULL;
 	while (**str != ' ' && **str != '\0' && **str != '|' \
-	&& **str != '\"' && **str != '\'')
+	&& **str != '\"' && **str != '\'' && **str != '>' && **str != '<')
 	{
 		temp = NULL;
 		if (**str == '$')
@@ -50,7 +50,7 @@ char	*ft_parse_arguments(char **str)
 	result = NULL;
 	while (**str)
 	{
-		if (**str == ' ' || **str == '|')
+		if (**str == ' ' || **str == '|' || **str == '<' || **str == '>')
 			break ;
 		if (**str == '\'')
 			temp = ft_parse_single_quote(str);

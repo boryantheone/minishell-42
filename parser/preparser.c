@@ -46,7 +46,7 @@ int	ft_preparser_redirect(char *line, int *i)
 	{
 		(*i)++;
 		if (!(ft_skip_space(line, i)))
-			return (ft_write_error(2));
+			return (ft_write_error(0));
 		if (line[(*i)] == '<')
 			return (ft_write_error(3));
 		if (line[(*i)] == '>' && line[(*i) + 1] && \
