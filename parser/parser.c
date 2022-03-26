@@ -105,6 +105,6 @@ t_list	*ft_parser(char *str)
 	elem = NULL;
 	tmp = NULL;
 	elem = ft_help_parser(str, elem, arguments, tmp);
-	printf("end of parser\n");
+//	printf("end of parser\n");
 	return (elem);
 }
