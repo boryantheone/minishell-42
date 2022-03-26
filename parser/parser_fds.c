@@ -1,6 +1,7 @@
 
 #include "../minishell.h"
 
+
 char	*ft_remove_quotes(char *str)
 {
 	int		index;
@@ -85,6 +86,7 @@ int	ft_heredoc(char **str)
 	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_heredoc == -1)
 		return (ft_perror("heredoc", -1));
+	rl_catch_signals = 1;
 	pid = fork();
 	if (!pid)
 		ft_child_heredoc(fd_heredoc, stop);
@@ -96,13 +98,14 @@ int	ft_heredoc(char **str)
 		signal(SIGQUIT, SIG_IGN);
 		waitpid(0, NULL, 0);
 	}
-		ft_init_signal_handler(ft_handler_main);
-		*str = tmp;
-		close(fd_heredoc);
-		fd_heredoc = open("here_document", O_RDONLY, 0644);
-		free(stop);
-		if (fd_heredoc == -1)
-			return (ft_perror("heredoc", -1));
+	rl_catch_signals = 0;
+	ft_init_signal_handler(ft_handler_main);
+	*str = tmp;
+	close(fd_heredoc);
+	fd_heredoc = open("here_document", O_RDONLY, 0644);
+	free(stop);
+	if (fd_heredoc == -1)
+		return (ft_perror("heredoc", -1));
 	return (fd_heredoc);
 }
 
