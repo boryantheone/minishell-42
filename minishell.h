@@ -119,6 +119,7 @@ void	ft_handler_main(int sig);
 void	ft_handler_ctrl_d(void);
 void	ft_handler_heredoc(int sig);
 void	my_sigint(int signum);
+void	ft_handler_sigint(void);
 
 //change fds
 void	ft_dup_fd_in(int reserved_stdin, t_fds *fds);

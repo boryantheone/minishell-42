@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 16:19:15 by jcollin           #+#    #+#             */
-/*   Updated: 2022/03/25 16:19:17 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/03/26 11:34:07 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,7 @@ void	ft_wait(pid_t l_pid, int reserved_stdin, int reserved_stdout)
 	dup2(reserved_stdout, STDOUT_FILENO);
 	close(reserved_stdin);
 	close(reserved_stdout);
+	ft_init_signal_handler(ft_handler_child);
 	temp_pid = waitpid(-1, &status, 0);
 	while (temp_pid != -1)
 	{

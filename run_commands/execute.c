@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 15:52:33 by jcollin           #+#    #+#             */
-/*   Updated: 2022/03/25 15:53:01 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/03/26 11:35:50 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	ft_execute(t_list *elem, t_fds *fds)
 			if (!pid)
 				ft_exec_pipes(elem, fds);
 			ft_init_signal_handler(ft_handler_child);
+			// wait(-1);
 			waitpid(pid, &exit_status, 0);
 			if (exit_status == 0)
 				g_var->state = 0;
