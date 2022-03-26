@@ -33,7 +33,7 @@ void	ft_skip_redirect(char **str)
 		i++;
 	while (temp[i] && (temp[i] == ' ' || temp[i] == '\t'))
 		i++;
-	while (temp[i] && temp[i] != ' ')
+	while (temp[i] && temp[i] != ' ' && temp[i] != '|')
 		i++;
 	*str = temp + i;
 }
