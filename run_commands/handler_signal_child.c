@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 16:20:43 by jcollin           #+#    #+#             */
-/*   Updated: 2022/03/26 10:54:43 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/03/26 12:51:56 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,10 +15,10 @@
 void	ft_handler_heredoc(int sig)
 {
 	int		exit_status;
-	pid_t	pid;
+	int		pid;
 
 	pid = waitpid(-1, &exit_status, 0);
-	// g_var->state = 1;
+	g_var->state = 1;
 	// ft_putstr_fd("\n", STDIN_FILENO);
 	signal(SIGINT, SIG_DFL);
 	exit(EXIT_SUCCESS);
@@ -27,7 +27,7 @@ void	ft_handler_heredoc(int sig)
 void	ft_child_sigint(void)
 {
 	int		exit_status;
-	pid_t	pid;
+	int		pid;
 
 	pid = waitpid(-1, &exit_status, 0);
 	g_var->state = 130;
@@ -37,11 +37,12 @@ void	ft_child_sigint(void)
 void	ft_child_sigquit(void)
 {
 	int		exit_status;
-	pid_t	pid;
+	int		pid;
 
 	pid = waitpid(-1, &exit_status, 0);
 	g_var->state = 131;
 	ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
+	// exit(g_var->state);
 }
 
 void	ft_handler_child(int sig)

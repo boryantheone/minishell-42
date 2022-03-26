@@ -37,7 +37,7 @@ int	main(int argc, char **argv, char **env)
 	ft_init_var(env);
 	while (1)
 	{
-		// rl_catch_signals = 0;
+		rl_catch_signals = 0;
 		ft_init_signal_handler(ft_handler_main);
 		str = readline("\033[1;35mminishelchik-1.0$ \033[0m");
 		if (str == NULL)
