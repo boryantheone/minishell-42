@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 16:20:43 by jcollin           #+#    #+#             */
-/*   Updated: 2022/03/25 16:21:05 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/03/26 10:54:43 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,14 @@
 
 void	ft_handler_heredoc(int sig)
 {
-//	int		exit_status;
-//	pid_t	pid;
-//
-//	pid = waitpid(-1, &exit_status, 0);
-//	g_var->state = 1;
-//	rl_on_new_line();
-	if (sig == SIGINT)
-	{
-		exit(EXIT_SUCCESS);
-	}
+	int		exit_status;
+	pid_t	pid;
+
+	pid = waitpid(-1, &exit_status, 0);
+	// g_var->state = 1;
+	// ft_putstr_fd("\n", STDIN_FILENO);
+	signal(SIGINT, SIG_DFL);
+	exit(EXIT_SUCCESS);
 }
 
 void	ft_child_sigint(void)

@@ -6,7 +6,7 @@
 /*   By: jcollin <jcollin@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/25 16:20:49 by jcollin           #+#    #+#             */
-/*   Updated: 2022/03/25 16:20:51 by jcollin          ###   ########.fr       */
+/*   Updated: 2022/03/26 11:37:56 by jcollin          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ void	ft_handler_main(int sig)
 {
 	if (sig == SIGINT)
 		ft_handler_sigint();
+	if (sig == SIGQUIT)
+		signal(SIGQUIT, SIG_IGN);
 }
 
 void	my_sigint(int signum)
@@ -38,7 +40,6 @@ void	my_sigint(int signum)
 	{
 		rl_on_new_line();
 		rl_redisplay();
-		write(2, "!!\n", 3);
 		write(2, "  \n", 3);
 		rl_replace_line("", 0);
 		rl_on_new_line();

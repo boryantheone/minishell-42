@@ -35,6 +35,8 @@ void	ft_child_heredoc(int fd, char *stop)
 	char	*result;
 
 	ft_init_signal_handler(ft_handler_heredoc);
+	// signal(SIGINT, SIG_DFL);
+	// signal(SIGQUIT, SIG_IGN);
 	result = readline("> ");
 	while (result && ft_strncmp(result, stop, ft_strlen(stop) + 1))
 	{
@@ -83,21 +85,24 @@ int	ft_heredoc(char **str)
 	fd_heredoc = open("here_document", O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd_heredoc == -1)
 		return (ft_perror("heredoc", -1));
-	signal(SIGINT, SIG_IGN);
 	pid = fork();
 	if (!pid)
 		ft_child_heredoc(fd_heredoc, stop);
-	waitpid(pid, &status, 0);
-	g_var->state = WEXITSTATUS(status);
-	//rl_redisplay();
-	ft_init_signal_handler(ft_handler_main);
-//	signal(SIGINT, my_sigint);
-	*str = tmp;
-	close(fd_heredoc);
-	fd_heredoc = open("here_document", O_RDONLY, 0644);
-	free(stop);
-	if (fd_heredoc == -1)
-		return (ft_perror("heredoc", -1));
+	else
+	{
+	// 	signal(SIGINT, SIG_IGN);
+	// 	// ft_init_signal_handler(ft_handler_heredoc);
+		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
+		waitpid(0, NULL, 0);
+	}
+		ft_init_signal_handler(ft_handler_main);
+		*str = tmp;
+		close(fd_heredoc);
+		fd_heredoc = open("here_document", O_RDONLY, 0644);
+		free(stop);
+		if (fd_heredoc == -1)
+			return (ft_perror("heredoc", -1));
 	return (fd_heredoc);
 }
 
