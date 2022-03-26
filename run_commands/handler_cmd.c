@@ -85,7 +85,7 @@ int reserved_stdout, int reserved_stdin)
 		if (ft_strcmp(elem->path, "command not found") == 0)
 			ft_error_message_and_exit(127, elem->cmd, 0);
 		execve(elem->path, elem->cmds, new_envp);
-		ft_perror(elem->cmd, 1);
+		ft_perror(&elem->cmd, 1);
 		ft_free(new_envp);
 		exit(g_var->state);
 	}

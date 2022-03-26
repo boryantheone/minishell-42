@@ -53,7 +53,6 @@ t_var	*g_var;
 
 void	ft_lstclear_fds(t_fds **lst);
 void	ft_printlist_envp(t_envp *env);
-
 //build_in3
 int		ft_unset(t_list *elem);
 int		ft_cd(t_list *elem);
@@ -89,7 +88,7 @@ void	ft_lstadd_back_envp(t_envp **lst, t_envp *new);
 t_envp	*ft_lstnew_env(char *str);
 //parser_redirect - 5
 void	ft_parser_redirect(char *str, t_fds *fds);
-int		ft_perror(char *err_message, int return_value);
+int		ft_perror(char **err_message, int return_value);
 //new_fds_list
 t_fds	*ft_fdsnew(int fd_read, int fd_write, int heredoc);
 void	ft_fdsadd_back(t_fds **lst, t_fds *new);
@@ -105,7 +104,7 @@ void	ft_skip_quotes(char **str);
 void	ft_skip_redirect(char **str);
 //parser_utils2-5
 char	**ft_double_realloc(char **cmds, int size);
-int		ft_str_double_len(char **cmds);//TODO:check str_doub_llen
+int		ft_str_double_len(char **cmds);
 int		ft_check_fds(t_fds *fds);
 char	*ft_my_strjoin(char *s1, char *s2);
 int		ft_perror_heredoc(char **stop, int flag);
