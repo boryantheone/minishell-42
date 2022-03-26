@@ -1,65 +1,6 @@
 
 #include "../minishell.h"
 
-t_fds	*ft_fdsnew(int fd_read, int fd_write, int heredoc)
-{
-	t_fds	*node;
-
-	node = (t_fds *)malloc(sizeof(t_fds));
-	if (!node)
-		return (NULL);
-	node -> fd_in = fd_read;
-	node -> fd_out = fd_write;
-	node -> fd_heredoc = heredoc;
-	node -> next = NULL;
-	return (node);
-}
-
-void	ft_fdsadd_back(t_fds **lst, t_fds *new)
-{
-	t_fds	*tmp;
-
-	if (*lst == NULL)
-	{
-		*lst = new;
-		return ;
-	}
-	tmp = *lst;
-	while (tmp -> next != NULL)
-		tmp = tmp -> next;
-	tmp -> next = new;
-}
-
-char	*ft_my_strjoin(char *s1, char *s2)
-{
-	char	*str;
-	int		i;
-	int		j;
-
-	if (!s1 || !s2)
-		return (NULL);
-	i = ft_strlen((char *)s1);
-	j = ft_strlen((char *)s2);
-	str = malloc(sizeof(char) * (i + j + 1));
-	if (!str)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (s1[i] != '\0')
-	{
-		str[i] = s1[i];
-		i++;
-	}
-	while (s2[j] != '\0')
-	{
-		str[i + j] = s2[j];
-		j++;
-	}
-	str[i + j] = '\0';
-	free(s1);
-	return (str);
-}
-
 char	*ft_remove_quotes(char *str)
 {
 	int		index;
@@ -84,38 +25,6 @@ char	*ft_remove_quotes(char *str)
 	while (str[end] != '\0')
 		end++;
 	result1 = ft_substr(str, index, end - index);
-	result = ft_my_strjoin(result, result1);
-	free(result1);
-	return (result);
-}
-
-char	*ft_replace_env(char *str)
-{
-	int			index;
-	char		*result1;
-	static char	*result;
-
-	index = 0;
-	result1 = NULL;
-	while (str[index] && str[index] != '$')
-		index++;
-	if (index)
-		result = ft_strndup(str, index);
-	else
-		result = ft_strdup("\0");
-	str = str + index;
-	result1 = ft_parse_with_envp(&str, 1);
-	if (!result1)
-	{
-		free(result);
-		return ("\0");
-	}
-	result = ft_my_strjoin(result, result1);
-	free(result1);
-	index = 0;
-	while (str[index] != '\0')
-		index++;
-	result1 = ft_strndup(str, index);
 	result = ft_my_strjoin(result, result1);
 	free(result1);
 	return (result);

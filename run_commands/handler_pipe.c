@@ -33,7 +33,7 @@ int	execve_for_pipe(t_list *elem)
 	}
 }
 
-static void	ft_child_proc(int *fd, t_fds *fds)
+static void	ft_parent_proc(int *fd, t_fds *fds)
 {
 	usleep(100);
 	close(fd[1]);
@@ -70,7 +70,7 @@ void	ft_launch_proc(t_list *elem, t_fds *fds)
 		execve_for_pipe(elem);
 	}
 	else
-		ft_child_proc(fd, fds);
+		ft_parent_proc(fd, fds);
 }
 
 void	ft_wait(pid_t l_pid, int reserved_stdin, int reserved_stdout)

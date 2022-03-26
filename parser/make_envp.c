@@ -1,7 +1,7 @@
 
 #include "../minishell.h"
 
-int	ft_symbol(char c)
+static int	ft_symbol(char c)
 {
 	if ((c >= 33 && c <= 35) || c == 60 || c == 62 || \
 		(c >= 91 && c <= 94) || (c >= 124 && c <= 126) \
@@ -17,7 +17,6 @@ char	*ft_parse_with_envp(char **str, int flag)
 	char	temp_symbol;
 	char	*result;
 	int		i;
-	int		len;
 
 	i = 0;
 	temp = ++(*str);
@@ -35,10 +34,7 @@ char	*ft_parse_with_envp(char **str, int flag)
 	}
 	else if (i > 0)
 		result = ft_strdup(ft_get_env(temp));
-	len = (int)ft_strlen(temp);
 	temp[i] = temp_symbol;
-	if ((ft_symbol(temp[i])) && len <= 2)
-		i++;
 	*str = temp + i;
 	return (result);
 }
@@ -59,19 +55,4 @@ char	*ft_get_env(char *key)
 		tmp = tmp->next;
 	}
 	return ("\0");
-}
-
-int	ft_lstsize_envp(t_envp *lst)
-{
-	int	i;
-
-	i = 0;
-	if (!lst)
-		return (0);
-	while (lst != NULL)
-	{
-		i++;
-		lst = lst -> next;
-	}
-	return (i);
 }

@@ -43,11 +43,6 @@ t_var	*g_var;
 void	ft_lstclear_fds(t_fds **lst);
 void	ft_printlist_envp(t_envp *env);
 
-//new_env_list
-char	*ft_get_var_or_val_envp(char *str, int or);
-int		ft_make_env_list(char **env);
-void	ft_lstadd_back_envp(t_envp **lst, t_envp *new);
-t_envp	*ft_lstnew_env(char *str);
 //build_in3
 int		ft_unset(t_list *elem);
 int		ft_cd(t_list *elem);
@@ -65,34 +60,45 @@ int		ft_preparser(char *line);
 //preparser_utils
 int		ft_skip_space(const char *line, int *i);
 int		ft_write_error(int flag);
-char	*check_result(char *result, int index);
-//parser
+
+
+//parser/parser - 5
 t_list	*ft_parser(char *str);
 char	*ft_parse_arguments(char **str);
-int	ft_str_double_len(char **cmds);
-void ft_printlist(t_list *elem);
-char	*ft_strcpy(char *dest, char *src);
-char	*ft_get_var_or_val_envp(char *str, int or);
-void	*ft_realloc(char *result, int size);
-//parser_quotes
-char *ft_parse_single_quote(char **str);
-char *ft_parse_double_quote(char **str);
+//parser_quotes - 3
+char	*ft_parse_single_quote(char **str);
+char	*ft_parse_double_quote(char **str);
 int		ft_add_in_result(char *result, char *temp, int i, int index);
-char	*ft_strndup(char *src, int len);
-//make_envp
-char *ft_parse_with_envp(char **str, int flag);
-char *ft_get_env(char *key);
-//parser_redirect
-int		ft_forward_redirect(char **str);
-int		ft_reverse_redirect(char **str, t_fds *fds);
+//make_envp- 3
+char	*ft_parse_with_envp(char **str, int flag);
+char	*ft_get_env(char *key);
+int		ft_lstsize_envp(t_envp *lst);
+//new_env_list-5
+char	*ft_get_var_or_val_envp(char *str, int or);
+int		ft_make_env_list(char **env);
+void	ft_lstadd_back_envp(t_envp **lst, t_envp *new);
+t_envp	*ft_lstnew_env(char *str);
+//parser_redirect - 5
 void	ft_parser_redirect(char *str, t_fds *fds);
+int		ft_perror(char *err_message, int return_value);
+//new_fds_list
+t_fds	*ft_fdsnew(int fd_read, int fd_write, int heredoc);
+void	ft_fdsadd_back(t_fds **lst, t_fds *new);
+char	*ft_replace_env(char *str);
 //parser_fds
 t_fds	*ft_parser_heredoc(char *str);
-int ft_limiter(char c);
-//utils
-void ft_skip_quotes(char **str);
+
+//parser_utils-5
+char	*check_result(char *result, int index);
+void	ft_free(char **dst);
+int		ft_limiter(char c);
+void	ft_skip_quotes(char **str);
 void	ft_skip_redirect(char **str);
-void ft_printfds(t_fds *elem);
+//parser_utils2-4
+char	**ft_double_realloc(char **cmds, int size);
+int		ft_str_double_len(char **cmds);//TODO:check str_doub_llen
+int		ft_check_fds(t_fds *fds);
+char	*ft_my_strjoin(char *s1, char *s2);
 //execute
 char	*ft_parsing_path(char *cmd, char **envp);
 void	ft_execute(t_list *elem, t_fds *fds);
@@ -101,15 +107,11 @@ int		ft_exec_cmd(t_list *elem, t_fds *fds);
 //handler_cmd
 int		ft_exec_buildin(t_list *elem);
 char	**ft_new_envp_for_execve(void);
-int		ft_lstsize_envp(t_envp *lst);
+
 //handler_pipe
-void	ft_free(char **dst);
-//main/main
-void	ft_error(void);
+
 //checks
-int	ft_check_fds(t_fds *fds);
-int	ft_perror(char *err_message, int return_value);
-int	ft_is_a_directory(char *cmd);
+int		ft_is_a_directory(char *cmd);
 void	ft_error_message_and_exit(int exit_status, char *cmd, int choice);
 
 //signal
