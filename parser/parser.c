@@ -82,9 +82,9 @@ t_list	*ft_help_parser(char *str, t_list *elem, char **arguments, char *tmp)
 			i = 0;
 			str++;
 		}
-		if (*str == '>' || *str == '<')
-			ft_skip_redirect(&str);
-		if ((tmp = ft_parse_arguments(&str)))
+		ft_skip_redirect(&str);
+		tmp = ft_parse_arguments(&str);
+		if (tmp)
 		{
 			arguments = ft_double_realloc(arguments, 1);
 			arguments[i++] = tmp;
@@ -105,6 +105,5 @@ t_list	*ft_parser(char *str)
 	elem = NULL;
 	tmp = NULL;
 	elem = ft_help_parser(str, elem, arguments, tmp);
-//	printf("end of parser\n");
 	return (elem);
 }

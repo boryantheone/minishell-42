@@ -15,40 +15,15 @@
 void	ft_handler_ctrl_d(void)
 {
 	ft_putstr_fd("exit\n", STDOUT_FILENO);
-	exit(EXIT_SUCCESS);
+	exit(g_var->state);
 }
 
 void	ft_handler_sigint(void)
 {
-	// void (sig);
-	// if (sig == SIGINT)
-	// {
-		g_var->state = 1;
-		rl_on_new_line();
-		ft_putstr_fd("\n", STDIN_FILENO);
-		rl_redisplay();
-	// }
-	// rl_replace_line("", 0);
-	// rl_on_new_line();
-	// rl_redisplay();
-		// rl_on_new_line();
-		// rl_redisplay();
-		// write(2, "  \n", 3);
-		// rl_replace_line("", 0);
-		// rl_on_new_line();
-		// rl_redisplay();
-		// g_var->state = 1;
-}
-
-void	ft_do_nothing(void)
-{
+	g_var->state = 1;
 	rl_on_new_line();
+	ft_putstr_fd("\n", STDIN_FILENO);
 	rl_redisplay();
-	// rl_redisplay();
-	// write(2, "  \n", 3);
-	// rl_replace_line("", 0);
-	// rl_on_new_line();
-	// rl_redisplay();
 }
 
 void	ft_handler_main(int sig)
@@ -62,7 +37,6 @@ void	ft_handler_main(int sig)
 void	ft_init_signal_handler(void (*ft_handler)(int))
 {
 	struct sigaction	sa;
-
 
 	sa.sa_handler = ft_handler;
 	sigemptyset(&sa.sa_mask);

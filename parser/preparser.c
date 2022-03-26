@@ -30,9 +30,6 @@ static int	ft_preparser_reverse_redirect(char *line, int *i)
 		if (line[(*i)] == '<' && line[(*i) + 1] && \
 		(line[(*i) + 1] == '<' || line[(*i) + 1] == '>'))
 			return (ft_write_error(1));
-//		(*i)++;
-//		if (!(ft_skip_space(line, i)))
-//			return (ft_write_error(2));
 	}
 	return (0);
 }
@@ -52,9 +49,6 @@ int	ft_preparser_redirect(char *line, int *i)
 		if (line[(*i)] == '>' && line[(*i) + 1] && \
 		(line[(*i) + 1] == '<' || line[(*i) + 1] == '>'))
 			return (ft_write_error(3));
-//		(*i)++;
-//		if (!(ft_skip_space(line, i)))
-//			return (ft_write_error(2));
 	}
 	return (0);
 }

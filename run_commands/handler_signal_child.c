@@ -19,9 +19,8 @@ void	ft_handler_heredoc(int sig)
 
 	pid = waitpid(-1, &exit_status, 0);
 	g_var->state = 1;
-	// ft_putstr_fd("\n", STDIN_FILENO);
 	signal(SIGINT, SIG_DFL);
-	exit(EXIT_SUCCESS);
+	exit(g_var->state);
 }
 
 void	ft_child_sigint(void)
@@ -42,7 +41,6 @@ void	ft_child_sigquit(void)
 	pid = waitpid(-1, &exit_status, 0);
 	g_var->state = 131;
 	ft_putstr_fd("Quit: 3\n", STDOUT_FILENO);
-	// exit(g_var->state);
 }
 
 void	ft_handler_child(int sig)

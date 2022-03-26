@@ -30,9 +30,9 @@ void	ft_fdsadd_back(t_fds **lst, t_fds *new)
 	tmp -> next = new;
 }
 
-static char	*ft_replace_return(char *result)
+static char	*ft_replace_return(char **result)
 {
-	free(result);
+	free(*result);
 	return ("\0");
 }
 
@@ -53,10 +53,7 @@ char	*ft_replace_env(char *str)
 	str = str + index;
 	result1 = ft_parse_with_envp(&str, 1);
 	if (!result1)
-	{
-		free(result);
-		return ("\0");
-	}
+		return (ft_replace_return(&result));
 	result = ft_my_strjoin(result, result1);
 	free(result1);
 	index = 0;

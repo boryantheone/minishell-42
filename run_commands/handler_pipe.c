@@ -104,7 +104,8 @@ int	ft_exec_pipes(t_list *elem, t_fds *fds)
 	reserved_stdout = dup(STDOUT_FILENO);
 	tmp = elem;
 	tmp_fds = fds;
-	ft_dup_fd_in(reserved_stdin, tmp_fds);
+	if (ft_check_fds(fds) != -1)
+		ft_dup_fd_in(reserved_stdin, tmp_fds);
 	while (tmp_fds->next != NULL)
 	{
 		ft_launch_proc(tmp, tmp_fds);
